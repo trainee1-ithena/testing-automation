@@ -1,0 +1,43 @@
+{
+  "customers": [
+    {
+      "id": null,
+      "name": "FILL_IN",
+      "users": [
+        { "id": null, "name": "FILL_IN", "email": "FILL_IN" },
+        { "id": null, "name": "FILL_IN", "email": "FILL_IN" }
+      ],
+      "equipment": [
+        { "id": null, "name": "FILL_IN", "site": "FILL_IN" }
+      ]
+    },
+    {
+      "id": null,
+      "name": "FILL_IN (second customer — no shared users with first)",
+      "users": [
+        { "id": null, "name": "FILL_IN", "email": "FILL_IN" }
+      ],
+      "equipment": []
+    }
+  ],
+  "departments": [
+    {
+      "id": null,
+      "name": "FILL_IN",
+      "manager": { "id": null, "name": "FILL_IN", "email": "FILL_IN" },
+      "agents": [
+        { "id": null, "name": "FILL_IN", "email": "FILL_IN" }
+      ],
+      "service_types": [
+        { "id": null, "name": "FILL_IN" }
+      ]
+    }
+  ],
+  "agent_accounts": [
+    { "id": null, "name": "FILL_IN", "role": "service_manager",  "email": "FILL_IN", "password": "FILL_IN" },
+    { "id": null, "name": "FILL_IN", "role": "service_engineer", "email": "FILL_IN", "password": "FILL_IN" }
+  ],
+  "customer_accounts": [
+    { "id": null, "name": "FILL_IN", "org": "FILL_IN", "email": "FILL_IN", "password": "FILL_IN" }
+  ]
+}

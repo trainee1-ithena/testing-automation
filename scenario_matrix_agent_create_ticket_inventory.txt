@@ -1,0 +1,44 @@
+A1. customer | ui_label: Organization | type: select | required: yes | constraints: none | auto_filled: no
+A2. user | ui_label: Organization User | type: select | required: yes | constraints: none | auto_filled: no
+A3. equipment | ui_label: Provision Equipment | type: select | required: no | constraints: none | auto_filled: no
+A4. service_type | ui_label: Service Type | type: select | required: yes | constraints: none | auto_filled: yes
+A5. department | ui_label: Department | type: select | required: yes | constraints: none | auto_filled: yes
+A6. staff_accountable | ui_label: Accountable | type: select | required: no | constraints: none | auto_filled: yes
+A7. staff_assigned | ui_label: Assignee | type: select | required: no | constraints: none | auto_filled: yes
+A8. priority | ui_label: Priority | type: select | required: yes | constraints: none | auto_filled: yes
+A9. due_date | ui_label: Due Date | type: date | required: yes | constraints: none | auto_filled: yes
+A10. subject | ui_label: Subject | type: text | required: yes | constraints: maxLength 175 | auto_filled: no
+A11. description | ui_label: Description | type: textarea | required: no | constraints: none | auto_filled: no
+A12. files | ui_label: Attachment | type: file | required: no | constraints: Allowed file types: Image, PDF, Word, Excel, CSV, Eml, Easm, Mp4, Mov | auto_filled: no
+
+B1. service_type -> department | EFFECT: filter | GUARD: isAgent | REVERSAL: reset department if no longer valid
+B2. department -> staff_accountable | EFFECT: auto-fill | GUARD: isAgent | REVERSAL: reset staff_accountable if no longer valid
+B3. department -> staff_assigned | EFFECT: filter | GUARD: isAgent | REVERSAL: reset staff_assigned if no longer valid
+B4. customer -> user | EFFECT: filter | GUARD: none | REVERSAL: reset user if no longer valid
+B5. customer -> equipment | EFFECT: filter | GUARD: none | REVERSAL: reset equipment if no longer valid
+B6. equipment -> service_type | EFFECT: filter | GUARD: none | REVERSAL: reset service_type if no longer valid
+B7. service_type -> due_date | EFFECT: calculate | GUARD: formOpen | REVERSAL: none
+
+C1. FIELD: customer | CONDITION: isAgent | SHOWN TO: agent | HIDDEN FROM: non-agent | TYPE: role_exclusion
+C2. FIELD: user | CONDITION: isAgent | SHOWN TO: agent | HIDDEN FROM: non-agent | TYPE: role_exclusion
+C3. FIELD: equipment | CONDITION: isAgent | SHOWN TO: agent | HIDDEN FROM: non-agent | TYPE: role_exclusion
+C4. FIELD: department | CONDITION: isAgent | SHOWN TO: agent | HIDDEN FROM: non-agent | TYPE: role_exclusion
+C5. FIELD: staff_accountable | CONDITION: isAgent | SHOWN TO: agent | HIDDEN FROM: non-agent | TYPE: role_exclusion
+C6. FIELD: staff_assigned | CONDITION: isAgent | SHOWN TO: agent | HIDDEN FROM: non-agent | TYPE: role_exclusion
+C7. FIELD: due_date | CONDITION: isAgent | SHOWN TO: agent | HIDDEN FROM: non-agent | TYPE: role_exclusion
+
+D1. agent CAN see the record | WHEN: they are the creator, accountable, or assigned staff
+D2. agent CAN see the record | WHEN: they have department access with view permission
+
+E1. FIELD: customer | SOURCE: known_entities.customers | DISPLAY LABEL: name
+E2. FIELD: user | SOURCE: known_entities.customers[].users | DISPLAY LABEL: name
+E3. FIELD: equipment | SOURCE: known_entities.customers[].equipment | DISPLAY LABEL: provision_name
+E4. FIELD: service_type | SOURCE: known_entities.departments[].service_types | DISPLAY LABEL: name
+E5. FIELD: department | SOURCE: known_entities.departments | DISPLAY LABEL: name
+E6. FIELD: staff_accountable | SOURCE: known_entities.departments[].staff | DISPLAY LABEL: name
+E7. FIELD: staff_assigned | SOURCE: known_entities.departments[].staff | DISPLAY LABEL: name
+CONSTRAINT: customer and user must share the same org_id
+CONSTRAINT: customer and equipment must share the same org_id
+
+X1. department | auto_fills_on_open: yes | GUARD: isAgent
+X2. priority | auto_fills_on_open: yes

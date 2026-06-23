@@ -1,0 +1,22 @@
+[
+  {
+    "id": "TC001",
+    "category": "happy_path",
+    "flow": "customer_create_ticket",
+    "test_mode": "ui",
+    "description": "Create a ticket with all required fields filled with valid values for a customer.",
+    "inputs": {
+      "service_type": "Breakdown Repair",
+      "priority": "High",
+      "subject": "Server not responding",
+      "description": "The main server at Acme HQ is not responding to any requests."
+    },
+    "expected_outcome": "pass",
+    "expected_message": null,
+    "actual_outcome": "submitted",
+    "actual_message": "has been created successfully",
+    "passed": true,
+    "raw_output": "============================= test session starts =============================\ncollecting ... collected 1 item\n\n..\\..\\..\\..\\..\\..\\AppData\\Local\\Temp\\tmpb6kw_z2g\\test_TC001.py::test_run[chromium] PASSED [100%]\n\n============================= 1 passed in 36.74s ==============================\n",
+    "artifacts": []
+  }
+]

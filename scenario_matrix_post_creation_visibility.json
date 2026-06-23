@@ -1,0 +1,114 @@
+{
+  "flow": "post_creation_visibility",
+  "inventory_text": "A1. ticket_subject | ui_label: Ticket Subject | type: text | required: yes | constraints: none | auto_filled: no\nA2. ticket_description | ui_label: Ticket Description | type: textarea | required: no | constraints: none | auto_filled: no\nA3. due_date | ui_label: Due Date | type: date | required: no | constraints: none | auto_filled: no\nA4. priority_id | ui_label: Priority | type: select | required: yes | constraints: none | auto_filled: no\nA5. status_id | ui_label: Status | type: select | required: yes | constraints: none | auto_filled: no\nA6. dept_id | ui_label: Department | type: select | required: yes | constraints: none | auto_filled: no\nA7. service_type | ui_label: Service Type | type: select | required: no | constraints: none | auto_filled: no\nA8. accountable_staff_id | ui_label: Accountable Staff | type: select | required: no | constraints: none | auto_filled: no\nA9. assigned_staff_id | ui_label: Assigned Staff | type: select | required: no | constraints: none | auto_filled: no\n\nB1. dept_id -> service_type | EFFECT: filter | GUARD: none | REVERSAL: none\nB2. dept_id -> accountable_staff_id | EFFECT: filter | GUARD: none | REVERSAL: none\nB3. dept_id -> assigned_staff_id | EFFECT: filter | GUARD: none | REVERSAL: none\n\nC1. FIELD: ticket_number | CONDITION: {isAgent && (...) } | SHOWN TO: agent | HIDDEN FROM: customer | TYPE: role_exclusion\nC2. FIELD: user_id | CONDITION: {isAgent && (...) } | SHOWN TO: agent | HIDDEN FROM: customer | TYPE: role_exclusion\nC3. FIELD: provision_id | CONDITION: {isAgent && (...) } | SHOWN TO: agent | HIDDEN FROM: customer | TYPE: role_exclusion\n\nD1. agent CAN see the record | WHEN: they are the accountable_staff_id or assigned_staff_id\nD2. agent CAN see the record | WHEN: they are in the same department as the ticket's dept_id\n\nE1. FIELD: priority_id | SOURCE: known_entities.priorities | DISPLAY LABEL: name\nE2. FIELD: status_id | SOURCE: known_entities.statuses | DISPLAY LABEL: name\nE3. FIELD: dept_id | SOURCE: known_entities.departments | DISPLAY LABEL: name\nE4. FIELD: service_type | SOURCE: known_entities.departments.service_types | DISPLAY LABEL: name\nE5. FIELD: accountable_staff_id | SOURCE: known_entities.departments.staff | DISPLAY LABEL: name\nE6. FIELD: assigned_staff_id | SOURCE: known_entities.departments.staff | DISPLAY LABEL: name\n\nCONSTRAINT: dept_id and service_type must share the same department\nCONSTRAINT: dept_id and accountable_staff_id must share the same department\nCONSTRAINT: dept_id and assigned_staff_id must share the same department",
+  "scenarios": [
+    {
+      "id": "TC001",
+      "category": "happy_path",
+      "flow": "post_creation_visibility",
+      "flow_sequence": [
+        "post_creation_visibility"
+      ],
+      "role": "agent",
+      "description": "Create a ticket with all required fields filled with valid values for the primary role.",
+      "inputs": {
+        "ticket_subject": "Server Down",
+        "priority_id": "High",
+        "status_id": "Open",
+        "dept_id": "Technical Support"
+      },
+      "expected_outcome": "pass",
+      "expected_message": null,
+      "assertion": "Ticket is created successfully with all required fields.",
+      "field": null,
+      "cascade_trigger": null,
+      "second_session": null,
+      "business_rule": "A1",
+      "test_mode": "multi_session"
+    },
+    {
+      "id": "TC002",
+      "category": "post_creation_visibility",
+      "flow": "post_creation_visibility",
+      "flow_sequence": [
+        "post_creation_visibility"
+      ],
+      "role": "agent",
+      "description": "Verify that an agent who is the accountable staff can see the ticket record.",
+      "inputs": {
+        "ticket_subject": "Server Down",
+        "priority_id": "High",
+        "status_id": "Open",
+        "dept_id": "Technical Support",
+        "accountable_staff_id": "John Doe"
+      },
+      "expected_outcome": "pass",
+      "expected_message": null,
+      "assertion": "Session B user can view the record in the UI.",
+      "field": null,
+      "cascade_trigger": null,
+      "second_session": {
+        "role": "agent",
+        "name": "John Doe"
+      },
+      "business_rule": "D1",
+      "test_mode": "multi_session"
+    },
+    {
+      "id": "TC003",
+      "category": "post_creation_visibility",
+      "flow": "post_creation_visibility",
+      "flow_sequence": [
+        "post_creation_visibility"
+      ],
+      "role": "agent",
+      "description": "Verify that an agent who is in the same department as the ticket can see the ticket record.",
+      "inputs": {
+        "ticket_subject": "Network Issue",
+        "priority_id": "Normal",
+        "status_id": "In Progress",
+        "dept_id": "Technical Support"
+      },
+      "expected_outcome": "pass",
+      "expected_message": null,
+      "assertion": "Session B user can view the record in the UI.",
+      "field": null,
+      "cascade_trigger": null,
+      "second_session": {
+        "role": "agent",
+        "name": "Liam Hughes"
+      },
+      "business_rule": "D2",
+      "test_mode": "multi_session"
+    },
+    {
+      "id": "TC004",
+      "category": "post_creation_visibility",
+      "flow": "post_creation_visibility",
+      "flow_sequence": [
+        "post_creation_visibility"
+      ],
+      "role": "agent",
+      "description": "Verify that an agent who is not the accountable staff and not in the same department cannot see the ticket record.",
+      "inputs": {
+        "ticket_subject": "Power Outage",
+        "priority_id": "Low",
+        "status_id": "Closed",
+        "dept_id": "Electrical",
+        "accountable_staff_id": "Jane Smith"
+      },
+      "expected_outcome": "fail",
+      "expected_message": null,
+      "assertion": "Session B user cannot see the record in the UI.",
+      "field": null,
+      "cascade_trigger": null,
+      "second_session": {
+        "role": "agent",
+        "name": "Carlos Silva",
+        "key": "carloss"
+      },
+      "business_rule": "D1",
+      "test_mode": "multi_session"
+    }
+  ]
+}

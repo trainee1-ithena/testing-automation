@@ -1,0 +1,424 @@
+{
+  "flow": "customer_create_ticket",
+  "inventory_text": "A3. equipment | ui_label: Provision Equipment | type: select | required: no | constraints: none | auto_filled: yes\nA4. service_type | ui_label: Service Type | type: select | required: yes | constraints: none | auto_filled: yes\nA5. priority | ui_label: Priority | type: select | required: yes | constraints: none | auto_filled: yes\nA6. subject | ui_label: Subject | type: text | required: yes | constraints: maxLength 175 | auto_filled: yes\nA7. description | ui_label: Description | type: textarea | required: no | constraints: none | auto_filled: yes\nA8. files | ui_label: Attachment | type: file | required: no | constraints: Allowed file types: Image, PDF, Word, Excel, CSV, Eml, Easm, Mp4, Mov | auto_filled: no\n\nB4. equipment -> service_type | EFFECT: filter | GUARD: none | REVERSAL: reset service_type\n\nC1. FIELD: department | CONDITION: {isAgent && (...)} | SHOWN TO: agent | HIDDEN FROM: customer | TYPE: role_exclusion\nC2. FIELD: staff_accountable | CONDITION: {isAgent && (...)} | SHOWN TO: agent | HIDDEN FROM: customer | TYPE: role_exclusion\nC3. FIELD: staff_assigned | CONDITION: {isAgent && (...)} | SHOWN TO: agent | HIDDEN FROM: customer | TYPE: role_exclusion\nC4. FIELD: due_date | CONDITION: {isAgent && (...)} | SHOWN TO: agent | HIDDEN FROM: customer | TYPE: role_exclusion\n\nD1. customer CAN see the record | WHEN: they are the ticket owner or have visibility to the user\nD2. agent CAN see the record | WHEN: they are assigned, accountable, or have department access\n\nE3. FIELD: equipment | SOURCE: known_entities.customers[].equipment | DISPLAY LABEL: provision_name\nE4. FIELD: service_type | SOURCE: known_entities.departments[].service_types | DISPLAY LABEL: name\nE5. FIELD: priority | SOURCE: static | DISPLAY LABEL: label\n\n# --- HEURISTIC INJECTED ROLE EXCLUSIONS ---\nC5. FIELD: customer | CONDITION: Heuristic JSX Match | SHOWN TO: other | HIDDEN FROM: customer | TYPE: role_exclusion\nC6. FIELD: user | CONDITION: Heuristic JSX Match | SHOWN TO: other | HIDDEN FROM: customer | TYPE: role_exclusion",
+  "scenarios": [
+    {
+      "id": "TC001",
+      "category": "happy_path",
+      "flow": "customer_create_ticket",
+      "flow_sequence": [
+        "customer_create_ticket"
+      ],
+      "role": "customer",
+      "description": "Create a ticket with all required fields filled with valid values for a customer.",
+      "inputs": {
+        "service_type": "Breakdown Repair",
+        "priority": "High",
+        "subject": "Server not responding",
+        "description": "The main server at Acme HQ is not responding to any requests."
+      },
+      "expected_outcome": "pass",
+      "expected_message": null,
+      "assertion": "Ticket is successfully created and visible in the customer's ticket list.",
+      "field": null,
+      "cascade_trigger": null,
+      "second_session": null,
+      "business_rule": "A4, A5, A6",
+      "test_mode": "ui"
+    },
+    {
+      "id": "TC002",
+      "category": "boundary",
+      "flow": "customer_create_ticket",
+      "flow_sequence": [
+        "customer_create_ticket"
+      ],
+      "role": "customer",
+      "description": "Test subject field at max length of 175 characters.",
+      "inputs": {
+        "subject": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+        "service_type": "Breakdown Repair",
+        "priority": "High"
+      },
+      "expected_outcome": "pass",
+      "expected_message": null,
+      "assertion": "Form submits successfully with subject at max length.",
+      "field": "subject",
+      "cascade_trigger": null,
+      "second_session": null,
+      "business_rule": "A6",
+      "test_mode": "ui"
+    },
+    {
+      "id": "TC003",
+      "category": "boundary",
+      "flow": "customer_create_ticket",
+      "flow_sequence": [
+        "customer_create_ticket"
+      ],
+      "role": "customer",
+      "description": "Test subject field with length exceeding max limit by one character.",
+      "inputs": {
+        "subject": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+        "service_type": "Breakdown Repair",
+        "priority": "High"
+      },
+      "expected_outcome": "fail",
+      "expected_message": "Subject cannot exceed 175 characters.",
+      "assertion": "Error message displayed for subject exceeding max length.",
+      "field": "subject",
+      "cascade_trigger": null,
+      "second_session": null,
+      "business_rule": "A6",
+      "test_mode": "ui"
+    },
+    {
+      "id": "TC004",
+      "category": "boundary",
+      "flow": "customer_create_ticket",
+      "flow_sequence": [
+        "customer_create_ticket"
+      ],
+      "role": "customer",
+      "description": "Test attachment field with allowed file type (PDF).",
+      "inputs": {
+        "subject": "Server not responding",
+        "service_type": "Breakdown Repair",
+        "priority": "High",
+        "files": "document.pdf"
+      },
+      "expected_outcome": "pass",
+      "expected_message": null,
+      "assertion": "Form submits successfully with allowed file type.",
+      "field": "files",
+      "cascade_trigger": null,
+      "second_session": null,
+      "business_rule": "A8",
+      "test_mode": "ui"
+    },
+    {
+      "id": "TC005",
+      "category": "boundary",
+      "flow": "customer_create_ticket",
+      "flow_sequence": [
+        "customer_create_ticket"
+      ],
+      "role": "customer",
+      "description": "Test attachment field with disallowed file type (exe).",
+      "inputs": {
+        "subject": "Server not responding",
+        "service_type": "Breakdown Repair",
+        "priority": "High",
+        "files": "malware.exe"
+      },
+      "expected_outcome": "fail",
+      "expected_message": "File type not allowed. Please upload a valid file type.",
+      "assertion": "Error message displayed for disallowed file type.",
+      "field": "files",
+      "cascade_trigger": null,
+      "second_session": null,
+      "business_rule": "A8",
+      "test_mode": "ui"
+    },
+    {
+      "id": "TC006",
+      "category": "invalid_value",
+      "flow": "customer_create_ticket",
+      "flow_sequence": [
+        "customer_create_ticket"
+      ],
+      "role": "customer",
+      "description": "Attempt to upload an unsupported file type as an attachment.",
+      "inputs": {
+        "files": "unsupported_file_type.exe",
+        "subject": "Test Subject",
+        "service_type": "Breakdown Repair",
+        "priority": "High"
+      },
+      "expected_outcome": "fail",
+      "expected_message": "Invalid file type. Allowed types are: Image, PDF, Word, Excel, CSV, Eml, Easm, Mp4, Mov.",
+      "assertion": null,
+      "field": "files",
+      "cascade_trigger": null,
+      "second_session": null,
+      "business_rule": "A8",
+      "test_mode": "ui"
+    },
+    {
+      "id": "TC007",
+      "category": "cascade_dependency",
+      "flow": "customer_create_ticket",
+      "flow_sequence": [
+        "customer_create_ticket"
+      ],
+      "role": "customer",
+      "description": "Verify that selecting equipment filters the service type options.",
+      "inputs": {
+        "equipment": "Acme HQ - Main Server"
+      },
+      "expected_outcome": "pass",
+      "expected_message": null,
+      "assertion": "Service Type options are filtered based on selected equipment.",
+      "field": null,
+      "cascade_trigger": [
+        "equipment"
+      ],
+      "second_session": null,
+      "business_rule": "B4"
+    },
+    {
+      "id": "TC008",
+      "category": "cascade_dependency",
+      "flow": "customer_create_ticket",
+      "flow_sequence": [
+        "customer_create_ticket"
+      ],
+      "role": "customer",
+      "description": "Verify that selecting service type before equipment self-corrects after equipment is set.",
+      "inputs": {
+        "service_type": "Breakdown Repair",
+        "equipment": "Acme HQ - Main Server"
+      },
+      "expected_outcome": "pass",
+      "expected_message": null,
+      "assertion": "Service Type self-corrects based on selected equipment.",
+      "field": null,
+      "cascade_trigger": [
+        "equipment"
+      ],
+      "second_session": null,
+      "business_rule": "B4"
+    },
+    {
+      "id": "TC009",
+      "category": "cascade_dependency",
+      "flow": "customer_create_ticket",
+      "flow_sequence": [
+        "customer_create_ticket"
+      ],
+      "role": "customer",
+      "description": "Verify that clearing the equipment resets the service type options.",
+      "inputs": {
+        "equipment": "Acme HQ - Main Server"
+      },
+      "expected_outcome": "pass",
+      "expected_message": null,
+      "assertion": "Service Type options reset when equipment is cleared.",
+      "field": null,
+      "cascade_trigger": [
+        "equipment"
+      ],
+      "second_session": null,
+      "business_rule": "B4"
+    },
+    {
+      "id": "TC010",
+      "category": "role_field_visibility",
+      "flow": "customer_create_ticket",
+      "flow_sequence": [
+        "customer_create_ticket"
+      ],
+      "role": "customer",
+      "description": "Verify that the 'department' field is not visible to the customer.",
+      "inputs": {},
+      "expected_outcome": "pass",
+      "expected_message": null,
+      "assertion": "Department field is not present in the DOM",
+      "field": "department",
+      "cascade_trigger": null,
+      "second_session": null,
+      "business_rule": "C1",
+      "test_mode": "ui"
+    },
+    {
+      "id": "TC011",
+      "category": "role_field_visibility",
+      "flow": "customer_create_ticket",
+      "flow_sequence": [
+        "customer_create_ticket"
+      ],
+      "role": "customer",
+      "description": "Verify that the 'staff_accountable' field is not visible to the customer.",
+      "inputs": {},
+      "expected_outcome": "pass",
+      "expected_message": null,
+      "assertion": "Staff Accountable field is not present in the DOM",
+      "field": "staff_accountable",
+      "cascade_trigger": null,
+      "second_session": null,
+      "business_rule": "C2",
+      "test_mode": "ui"
+    },
+    {
+      "id": "TC012",
+      "category": "role_field_visibility",
+      "flow": "customer_create_ticket",
+      "flow_sequence": [
+        "customer_create_ticket"
+      ],
+      "role": "customer",
+      "description": "Verify that the 'staff_assigned' field is not visible to the customer.",
+      "inputs": {},
+      "expected_outcome": "pass",
+      "expected_message": null,
+      "assertion": "Staff Assigned field is not present in the DOM",
+      "field": "staff_assigned",
+      "cascade_trigger": null,
+      "second_session": null,
+      "business_rule": "C3",
+      "test_mode": "ui"
+    },
+    {
+      "id": "TC013",
+      "category": "role_field_visibility",
+      "flow": "customer_create_ticket",
+      "flow_sequence": [
+        "customer_create_ticket"
+      ],
+      "role": "customer",
+      "description": "Verify that the 'due_date' field is not visible to the customer.",
+      "inputs": {},
+      "expected_outcome": "pass",
+      "expected_message": null,
+      "assertion": "Due Date field is not present in the DOM",
+      "field": "due_date",
+      "cascade_trigger": null,
+      "second_session": null,
+      "business_rule": "C4",
+      "test_mode": "ui"
+    },
+    {
+      "id": "TC014",
+      "category": "role_field_visibility",
+      "flow": "customer_create_ticket",
+      "flow_sequence": [
+        "customer_create_ticket"
+      ],
+      "role": "customer",
+      "description": "Verify that the 'customer' field is not visible to the customer.",
+      "inputs": {},
+      "expected_outcome": "pass",
+      "expected_message": null,
+      "assertion": "Customer field is not present in the DOM",
+      "field": "customer",
+      "cascade_trigger": null,
+      "second_session": null,
+      "business_rule": "C5",
+      "test_mode": "ui"
+    },
+    {
+      "id": "TC015",
+      "category": "role_field_visibility",
+      "flow": "customer_create_ticket",
+      "flow_sequence": [
+        "customer_create_ticket"
+      ],
+      "role": "customer",
+      "description": "Verify that the 'user' field is not visible to the customer.",
+      "inputs": {},
+      "expected_outcome": "pass",
+      "expected_message": null,
+      "assertion": "User field is not present in the DOM",
+      "field": "user",
+      "cascade_trigger": null,
+      "second_session": null,
+      "business_rule": "C6",
+      "test_mode": "ui"
+    },
+    {
+      "id": "TC016",
+      "category": "ui_capability",
+      "flow": "customer_create_ticket",
+      "flow_sequence": [
+        "customer_create_ticket"
+      ],
+      "role": "customer",
+      "description": "Verify that the file upload widget for 'Attachment' is usable.",
+      "inputs": {
+        "files": "example.pdf",
+        "subject": "Test Subject",
+        "service_type": "Breakdown Repair",
+        "priority": "High"
+      },
+      "expected_outcome": "pass",
+      "expected_message": null,
+      "assertion": "File upload widget is usable and accepts allowed file types.",
+      "field": "files",
+      "cascade_trigger": null,
+      "second_session": null,
+      "business_rule": "A8",
+      "test_mode": "ui"
+    },
+    {
+      "id": "TC017",
+      "category": "ui_capability",
+      "flow": "customer_create_ticket",
+      "flow_sequence": [
+        "customer_create_ticket"
+      ],
+      "role": "customer",
+      "description": "Verify that the select widget for 'Provision Equipment' is usable.",
+      "inputs": {
+        "equipment": "Acme HQ - Main Server",
+        "subject": "Test Subject",
+        "service_type": "Breakdown Repair",
+        "priority": "High"
+      },
+      "expected_outcome": "pass",
+      "expected_message": null,
+      "assertion": "Select widget for 'Provision Equipment' is usable and displays correct options.",
+      "field": "equipment",
+      "cascade_trigger": null,
+      "second_session": null,
+      "business_rule": "A3",
+      "test_mode": "ui"
+    },
+    {
+      "id": "TC018",
+      "category": "ui_capability",
+      "flow": "customer_create_ticket",
+      "flow_sequence": [
+        "customer_create_ticket"
+      ],
+      "role": "customer",
+      "description": "Verify that the text input for 'Subject' is usable.",
+      "inputs": {
+        "subject": "Network Issue",
+        "service_type": "Breakdown Repair",
+        "priority": "High"
+      },
+      "expected_outcome": "pass",
+      "expected_message": null,
+      "assertion": "Text input for 'Subject' is usable and accepts input.",
+      "field": "subject",
+      "cascade_trigger": null,
+      "second_session": null,
+      "business_rule": "A6",
+      "test_mode": "ui"
+    },
+    {
+      "id": "TC019",
+      "category": "ui_capability",
+      "flow": "customer_create_ticket",
+      "flow_sequence": [
+        "customer_create_ticket"
+      ],
+      "role": "customer",
+      "description": "Verify that the textarea for 'Description' is usable.",
+      "inputs": {
+        "description": "The server is not responding and needs immediate attention.",
+        "subject": "Test Subject",
+        "service_type": "Breakdown Repair",
+        "priority": "High"
+      },
+      "expected_outcome": "pass",
+      "expected_message": null,
+      "assertion": "Textarea for 'Description' is usable and accepts input.",
+      "field": "description",
+      "cascade_trigger": null,
+      "second_session": null,
+      "business_rule": "A7",
+      "test_mode": "ui"
+    }
+  ]
+}
