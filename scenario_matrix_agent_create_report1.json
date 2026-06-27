@@ -1,0 +1,993 @@
+{
+  "flow": "agent_create_report",
+  "inventory_text": "A1. report_type | ui_label: Service Report Type | type: select | required: yes | constraints: none | auto_filled: no\nA2. internal_only | ui_label: Internal Only | type: checkbox | required: no | constraints: none | auto_filled: no\nA3. report_form_id | ui_label: Checklist | type: select | required: no | constraints: none | auto_filled: no\nA4. name | ui_label: Service Report Name | type: text | required: yes | constraints: maxLength 256 | auto_filled: yes\nA5. reportDate | ui_label: Service Report Date | type: date | required: yes | constraints: none | auto_filled: no\nA6. ticket_id | ui_label: Case | type: autocomplete | required: yes | constraints: none | auto_filled: yes\nA7. org_id | ui_label: Organization | type: autocomplete | required: yes | constraints: none | auto_filled: yes\nA8. user_id | ui_label: Customer User | type: groupedByCustomer-UserDropdown | required: yes | constraints: none | auto_filled: yes\nA9. appointment_id | ui_label: Appointment | type: autocomplete | required: no | constraints: none | auto_filled: no\nA10. description | ui_label: Description | type: textarea | required: no | constraints: none | auto_filled: no\n\nB2. ticket_id -> report_form_id | EFFECT: filter | GUARD: formOpen | REVERSAL: reset\nB3. ticket_id -> appointment_id | EFFECT: filter | GUARD: none | REVERSAL: reset\nB4. org_id -> user_id | EFFECT: filter | GUARD: none | REVERSAL: reset\nB5. user_id -> org_id | EFFECT: auto-fill | GUARD: none | REVERSAL: none\n\nC1. FIELD: staff_id | CONDITION: {isAgent && (...)} | SHOWN TO: agent | HIDDEN FROM: !agent | TYPE: role_exclusion\n\nD1. agent CAN see the record | WHEN: staff_assigned=agent\nD2. agent CAN see the record | WHEN: staff_accountable=agent\nD3. agent CAN see the record | WHEN: created_by_staff_id=agent\nD4. agent CAN see the record | WHEN: ticket_collaborators includes agent\nD5. agent CAN see the record | WHEN: dept_id in userDepartments\n\nE1. FIELD: report_type | SOURCE: static_enum | DISPLAY LABEL: Fixed Fee & Materials, Time & Material\nE2. FIELD: report_form_id | SOURCE: known_entities.report_forms | DISPLAY LABEL: name | SCOPE: current_user_dept\nE3. FIELD: ticket_id | SOURCE: known_entities.tickets | DISPLAY LABEL: ticket_number - ticket_subject | SCOPE: current_user_dept\nE4. FIELD: org_id | SOURCE: known_entities.customers | DISPLAY LABEL: name\nE5. FIELD: user_id | SOURCE: known_entities.customers[*].users | DISPLAY LABEL: name | CONSTRAINT: org_id and user_id must share the same parent entity\nE6. FIELD: appointment_id | SOURCE: known_entities.tickets[*].appointments | DISPLAY LABEL: title: start_datetime - end_datetime | SCOPE: current_user_dept\n\nF1. FIELD: report_form_id | FILTER: isActive=true\nF2. FIELD: appointment_id | FILTER: state === \"scheduled\" && !service_report\nF3. FIELD: appointment_id | FILTER: !service_report\nF4. FIELD: ticket_id | FILTER: exclude_closed_status=true",
+  "scenarios": [
+    {
+      "id": "TC001",
+      "category": "happy_path",
+      "flow": "agent_create_report",
+      "flow_sequence": [
+        "agent_create_report"
+      ],
+      "role": "agent",
+      "description": "Agent creates a service report with all required fields filled with valid values.",
+      "inputs": {
+        "report_type": "Fixed Fee & Materials",
+        "reportDate": "2023-10-01",
+        "ticket_id": "0626400263 - Server not responding",
+        "org_id": "Acme Corp",
+        "user_id": "Alice Smith",
+        "name": "Test Name"
+      },
+      "expected_outcome": "pass",
+      "expected_message": null,
+      "assertion": "Service report is successfully created with all required fields filled.",
+      "field": null,
+      "cascade_trigger": null,
+      "scope": null,
+      "second_session": null,
+      "business_rule": "A1, A5, A6, A7, A8",
+      "test_mode": "ui",
+      "permission_agent": null,
+      "permission_element": null
+    },
+    {
+      "id": "TC002",
+      "category": "missing_field",
+      "flow": "agent_create_report",
+      "flow_sequence": [
+        "agent_create_report"
+      ],
+      "role": "agent",
+      "description": "Omit the Service Report Type field from inputs.",
+      "inputs": {
+        "reportDate": "2023-10-01",
+        "name": "Test Name",
+        "ticket_id": "0626400263",
+        "org_id": "Acme Corp"
+      },
+      "expected_outcome": "fail",
+      "expected_message": "Service Report Type is required.",
+      "assertion": "Form submission fails with a missing Service Report Type error.",
+      "field": "report_type",
+      "cascade_trigger": null,
+      "scope": null,
+      "second_session": null,
+      "business_rule": "A1",
+      "test_mode": "ui",
+      "permission_agent": null,
+      "permission_element": null
+    },
+    {
+      "id": "TC003",
+      "category": "missing_field",
+      "flow": "agent_create_report",
+      "flow_sequence": [
+        "agent_create_report"
+      ],
+      "role": "agent",
+      "description": "Omit the Service Report Date field from inputs.",
+      "inputs": {
+        "report_type": "Fixed Fee & Materials",
+        "name": "Test Name",
+        "ticket_id": "0626400263",
+        "org_id": "Acme Corp"
+      },
+      "expected_outcome": "fail",
+      "expected_message": "Service Report Date is required.",
+      "assertion": "Form submission fails with a missing Service Report Date error.",
+      "field": "reportDate",
+      "cascade_trigger": null,
+      "scope": null,
+      "second_session": null,
+      "business_rule": "A5",
+      "test_mode": "ui",
+      "permission_agent": null,
+      "permission_element": null
+    },
+    {
+      "id": "TC004",
+      "category": "boundary",
+      "flow": "agent_create_report",
+      "flow_sequence": [
+        "agent_create_report"
+      ],
+      "role": "agent",
+      "description": "Service Report Name field at max length limit (256 characters).",
+      "inputs": {
+        "report_type": "Fixed Fee & Materials",
+        "internal_only": false,
+        "reportDate": "2023-10-01",
+        "description": "Routine maintenance check.",
+        "name": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+        "ticket_id": "0626400263",
+        "org_id": "Acme Corp"
+      },
+      "expected_outcome": "pass",
+      "expected_message": null,
+      "assertion": "Service Report Name field accepts input at max length limit.",
+      "field": "name",
+      "cascade_trigger": null,
+      "scope": null,
+      "second_session": null,
+      "business_rule": "A4",
+      "test_mode": "ui",
+      "permission_agent": null,
+      "permission_element": null
+    },
+    {
+      "id": "TC005",
+      "category": "boundary",
+      "flow": "agent_create_report",
+      "flow_sequence": [
+        "agent_create_report"
+      ],
+      "role": "agent",
+      "description": "Service Report Name field exceeds max length limit by one character (257 characters).",
+      "inputs": {
+        "report_type": "Fixed Fee & Materials",
+        "internal_only": false,
+        "reportDate": "2023-10-01",
+        "description": "Routine maintenance check.",
+        "name": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+        "ticket_id": "0626400263",
+        "org_id": "Acme Corp"
+      },
+      "expected_outcome": "fail",
+      "expected_message": "Service Report Name cannot exceed 256 characters.",
+      "assertion": "Service Report Name field shows error when input exceeds max length limit.",
+      "field": "name",
+      "cascade_trigger": null,
+      "scope": null,
+      "second_session": null,
+      "business_rule": "A4",
+      "test_mode": "ui",
+      "permission_agent": null,
+      "permission_element": null
+    },
+    {
+      "id": "TC006",
+      "category": "cascade_dependency",
+      "flow": "agent_create_report",
+      "flow_sequence": [
+        "agent_create_report"
+      ],
+      "role": "agent",
+      "description": "Happy-order: Setting ticket_id filters report_form_id options.",
+      "inputs": {
+        "ticket_id": "0626400263"
+      },
+      "expected_outcome": "pass",
+      "expected_message": null,
+      "assertion": "report_form_id options are filtered based on ticket_id",
+      "field": "report_form_id",
+      "cascade_trigger": "ticket_id",
+      "scope": null,
+      "second_session": null,
+      "business_rule": "B2",
+      "test_mode": "cascade",
+      "permission_agent": null,
+      "permission_element": null
+    },
+    {
+      "id": "TC007",
+      "category": "cascade_dependency",
+      "flow": "agent_create_report",
+      "flow_sequence": [
+        "agent_create_report"
+      ],
+      "role": "agent",
+      "description": "Wrong-order: Interacting with report_form_id before setting ticket_id self-corrects.",
+      "inputs": {
+        "ticket_id": "0626400263"
+      },
+      "expected_outcome": "pass",
+      "expected_message": null,
+      "assertion": "report_form_id options reset after ticket_id is set",
+      "field": "report_form_id",
+      "cascade_trigger": "ticket_id",
+      "scope": null,
+      "second_session": null,
+      "business_rule": "B2",
+      "test_mode": "cascade",
+      "permission_agent": null,
+      "permission_element": null
+    },
+    {
+      "id": "TC008",
+      "category": "cascade_dependency",
+      "flow": "agent_create_report",
+      "flow_sequence": [
+        "agent_create_report"
+      ],
+      "role": "agent",
+      "description": "Clear-trigger: Clearing ticket_id resets report_form_id options.",
+      "inputs": {},
+      "expected_outcome": "pass",
+      "expected_message": null,
+      "assertion": "report_form_id options reset when ticket_id is cleared",
+      "field": "report_form_id",
+      "cascade_trigger": "ticket_id",
+      "scope": null,
+      "second_session": null,
+      "business_rule": "B2",
+      "test_mode": "cascade",
+      "permission_agent": null,
+      "permission_element": null
+    },
+    {
+      "id": "TC009",
+      "category": "cascade_dependency",
+      "flow": "agent_create_report",
+      "flow_sequence": [
+        "agent_create_report"
+      ],
+      "role": "agent",
+      "description": "Happy-order: Setting ticket_id filters appointment_id options.",
+      "inputs": {
+        "ticket_id": "0626400263"
+      },
+      "expected_outcome": "pass",
+      "expected_message": null,
+      "assertion": "appointment_id options are filtered based on ticket_id",
+      "field": "appointment_id",
+      "cascade_trigger": "ticket_id",
+      "scope": null,
+      "second_session": null,
+      "business_rule": "B3",
+      "test_mode": "cascade",
+      "permission_agent": null,
+      "permission_element": null
+    },
+    {
+      "id": "TC010",
+      "category": "cascade_dependency",
+      "flow": "agent_create_report",
+      "flow_sequence": [
+        "agent_create_report"
+      ],
+      "role": "agent",
+      "description": "Wrong-order: Interacting with appointment_id before setting ticket_id self-corrects.",
+      "inputs": {
+        "ticket_id": "0626400263"
+      },
+      "expected_outcome": "pass",
+      "expected_message": null,
+      "assertion": "appointment_id options reset after ticket_id is set",
+      "field": "appointment_id",
+      "cascade_trigger": "ticket_id",
+      "scope": null,
+      "second_session": null,
+      "business_rule": "B3",
+      "test_mode": "cascade",
+      "permission_agent": null,
+      "permission_element": null
+    },
+    {
+      "id": "TC011",
+      "category": "cascade_dependency",
+      "flow": "agent_create_report",
+      "flow_sequence": [
+        "agent_create_report"
+      ],
+      "role": "agent",
+      "description": "Clear-trigger: Clearing ticket_id resets appointment_id options.",
+      "inputs": {},
+      "expected_outcome": "pass",
+      "expected_message": null,
+      "assertion": "appointment_id options reset when ticket_id is cleared",
+      "field": "appointment_id",
+      "cascade_trigger": "ticket_id",
+      "scope": null,
+      "second_session": null,
+      "business_rule": "B3",
+      "test_mode": "cascade",
+      "permission_agent": null,
+      "permission_element": null
+    },
+    {
+      "id": "TC012",
+      "category": "cascade_dependency",
+      "flow": "agent_create_report",
+      "flow_sequence": [
+        "agent_create_report"
+      ],
+      "role": "agent",
+      "description": "Happy-order: Setting org_id filters user_id options.",
+      "inputs": {
+        "org_id": "Acme Corp"
+      },
+      "expected_outcome": "pass",
+      "expected_message": null,
+      "assertion": "user_id options are filtered based on org_id",
+      "field": "user_id",
+      "cascade_trigger": "org_id",
+      "scope": null,
+      "second_session": null,
+      "business_rule": "B4",
+      "test_mode": "cascade",
+      "permission_agent": null,
+      "permission_element": null
+    },
+    {
+      "id": "TC013",
+      "category": "cascade_dependency",
+      "flow": "agent_create_report",
+      "flow_sequence": [
+        "agent_create_report"
+      ],
+      "role": "agent",
+      "description": "Wrong-order: Interacting with user_id before setting org_id self-corrects.",
+      "inputs": {
+        "org_id": "Acme Corp"
+      },
+      "expected_outcome": "pass",
+      "expected_message": null,
+      "assertion": "user_id options reset after org_id is set",
+      "field": "user_id",
+      "cascade_trigger": "org_id",
+      "scope": null,
+      "second_session": null,
+      "business_rule": "B4",
+      "test_mode": "cascade",
+      "permission_agent": null,
+      "permission_element": null
+    },
+    {
+      "id": "TC014",
+      "category": "cascade_dependency",
+      "flow": "agent_create_report",
+      "flow_sequence": [
+        "agent_create_report"
+      ],
+      "role": "agent",
+      "description": "Clear-trigger: Clearing org_id resets user_id options.",
+      "inputs": {},
+      "expected_outcome": "pass",
+      "expected_message": null,
+      "assertion": "user_id options reset when org_id is cleared",
+      "field": "user_id",
+      "cascade_trigger": "org_id",
+      "scope": null,
+      "second_session": null,
+      "business_rule": "B4",
+      "test_mode": "cascade",
+      "permission_agent": null,
+      "permission_element": null
+    },
+    {
+      "id": "TC015",
+      "category": "cascade_dependency",
+      "flow": "agent_create_report",
+      "flow_sequence": [
+        "agent_create_report"
+      ],
+      "role": "agent",
+      "description": "Happy-order (lock): Setting user_id auto-fills and locks org_id.",
+      "inputs": {
+        "user_id": "Alice Smith"
+      },
+      "expected_outcome": "pass",
+      "expected_message": null,
+      "assertion": "Organization is auto-filled and disabled after Customer User is set",
+      "field": "org_id",
+      "cascade_trigger": "user_id",
+      "scope": null,
+      "second_session": null,
+      "business_rule": "B5",
+      "test_mode": "cascade",
+      "permission_agent": null,
+      "permission_element": null
+    },
+    {
+      "id": "TC016",
+      "category": "cascade_dependency",
+      "flow": "agent_create_report",
+      "flow_sequence": [
+        "agent_create_report"
+      ],
+      "role": "agent",
+      "description": "Overwrite attempt: org_id is overwritten and disabled when user_id is selected.",
+      "inputs": {
+        "user_id": "Alice Smith"
+      },
+      "expected_outcome": "pass",
+      "expected_message": null,
+      "assertion": "Organization is overwritten and disabled when Customer User is selected, regardless of prior user input",
+      "field": "org_id",
+      "cascade_trigger": "user_id",
+      "scope": null,
+      "second_session": null,
+      "business_rule": "B5",
+      "test_mode": "cascade",
+      "permission_agent": null,
+      "permission_element": null
+    },
+    {
+      "id": "TC017",
+      "category": "cascade_dependency",
+      "flow": "agent_create_report",
+      "flow_sequence": [
+        "agent_create_report"
+      ],
+      "role": "agent",
+      "description": "Clear-trigger (unlock): Clearing user_id resets org_id to empty and interactive.",
+      "inputs": {},
+      "expected_outcome": "pass",
+      "expected_message": null,
+      "assertion": "Organization clears and becomes interactive again after Customer User is removed",
+      "field": "org_id",
+      "cascade_trigger": "user_id",
+      "scope": null,
+      "second_session": null,
+      "business_rule": "B5",
+      "test_mode": "cascade",
+      "permission_agent": null,
+      "permission_element": null
+    },
+    {
+      "id": "TC019",
+      "category": "ui_capability",
+      "flow": "agent_create_report",
+      "flow_sequence": [
+        "agent_create_report"
+      ],
+      "role": "agent",
+      "description": "Verify the autocomplete field 'Case' is usable.",
+      "inputs": {
+        "ticket_id": "0626400263 - Server not responding",
+        "report_type": "Fixed Fee & Materials",
+        "name": "Test Name",
+        "reportDate": "2023-10-01",
+        "org_id": "Acme Corp"
+      },
+      "expected_outcome": "pass",
+      "expected_message": null,
+      "assertion": "Autocomplete field 'Case' is usable and accepts input.",
+      "field": "ticket_id",
+      "cascade_trigger": null,
+      "scope": null,
+      "second_session": null,
+      "business_rule": "A6",
+      "test_mode": "ui",
+      "permission_agent": null,
+      "permission_element": null
+    },
+    {
+      "id": "TC020",
+      "category": "ui_capability",
+      "flow": "agent_create_report",
+      "flow_sequence": [
+        "agent_create_report"
+      ],
+      "role": "agent",
+      "description": "Verify the checkbox field 'Internal Only' is usable.",
+      "inputs": {
+        "internal_only": true,
+        "report_type": "Fixed Fee & Materials",
+        "name": "Test Name",
+        "reportDate": "2023-10-01",
+        "ticket_id": "0626400263",
+        "org_id": "Acme Corp"
+      },
+      "expected_outcome": "pass",
+      "expected_message": null,
+      "assertion": "Checkbox field 'Internal Only' is usable and can be toggled.",
+      "field": "internal_only",
+      "cascade_trigger": null,
+      "scope": null,
+      "second_session": null,
+      "business_rule": "A2",
+      "test_mode": "ui",
+      "permission_agent": null,
+      "permission_element": null
+    },
+    {
+      "id": "TC021",
+      "category": "ui_capability",
+      "flow": "agent_create_report",
+      "flow_sequence": [
+        "agent_create_report"
+      ],
+      "role": "agent",
+      "description": "Verify the date field 'Service Report Date' is usable.",
+      "inputs": {
+        "reportDate": "2023-10-15",
+        "report_type": "Fixed Fee & Materials",
+        "name": "Test Name",
+        "ticket_id": "0626400263",
+        "org_id": "Acme Corp"
+      },
+      "expected_outcome": "pass",
+      "expected_message": null,
+      "assertion": "Date field 'Service Report Date' is usable and accepts input.",
+      "field": "reportDate",
+      "cascade_trigger": null,
+      "scope": null,
+      "second_session": null,
+      "business_rule": "A5",
+      "test_mode": "ui",
+      "permission_agent": null,
+      "permission_element": null
+    },
+    {
+      "id": "TC022",
+      "category": "ui_capability",
+      "flow": "agent_create_report",
+      "flow_sequence": [
+        "agent_create_report"
+      ],
+      "role": "agent",
+      "description": "Verify the groupedByCustomer-UserDropdown field 'Customer User' is usable.",
+      "inputs": {
+        "user_id": "Alice Smith",
+        "report_type": "Fixed Fee & Materials",
+        "name": "Test Name",
+        "reportDate": "2023-10-01",
+        "ticket_id": "0626400263"
+      },
+      "expected_outcome": "pass",
+      "expected_message": null,
+      "assertion": "GroupedByCustomer-UserDropdown field 'Customer User' is usable and accepts input.",
+      "field": "user_id",
+      "cascade_trigger": null,
+      "scope": null,
+      "second_session": null,
+      "business_rule": "A8",
+      "test_mode": "ui",
+      "permission_agent": null,
+      "permission_element": null
+    },
+    {
+      "id": "TC023",
+      "category": "ui_capability",
+      "flow": "agent_create_report",
+      "flow_sequence": [
+        "agent_create_report"
+      ],
+      "role": "agent",
+      "description": "Verify the select field 'Service Report Type' is usable.",
+      "inputs": {
+        "report_type": "Fixed Fee & Materials",
+        "name": "Test Name",
+        "reportDate": "2023-10-01",
+        "ticket_id": "0626400263",
+        "org_id": "Acme Corp"
+      },
+      "expected_outcome": "pass",
+      "expected_message": null,
+      "assertion": "Select field 'Service Report Type' is usable and accepts input.",
+      "field": "report_type",
+      "cascade_trigger": null,
+      "scope": null,
+      "second_session": null,
+      "business_rule": "A1",
+      "test_mode": "ui",
+      "permission_agent": null,
+      "permission_element": null
+    },
+    {
+      "id": "TC024",
+      "category": "ui_capability",
+      "flow": "agent_create_report",
+      "flow_sequence": [
+        "agent_create_report"
+      ],
+      "role": "agent",
+      "description": "Verify the text field 'Service Report Name' is usable.",
+      "inputs": {
+        "name": "Server not responding",
+        "report_type": "Fixed Fee & Materials",
+        "reportDate": "2023-10-01",
+        "ticket_id": "0626400263",
+        "org_id": "Acme Corp"
+      },
+      "expected_outcome": "pass",
+      "expected_message": null,
+      "assertion": "Text field 'Service Report Name' is usable and accepts input.",
+      "field": "name",
+      "cascade_trigger": null,
+      "scope": null,
+      "second_session": null,
+      "business_rule": "A4",
+      "test_mode": "ui",
+      "permission_agent": null,
+      "permission_element": null
+    },
+    {
+      "id": "TC025",
+      "category": "ui_capability",
+      "flow": "agent_create_report",
+      "flow_sequence": [
+        "agent_create_report"
+      ],
+      "role": "agent",
+      "description": "Verify the textarea field 'Description' is usable.",
+      "inputs": {
+        "description": "Detailed description of the service report.",
+        "report_type": "Fixed Fee & Materials",
+        "name": "Test Name",
+        "reportDate": "2023-10-01",
+        "ticket_id": "0626400263",
+        "org_id": "Acme Corp"
+      },
+      "expected_outcome": "pass",
+      "expected_message": null,
+      "assertion": "Textarea field 'Description' is usable and accepts input.",
+      "field": "description",
+      "cascade_trigger": null,
+      "scope": null,
+      "second_session": null,
+      "business_rule": "A10",
+      "test_mode": "ui",
+      "permission_agent": null,
+      "permission_element": null
+    },
+    {
+      "id": "TC026",
+      "category": "active_inactive_filter",
+      "flow": "agent_create_report",
+      "flow_sequence": [
+        "agent_create_report"
+      ],
+      "role": "agent",
+      "description": "Active report form is visible in the Checklist dropdown",
+      "inputs": {},
+      "expected_outcome": "pass",
+      "expected_message": null,
+      "assertion": "<exact name of active report form> is visible in the report_form_id dropdown",
+      "field": "report_form_id",
+      "cascade_trigger": null,
+      "scope": null,
+      "second_session": null,
+      "business_rule": "F1",
+      "test_mode": "cascade",
+      "permission_agent": null,
+      "permission_element": null
+    },
+    {
+      "id": "TC027",
+      "category": "active_inactive_filter",
+      "flow": "agent_create_report",
+      "flow_sequence": [
+        "agent_create_report"
+      ],
+      "role": "agent",
+      "description": "Inactive report form is absent from the Checklist dropdown",
+      "inputs": {},
+      "expected_outcome": "pass",
+      "expected_message": null,
+      "assertion": "<exact name of inactive report form> is absent from the report_form_id dropdown",
+      "field": "report_form_id",
+      "cascade_trigger": null,
+      "scope": null,
+      "second_session": null,
+      "business_rule": "F1",
+      "test_mode": "cascade",
+      "permission_agent": null,
+      "permission_element": null
+    },
+    {
+      "id": "TC028",
+      "category": "active_inactive_filter",
+      "flow": "agent_create_report",
+      "flow_sequence": [
+        "agent_create_report"
+      ],
+      "role": "agent",
+      "description": "Scheduled appointment without service report is visible in the Appointment dropdown",
+      "inputs": {
+        "ticket_id": "0626400263"
+      },
+      "expected_outcome": "pass",
+      "expected_message": null,
+      "assertion": "<exact name of scheduled appointment> is visible in the appointment_id dropdown",
+      "field": "appointment_id",
+      "cascade_trigger": "ticket_id",
+      "scope": null,
+      "second_session": null,
+      "business_rule": "F2",
+      "test_mode": "cascade",
+      "permission_agent": null,
+      "permission_element": null
+    },
+    {
+      "id": "TC029",
+      "category": "active_inactive_filter",
+      "flow": "agent_create_report",
+      "flow_sequence": [
+        "agent_create_report"
+      ],
+      "role": "agent",
+      "description": "Non-scheduled appointment or with service report is absent from the Appointment dropdown",
+      "inputs": {
+        "ticket_id": "0626400263"
+      },
+      "expected_outcome": "pass",
+      "expected_message": null,
+      "assertion": "<exact name of non-scheduled appointment> is absent from the appointment_id dropdown",
+      "field": "appointment_id",
+      "cascade_trigger": "ticket_id",
+      "scope": null,
+      "second_session": null,
+      "business_rule": "F2",
+      "test_mode": "cascade",
+      "permission_agent": null,
+      "permission_element": null
+    },
+    {
+      "id": "TC030",
+      "category": "active_inactive_filter",
+      "flow": "agent_create_report",
+      "flow_sequence": [
+        "agent_create_report"
+      ],
+      "role": "agent",
+      "description": "Appointment without service report is visible in the Appointment dropdown",
+      "inputs": {
+        "ticket_id": "0626400263"
+      },
+      "expected_outcome": "pass",
+      "expected_message": null,
+      "assertion": "<exact name of appointment without service report> is visible in the appointment_id dropdown",
+      "field": "appointment_id",
+      "cascade_trigger": "ticket_id",
+      "scope": null,
+      "second_session": null,
+      "business_rule": "F3",
+      "test_mode": "cascade",
+      "permission_agent": null,
+      "permission_element": null
+    },
+    {
+      "id": "TC031",
+      "category": "active_inactive_filter",
+      "flow": "agent_create_report",
+      "flow_sequence": [
+        "agent_create_report"
+      ],
+      "role": "agent",
+      "description": "Appointment with service report is absent from the Appointment dropdown",
+      "inputs": {
+        "ticket_id": "0626400263"
+      },
+      "expected_outcome": "pass",
+      "expected_message": null,
+      "assertion": "<exact name of appointment with service report> is absent from the appointment_id dropdown",
+      "field": "appointment_id",
+      "cascade_trigger": "ticket_id",
+      "scope": null,
+      "second_session": null,
+      "business_rule": "F3",
+      "test_mode": "cascade",
+      "permission_agent": null,
+      "permission_element": null
+    },
+    {
+      "id": "TC032",
+      "category": "active_inactive_filter",
+      "flow": "agent_create_report",
+      "flow_sequence": [
+        "agent_create_report"
+      ],
+      "role": "agent",
+      "description": "Open ticket is visible in the Case dropdown",
+      "inputs": {},
+      "expected_outcome": "pass",
+      "expected_message": null,
+      "assertion": "0626400263 - Server not responding is visible in the ticket_id dropdown",
+      "field": "ticket_id",
+      "cascade_trigger": null,
+      "scope": null,
+      "second_session": null,
+      "business_rule": "F4",
+      "test_mode": "cascade",
+      "permission_agent": null,
+      "permission_element": null
+    },
+    {
+      "id": "TC033",
+      "category": "active_inactive_filter",
+      "flow": "agent_create_report",
+      "flow_sequence": [
+        "agent_create_report"
+      ],
+      "role": "agent",
+      "description": "Closed ticket is absent from the Case dropdown",
+      "inputs": {},
+      "expected_outcome": "pass",
+      "expected_message": null,
+      "assertion": "<exact name of closed ticket> is absent from the ticket_id dropdown",
+      "field": "ticket_id",
+      "cascade_trigger": null,
+      "scope": null,
+      "second_session": null,
+      "business_rule": "F4",
+      "test_mode": "cascade",
+      "permission_agent": null,
+      "permission_element": null
+    },
+    {
+      "id": "TC034",
+      "category": "role_permission_access",
+      "flow": "agent_create_report",
+      "flow_sequence": [
+        "agent_create_report"
+      ],
+      "role": "agent",
+      "description": "All Access agent (Carlos Silva) has create permission in all departments \u2014 create report button is visible.",
+      "inputs": {},
+      "expected_outcome": "pass",
+      "expected_message": null,
+      "assertion": "create report button is visible",
+      "field": null,
+      "cascade_trigger": null,
+      "scope": null,
+      "second_session": null,
+      "business_rule": "role_definitions[5] (All Access) \u2014 service_report.create=true",
+      "test_mode": "permission",
+      "permission_agent": "Carlos Silva",
+      "permission_element": "Create Report"
+    },
+    {
+      "id": "TC035",
+      "category": "role_permission_access",
+      "flow": "agent_create_report",
+      "flow_sequence": [
+        "agent_create_report"
+      ],
+      "role": "agent",
+      "description": "Limited Access agent (Jane Smith) does not have create permission in any department \u2014 create report button is absent.",
+      "inputs": {},
+      "expected_outcome": "pass",
+      "expected_message": null,
+      "assertion": "create report button is absent",
+      "field": null,
+      "cascade_trigger": null,
+      "scope": null,
+      "second_session": null,
+      "business_rule": "role_definitions[6] (Limited Access) \u2014 service_report.create=false",
+      "test_mode": "permission",
+      "permission_agent": "Jane Smith",
+      "permission_element": "Create Report"
+    },
+    {
+      "id": "TC036",
+      "category": "role_permission_access",
+      "flow": "agent_create_report",
+      "flow_sequence": [
+        "agent_create_report"
+      ],
+      "role": "agent",
+      "description": "Mixed-access agent (Liam Hughes) has create permission in at least one department \u2014 create report button is visible.",
+      "inputs": {},
+      "expected_outcome": "pass",
+      "expected_message": null,
+      "assertion": "create report button is visible",
+      "field": null,
+      "cascade_trigger": null,
+      "scope": null,
+      "second_session": null,
+      "business_rule": "role_definitions[1] (All Access) \u2014 service_report.create=true",
+      "test_mode": "permission",
+      "permission_agent": "Liam Hughes",
+      "permission_element": "Create Report"
+    },
+    {
+      "id": "TC037",
+      "category": "active_inactive_filter",
+      "flow": "agent_create_report",
+      "flow_sequence": [
+        "agent_create_report"
+      ],
+      "role": "agent",
+      "description": "Mixed-access agent (Liam Hughes): ticket from allowed department is visible in the ticket dropdown.",
+      "inputs": {},
+      "expected_outcome": "pass",
+      "expected_message": null,
+      "assertion": "0626400262 - Server not responding is visible in the ticket dropdown",
+      "field": "ticket_id",
+      "cascade_trigger": null,
+      "scope": null,
+      "second_session": null,
+      "business_rule": "role_definitions[1] (All Access) \u2014 service_report.create=true",
+      "test_mode": "cascade",
+      "permission_agent": "Liam Hughes",
+      "permission_element": null
+    },
+    {
+      "id": "TC038",
+      "category": "active_inactive_filter",
+      "flow": "agent_create_report",
+      "flow_sequence": [
+        "agent_create_report"
+      ],
+      "role": "agent",
+      "description": "Mixed-access agent (Liam Hughes): ticket from denied department is absent from the ticket dropdown.",
+      "inputs": {},
+      "expected_outcome": "pass",
+      "expected_message": null,
+      "assertion": "0626400263 - Server not responding is absent from the ticket dropdown",
+      "field": "ticket_id",
+      "cascade_trigger": null,
+      "scope": null,
+      "second_session": null,
+      "business_rule": "role_definitions[2] (Limited Access) \u2014 service_report.create=false",
+      "test_mode": "cascade",
+      "permission_agent": "Liam Hughes",
+      "permission_element": null
+    },
+    {
+      "id": "TC039",
+      "category": "appointment_field_flows",
+      "flow": "agent_create_report",
+      "flow_sequence": [
+        "agent_create_report"
+      ],
+      "role": "agent",
+      "description": "Agent with permission sees the 'Create New Appointment' option in the appointment dropdown.",
+      "inputs": {
+        "ticket_id": "0626400263 - Server not responding"
+      },
+      "expected_outcome": "pass",
+      "expected_message": null,
+      "assertion": "'Create New Appointment' option is visible in the appointment dropdown",
+      "field": "appointment_id",
+      "cascade_trigger": "ticket_id",
+      "scope": null,
+      "second_session": null,
+      "business_rule": "role_definitions[5] (All Access) \u2014 appointment_management.appointment.create=true",
+      "test_mode": "cascade",
+      "permission_agent": "Carlos Silva",
+      "permission_element": null
+    },
+    {
+      "id": "TC040",
+      "category": "appointment_field_flows",
+      "flow": "agent_create_report",
+      "flow_sequence": [
+        "agent_create_report"
+      ],
+      "role": "agent",
+      "description": "Agent without permission does not see the 'Create New Appointment' option in the appointment dropdown.",
+      "inputs": {
+        "ticket_id": "0626400263 - Server not responding"
+      },
+      "expected_outcome": "pass",
+      "expected_message": null,
+      "assertion": "'Create New Appointment' option is absent from the appointment dropdown",
+      "field": "appointment_id",
+      "cascade_trigger": "ticket_id",
+      "scope": null,
+      "second_session": null,
+      "business_rule": "role_definitions[6] (Limited Access) \u2014 appointment_management.appointment.create=false",
+      "test_mode": "cascade",
+      "permission_agent": "Natalie Scott",
+      "permission_element": null
+    },
+    {
+      "id": "TC041",
+      "category": "complex_state_dependencies",
+      "flow": "agent_create_report",
+      "flow_sequence": [
+        "agent_create_report"
+      ],
+      "role": "agent",
+      "description": "Auto-generation of Service Report Name by concatenating ticket number and timestamp.",
+      "inputs": {
+        "ticket_id": "0626400263"
+      },
+      "expected_outcome": "pass",
+      "expected_message": null,
+      "assertion": "Service Report Name is automatically generated by concatenating the ticket number '0626400263' and the current timestamp.",
+      "field": "name",
+      "cascade_trigger": "ticket_id",
+      "scope": null,
+      "second_session": null,
+      "business_rule": "A4",
+      "test_mode": "ui_test",
+      "permission_agent": null,
+      "permission_element": null
+    }
+  ]
+}

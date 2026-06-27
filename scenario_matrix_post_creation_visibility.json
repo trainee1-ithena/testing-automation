@@ -1,6 +1,6 @@
 {
   "flow": "post_creation_visibility",
-  "inventory_text": "A1. ticket_subject | ui_label: Ticket Subject | type: text | required: yes | constraints: none | auto_filled: no\nA2. ticket_description | ui_label: Ticket Description | type: textarea | required: no | constraints: none | auto_filled: no\nA3. due_date | ui_label: Due Date | type: date | required: no | constraints: none | auto_filled: no\nA4. priority_id | ui_label: Priority | type: select | required: yes | constraints: none | auto_filled: no\nA5. status_id | ui_label: Status | type: select | required: yes | constraints: none | auto_filled: no\nA6. dept_id | ui_label: Department | type: select | required: yes | constraints: none | auto_filled: no\nA7. service_type | ui_label: Service Type | type: select | required: no | constraints: none | auto_filled: no\nA8. accountable_staff_id | ui_label: Accountable Staff | type: select | required: no | constraints: none | auto_filled: no\nA9. assigned_staff_id | ui_label: Assigned Staff | type: select | required: no | constraints: none | auto_filled: no\n\nB1. dept_id -> service_type | EFFECT: filter | GUARD: none | REVERSAL: none\nB2. dept_id -> accountable_staff_id | EFFECT: filter | GUARD: none | REVERSAL: none\nB3. dept_id -> assigned_staff_id | EFFECT: filter | GUARD: none | REVERSAL: none\n\nC1. FIELD: ticket_number | CONDITION: {isAgent && (...) } | SHOWN TO: agent | HIDDEN FROM: customer | TYPE: role_exclusion\nC2. FIELD: user_id | CONDITION: {isAgent && (...) } | SHOWN TO: agent | HIDDEN FROM: customer | TYPE: role_exclusion\nC3. FIELD: provision_id | CONDITION: {isAgent && (...) } | SHOWN TO: agent | HIDDEN FROM: customer | TYPE: role_exclusion\n\nD1. agent CAN see the record | WHEN: they are the accountable_staff_id or assigned_staff_id\nD2. agent CAN see the record | WHEN: they are in the same department as the ticket's dept_id\n\nE1. FIELD: priority_id | SOURCE: known_entities.priorities | DISPLAY LABEL: name\nE2. FIELD: status_id | SOURCE: known_entities.statuses | DISPLAY LABEL: name\nE3. FIELD: dept_id | SOURCE: known_entities.departments | DISPLAY LABEL: name\nE4. FIELD: service_type | SOURCE: known_entities.departments.service_types | DISPLAY LABEL: name\nE5. FIELD: accountable_staff_id | SOURCE: known_entities.departments.staff | DISPLAY LABEL: name\nE6. FIELD: assigned_staff_id | SOURCE: known_entities.departments.staff | DISPLAY LABEL: name\n\nCONSTRAINT: dept_id and service_type must share the same department\nCONSTRAINT: dept_id and accountable_staff_id must share the same department\nCONSTRAINT: dept_id and assigned_staff_id must share the same department",
+  "inventory_text": "A1. customer | ui_label: Organization | type: select | required: yes | constraints: none | auto_filled: no\nA2. user | ui_label: Organization User | type: select | required: yes | constraints: none | auto_filled: no\nA3. equipment | ui_label: Unit | type: select | required: no | constraints: none | auto_filled: no\nA4. service_type | ui_label: Service Type | type: select | required: yes | constraints: none | auto_filled: yes\nA5. department | ui_label: Department | type: select | required: yes | constraints: none | auto_filled: yes\nA6. staff_accountable | ui_label: Accountable | type: select | required: no | constraints: none | auto_filled: yes\nA7. staff_assigned | ui_label: Assignee | type: select | required: no | constraints: none | auto_filled: yes\nA8. priority | ui_label: Priority | type: select | required: yes | constraints: none | auto_filled: yes\nA9. due_date | ui_label: Due Date | type: date | required: yes | constraints: none | auto_filled: yes\nA10. subject | ui_label: Subject | type: text | required: yes | constraints: maxLength 175 | auto_filled: no\nA11. description | ui_label: Description | type: textarea | required: no | constraints: none | auto_filled: no\nA12. files | ui_label: Attachment | type: file | required: no | constraints: Allowed file types: Image, PDF, Word, Excel, CSV, Eml, Easm, Mp4, Mov | auto_filled: no\n\nB1. customer -> user | EFFECT: filter | GUARD: none | REVERSAL: reset user\nB2. customer -> equipment | EFFECT: filter | GUARD: none | REVERSAL: reset equipment\nB3. service_type -> department | EFFECT: filter | GUARD: none | REVERSAL: reset department\nB4. department -> staff_accountable | EFFECT: auto-fill | GUARD: none | REVERSAL: reset staff_accountable\nB5. department -> staff_assigned | EFFECT: filter | GUARD: none | REVERSAL: reset staff_assigned\nB6. department -> due_date | EFFECT: calculate | GUARD: none | REVERSAL: reset due_date\n\nC1. FIELD: canCreateAttachments | CONDITION: !isAgent || hasPermsV2(\"ticket_management.ticket_attachments.create\", formData.department) | SHOWN TO: agents with permission | HIDDEN FROM: agents without permission | TYPE: permission_gate\n\nD1. agent CAN see the record | WHEN: staff_assigned=agent\nD2. agent CAN see the record | WHEN: staff_accountable=agent\nD3. agent CAN see the record | WHEN: created_by_staff_id=agent\nD4. agent CAN see the record | WHEN: agent is a collaborator on the ticket\nD5. agent CAN see the record | WHEN: agent is a manager/admin AND dept has ticket.view permission\n\nE1. FIELD: customer | SOURCE: known_entities.customers | DISPLAY LABEL: name\nE2. FIELD: user | SOURCE: known_entities.customers.users | DISPLAY LABEL: name | SCOPE: current_user_org\nE3. FIELD: equipment | SOURCE: known_entities.customers.equipment | DISPLAY LABEL: provision_name | SCOPE: current_user_org\nE4. FIELD: service_type | SOURCE: known_entities.departments.service_types | DISPLAY LABEL: name\nE5. FIELD: department | SOURCE: known_entities.departments | DISPLAY LABEL: name\nE6. FIELD: staff_accountable | SOURCE: known_entities.departments.staff | DISPLAY LABEL: name\nE7. FIELD: staff_assigned | SOURCE: known_entities.departments.staff | DISPLAY LABEL: name",
   "scenarios": [
     {
       "id": "TC001",
@@ -10,21 +10,24 @@
         "post_creation_visibility"
       ],
       "role": "agent",
-      "description": "Create a ticket with all required fields filled with valid values for the primary role.",
+      "description": "Create a ticket with all required fields filled with valid values.",
       "inputs": {
-        "ticket_subject": "Server Down",
-        "priority_id": "High",
-        "status_id": "Open",
-        "dept_id": "Technical Support"
+        "customer": "Acme Corp",
+        "user": "Alice Smith",
+        "subject": "Server not responding",
+        "service_type": "Breakdown Repair",
+        "department": "Technical Support"
       },
       "expected_outcome": "pass",
       "expected_message": null,
-      "assertion": "Ticket is created successfully with all required fields.",
+      "assertion": "Session B user can view the record in the UI.",
       "field": null,
       "cascade_trigger": null,
       "second_session": null,
-      "business_rule": "A1",
-      "test_mode": "multi_session"
+      "business_rule": "A1, A2, A10",
+      "test_mode": "ui",
+      "permission_agent": null,
+      "permission_element": null
     },
     {
       "id": "TC002",
@@ -34,13 +37,14 @@
         "post_creation_visibility"
       ],
       "role": "agent",
-      "description": "Verify that an agent who is the accountable staff can see the ticket record.",
+      "description": "Session B user CAN see the record when staff_assigned is the agent.",
       "inputs": {
-        "ticket_subject": "Server Down",
-        "priority_id": "High",
-        "status_id": "Open",
-        "dept_id": "Technical Support",
-        "accountable_staff_id": "John Doe"
+        "customer": "Acme Corp",
+        "user": "Alice Smith",
+        "service_type": "Breakdown Repair",
+        "department": "Technical Support",
+        "staff_assigned": "John Doe",
+        "subject": "Test Subject"
       },
       "expected_outcome": "pass",
       "expected_message": null,
@@ -52,7 +56,9 @@
         "name": "John Doe"
       },
       "business_rule": "D1",
-      "test_mode": "multi_session"
+      "test_mode": "multi_session",
+      "permission_agent": null,
+      "permission_element": null
     },
     {
       "id": "TC003",
@@ -62,12 +68,14 @@
         "post_creation_visibility"
       ],
       "role": "agent",
-      "description": "Verify that an agent who is in the same department as the ticket can see the ticket record.",
+      "description": "Session B user CAN see the record when staff_accountable is the agent.",
       "inputs": {
-        "ticket_subject": "Network Issue",
-        "priority_id": "Normal",
-        "status_id": "In Progress",
-        "dept_id": "Technical Support"
+        "customer": "Acme Corp",
+        "user": "Alice Smith",
+        "service_type": "Breakdown Repair",
+        "department": "Technical Support",
+        "staff_accountable": "John Doe",
+        "subject": "Test Subject"
       },
       "expected_outcome": "pass",
       "expected_message": null,
@@ -76,10 +84,12 @@
       "cascade_trigger": null,
       "second_session": {
         "role": "agent",
-        "name": "Liam Hughes"
+        "name": "John Doe"
       },
       "business_rule": "D2",
-      "test_mode": "multi_session"
+      "test_mode": "multi_session",
+      "permission_agent": null,
+      "permission_element": null
     },
     {
       "id": "TC004",
@@ -89,13 +99,73 @@
         "post_creation_visibility"
       ],
       "role": "agent",
-      "description": "Verify that an agent who is not the accountable staff and not in the same department cannot see the ticket record.",
+      "description": "Session B user CAN see the record when created_by_staff_id is the agent.",
       "inputs": {
-        "ticket_subject": "Power Outage",
-        "priority_id": "Low",
-        "status_id": "Closed",
-        "dept_id": "Electrical",
-        "accountable_staff_id": "Jane Smith"
+        "customer": "Acme Corp",
+        "user": "Alice Smith",
+        "service_type": "Breakdown Repair",
+        "department": "Technical Support",
+        "subject": "Test Subject"
+      },
+      "expected_outcome": "pass",
+      "expected_message": null,
+      "assertion": "Session B user can view the record in the UI.",
+      "field": null,
+      "cascade_trigger": null,
+      "second_session": {
+        "role": "agent",
+        "name": "John Doe"
+      },
+      "business_rule": "D3",
+      "test_mode": "multi_session",
+      "permission_agent": null,
+      "permission_element": null
+    },
+    {
+      "id": "TC005",
+      "category": "post_creation_visibility",
+      "flow": "post_creation_visibility",
+      "flow_sequence": [
+        "post_creation_visibility"
+      ],
+      "role": "agent",
+      "description": "Session B user CAN see the record when agent is a manager/admin AND dept has ticket.view permission.",
+      "inputs": {
+        "customer": "Acme Corp",
+        "user": "Alice Smith",
+        "service_type": "Breakdown Repair",
+        "department": "Electrical",
+        "subject": "Test Subject"
+      },
+      "expected_outcome": "pass",
+      "expected_message": null,
+      "assertion": "Session B user can view the record in the UI.",
+      "field": null,
+      "cascade_trigger": null,
+      "second_session": {
+        "role": "agent",
+        "name": "John Doe"
+      },
+      "business_rule": "D5",
+      "test_mode": "multi_session",
+      "permission_agent": null,
+      "permission_element": null
+    },
+    {
+      "id": "TC006",
+      "category": "post_creation_visibility",
+      "flow": "post_creation_visibility",
+      "flow_sequence": [
+        "post_creation_visibility"
+      ],
+      "role": "agent",
+      "description": "Session B user CANNOT see the record when conditions are not met.",
+      "inputs": {
+        "customer": "Acme Corp",
+        "user": "Alice Smith",
+        "service_type": "Breakdown Repair",
+        "department": "Technical Support",
+        "subject": "Test Subject"
       },
       "expected_outcome": "fail",
       "expected_message": null,
@@ -107,8 +177,10 @@
         "name": "Carlos Silva",
         "key": "carloss"
       },
-      "business_rule": "D1",
-      "test_mode": "multi_session"
+      "business_rule": "D1-D5",
+      "test_mode": "multi_session",
+      "permission_agent": null,
+      "permission_element": null
     }
   ]
 }

@@ -1,0 +1,138 @@
+════════════════════════════════════════════════════════════
+FORM-SPECIFIC SCENARIO CATEGORIES — AGENT CREATE TICKET
+════════════════════════════════════════════════════════════
+The following categories supplement the standard scenario rules above.
+Generate them exactly like any other category — same output schema, same VISIBILITY GATE rule.
+
+role_permission_access
+  Tests whether each dept role's permissions produce the correct UI behaviour for this form's primary action.
+
+  ── PERMISSION MODEL ─────────────────────────────────────────────────────────
+  Ticket creation permission is per department. An agent may hold different roles across
+  departments, so their ticket.create access can vary per department. Three types exist:
+
+    ALL ACCESS   — can create tickets in every department they belong to
+    LIMITED ACCESS — cannot create tickets in any department they belong to
+    MIXED ACCESS — can create in some departments but not others
+
+  "New Case" button rule:
+    ALL ACCESS or MIXED ACCESS (at least one dept with create=true) → button IS visible
+    LIMITED ACCESS (create=false in every dept) → button is NOT visible
+
+  ── STEP 1 — find the permission ─────────────────────────────────────────────
+  Read the source files to find:
+    a. Which key path inside a dept role's permissions JSON gates ticket creation.
+       DO NOT assume a key name — search the source for permission checks on the form
+       entry point and submit path.
+    b. The "New Case" button on the LIST/INDEX page that is conditionally shown or hidden.
+       Do NOT use the submit/save button inside the form.
+
+  ── STEP 2 — classify agents and generate scenarios ──────────────────────────
+  Read test_data.known_entities.staff_access_summary. Each entry has:
+    name                 — staff member's name
+    access_type          — "ALL", "LIMITED", or "MIXED" (pre-computed across ALL their departments)
+    depts_with_create    — departments where they CAN create tickets
+    depts_without_create — departments where they CANNOT
+
+  Do NOT re-derive classification by scanning departments[*].staff — that sample
+  only covers 2 departments and will mis-classify agents who belong to more.
+
+  For ALL ACCESS and LIMITED ACCESS: one scenario per distinct role_id.
+    permission_agent   : exact staff name
+    permission_element : New Case
+    description        : include "All Access" or "Limited Access" label, e.g.
+                         "Verify that a staff member with 'All Access' (service_manager)
+                         can see the 'New Case' button."
+    assertion          : button visible or absent
+    test_mode          : "permission"
+    inputs             : {}
+    field              : null
+
+  For MIXED ACCESS agents: generate TWO scenarios —
+
+    Scenario M1 — button is visible (permission test):
+      permission_element : the "New Case" button text
+      description        : "Mixed-access agent (<name>) has create permission in at least
+                           one department — 'New Case' button is visible."
+      assertion          : button is visible
+      test_mode          : "permission"
+      inputs             : {}
+      field              : null
+
+    Scenario M2 — allowed department is visible in the dropdown:
+      Pick ONE department from depts_with_create in their staff_access_summary entry.
+      Find an active service_type that department handles in known_entities.departments.
+      Open the form as this agent, select that
+      service_type, and verify the allowed department appears in the Department dropdown.
+      category           : active_inactive_filter
+      test_mode          : cascade
+      permission_agent   : <same agent name>
+      field              : department
+      cascade_trigger    : service_type
+      inputs             : { service_type: <active service_type from the allowed dept> }
+      assertion          : "<dept name> is visible in the department dropdown"
+      description        : "Mixed-access agent (<name>): department with create access is
+                           visible in the dropdown when its service type is selected."
+
+  All scenarios: expected_outcome "pass", business_rule "role_definitions[<id>] (<role_name>)
+  — <permission_key>=<value>"
+
+post_creation_visibility
+  Per D<n>, generate ALL:
+    • Positive: session B user CAN see the record -> expected_outcome: "pass", assertion: "Session B user can view the record in the UI."
+    • Negative: session B user CANNOT see the record -> expected_outcome: "fail", assertion: "Session B user cannot see the record in the UI."
+  Cover this for every possible permutation so all conditions are tested (e. if user A and B can see something but user C cannot all three conditions should be checked.)
+  Session A inputs must configure the record so the D<n> condition is met for session B. Deduce the required fields from the D<n> rule.
+  test_mode: "multi_session"
+  second_session: { "role": "...", "name": "..." } using real names from known_entities.
+
+  CRITICAL — INPUTS MUST ESTABLISH THE D-RULE CONDITION: inputs must include ALL fields that configure the ticket so the D-rule condition holds for session B.
+    - If the D-rule WHEN says "staff_assigned=agent": add staff_assigned: second_session.name to inputs.
+    - If the D-rule WHEN says "staff_accountable=agent": add staff_accountable: second_session.name to inputs.
+    - If the D-rule WHEN says "dept has ticket.view permission": include department in inputs with a dept where second_session has ticket.view=true; include service_type to trigger the department cascade.
+    - Always include service_type in inputs for all post_creation_visibility scenarios so the department cascade resolves and staff dropdowns are populated.
+
+  CRITICAL — AGENT SELECTION FOR COMPOUND D-RULES: When the D-rule WHEN contains multiple conditions (joined by AND), the second_session agent MUST satisfy EVERY condition simultaneously. Check role_definitions carefully:
+    - For a rule like "staff is manager/admin AND dept has ticket.view permission": the agent's role must have staff_type of 'admin', 'manager', or 'lead' (NOT 'service_manager' or 'service_engineer') AND ticket.view=true in role_definitions. Search role_definitions for a role where BOTH staff_type IN ('admin','manager','lead') AND ticket.view=true, then find a staff member in known_entities.departments[*].staff with that role_id.
+    - For the NEGATIVE scenario (agent CANNOT see): pick an agent who fails at least one required condition — e.g. staff_type='service_manager' or 'service_engineer' (which does NOT qualify as manager/admin) even if they have ticket.view=true, OR an agent with ticket.view=false.
+
+active_inactive_filter
+  Per F<n>:
+
+  ACTIVE/INACTIVE FILTER (FILTER is NOT "role_unrestricted" and NOT "ispublic"):
+  1. Active item is present — find ONE specific named active item in known_entities:
+     assertion: "<exact name of active item> is visible in the <field_name> dropdown"
+     expected_outcome: "pass"
+  2. Inactive item is absent — find ONE specific named inactive item in known_entities.
+     If NO inactive item exists in known_entities for this field, SKIP this scenario entirely.
+     assertion: "<exact name of inactive item> is absent from the <field_name> dropdown"
+     expected_outcome: "pass"
+
+  PUBLIC/PRIVATE FILTER (FILTER contains "ispublic"):
+  1. Public item is present — find ONE specific named public item (ispublic=1) in known_entities:
+     assertion: "<exact name of public item> is visible in the <field_name> dropdown"
+     expected_outcome: "pass"
+  2. Private item is absent — find ONE specific named private item (ispublic=0) in known_entities.
+     If NO private item exists in known_entities for this field, SKIP this scenario entirely.
+     assertion: "<exact name of private item> is absent from the <field_name> dropdown"
+     expected_outcome: "pass"
+
+  ROLE_UNRESTRICTED (FILTER is "role_unrestricted"):
+  Find ONE specific named private item (ispublic=0) in known_entities.
+  If NO private item exists in known_entities for this field, SKIP this scenario entirely.
+  1. Private item is visible to this role:
+     assertion: "<exact name of private item> is visible in the <field_name> dropdown"
+     expected_outcome: "pass"
+
+  CRITICAL ASSERTION FORMAT — applies to all cases above:
+  - Use the EXACT display name of ONE specific item from known_entities. Never name multiple items.
+  - "is visible in the" and "is absent from the" are the only two allowed formats.
+  - If you cannot find a real named item, SKIP the scenario. Never write a vague or invented
+    assertion — execute.py will misparse it and the test will fail.
+
+  For both cases:
+  If this dropdown only populates after another field is set, include that trigger field and
+  a value from known_entities in inputs. Otherwise inputs: {}.
+  cascade_trigger: the trigger field name, or null if the dropdown loads independently.
+  test_mode: "cascade"
+  field: F<n> field_name

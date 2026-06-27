@@ -1,24 +1,26 @@
-A3. equipment | ui_label: Provision Equipment | type: select | required: no | constraints: none | auto_filled: yes
+A1. subject | ui_label: Subject | type: text | required: yes | constraints: maxLength 175 | auto_filled: no
+A2. description | ui_label: Description | type: textarea | required: no | constraints: none | auto_filled: no
+A3. equipment | ui_label: Unit | type: select | required: no | constraints: none | auto_filled: yes
 A4. service_type | ui_label: Service Type | type: select | required: yes | constraints: none | auto_filled: yes
 A5. priority | ui_label: Priority | type: select | required: yes | constraints: none | auto_filled: yes
-A6. subject | ui_label: Subject | type: text | required: yes | constraints: maxLength 175 | auto_filled: yes
-A7. description | ui_label: Description | type: textarea | required: no | constraints: none | auto_filled: yes
-A8. files | ui_label: Attachment | type: file | required: no | constraints: Allowed file types: Image, PDF, Word, Excel, CSV, Eml, Easm, Mp4, Mov | auto_filled: no
+A6. files | ui_label: Attachment | type: file | required: no | constraints: Allowed file types: Image, PDF, Word, Excel, CSV, Eml, Easm, Mp4, Mov | auto_filled: no
 
-B4. equipment -> service_type | EFFECT: filter | GUARD: none | REVERSAL: reset service_type
+B2. equipment -> service_type | EFFECT: filter | GUARD: formData.equipment | REVERSAL: reset service_type if no longer valid
 
-C1. FIELD: department | CONDITION: {isAgent && (...)} | SHOWN TO: agent | HIDDEN FROM: customer | TYPE: role_exclusion
-C2. FIELD: staff_accountable | CONDITION: {isAgent && (...)} | SHOWN TO: agent | HIDDEN FROM: customer | TYPE: role_exclusion
-C3. FIELD: staff_assigned | CONDITION: {isAgent && (...)} | SHOWN TO: agent | HIDDEN FROM: customer | TYPE: role_exclusion
-C4. FIELD: due_date | CONDITION: {isAgent && (...)} | SHOWN TO: agent | HIDDEN FROM: customer | TYPE: role_exclusion
+C1. FIELD: customer | CONDITION: {isAgent && (...)} | SHOWN TO: agent | HIDDEN FROM: customer | TYPE: role_exclusion
+C2. FIELD: user | CONDITION: {isAgent && (...)} | SHOWN TO: agent | HIDDEN FROM: customer | TYPE: role_exclusion
+C3. FIELD: department | CONDITION: {isAgent && (...)} | SHOWN TO: agent | HIDDEN FROM: customer | TYPE: role_exclusion
+C4. FIELD: staff_accountable | CONDITION: {isAgent && (...)} | SHOWN TO: agent | HIDDEN FROM: customer | TYPE: role_exclusion
+C5. FIELD: staff_assigned | CONDITION: {isAgent && (...)} | SHOWN TO: agent | HIDDEN FROM: customer | TYPE: role_exclusion
+C6. FIELD: due_date | CONDITION: {isAgent && (...)} | SHOWN TO: agent | HIDDEN FROM: customer | TYPE: role_exclusion
 
 D1. customer CAN see the record | WHEN: they are the ticket owner or have visibility to the user
-D2. agent CAN see the record | WHEN: they are assigned, accountable, or have department access
+D2. customer CANNOT see the record | WHEN: they are not the ticket owner and do not have visibility to the user
 
-E3. FIELD: equipment | SOURCE: known_entities.customers[].equipment | DISPLAY LABEL: provision_name
-E4. FIELD: service_type | SOURCE: known_entities.departments[].service_types | DISPLAY LABEL: name
-E5. FIELD: priority | SOURCE: static | DISPLAY LABEL: label
+E1. FIELD: equipment | SOURCE: known_entities.customers.equipment | DISPLAY LABEL: provision_name | SCOPE: current_user_org
+E2. FIELD: service_type | SOURCE: known_entities.departments.service_types | DISPLAY LABEL: name | SCOPE: current_user_org
+E3. FIELD: priority | SOURCE: ticketsService.fetchTicketPrioritiesService | DISPLAY LABEL: label | SCOPE: none
 
-# --- HEURISTIC INJECTED ROLE EXCLUSIONS ---
-C5. FIELD: customer | CONDITION: Heuristic JSX Match | SHOWN TO: other | HIDDEN FROM: customer | TYPE: role_exclusion
-C6. FIELD: user | CONDITION: Heuristic JSX Match | SHOWN TO: other | HIDDEN FROM: customer | TYPE: role_exclusion
+F1. FIELD: equipment | FILTER: equipment.status_id !== 0 && equipment.deletedAt === null
+F2. FIELD: service_type | FILTER: ispublic: true
+F3. FIELD: service_type | FILTER: role_unrestricted

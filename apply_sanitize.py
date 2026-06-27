@@ -37,7 +37,9 @@ def main():
     )
 
     # Enforce that inputs are consistent with each scenario's business_rule + expected_outcome
-    matrix["scenarios"] = sanitize_multi_session_inputs(matrix["scenarios"], entities)
+    matrix["scenarios"] = sanitize_multi_session_inputs(
+        matrix["scenarios"], entities, matrix["inventory_text"]
+    )
 
     for s in matrix["scenarios"]:
         sid  = s["id"]

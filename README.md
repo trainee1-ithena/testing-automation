@@ -137,29 +137,12 @@ $env:PYTHONUTF8 = "1"
 The first time you run a flow, you need to record the happy-path interaction manually (Step 3 below). After that, the whole pipeline can run unattended.
 
 ```powershell
-# Step 1–2: extract context + generate scenario matrix
-python testGen/pipeline.py --flow customer_create_ticket --only extract generate sanitize
 
-# Step 3: record (interactive — see Recording section below)
+# Step 1: record (interactive — see Recording section below)
 python testGen/record.py --record customer_create_ticket
 
-# Step 4–6: build base script, execute, report
-python testGen/pipeline.py --flow customer_create_ticket --skip extract generate sanitize
-```
-
-### Full pipeline after re-recording
-
-If you re-record a flow (e.g. the form changed), rebuild and re-run without regenerating the scenario matrix:
-
-```powershell
-python testGen/record.py --record customer_create_ticket
-python testGen/pipeline.py --flow customer_create_ticket --only build execute report
-```
-
-### Full pipeline including scenario regeneration
-
-```powershell
-python testGen/pipeline.py --flow customer_create_ticket
+# Step 2: run the entire pipeline
+python testGen/pipeline.py --flow customer_create_ticket 
 ```
 
 Available flows: `customer_create_ticket`, `agent_create_ticket`, `post_creation_visibility`
@@ -170,25 +153,8 @@ Available flows: `customer_create_ticket`, `agent_create_ticket`, `post_creation
 
 Recording captures a single happy-path interaction using Playwright Codegen. It only needs to be done once per flow (or when the form changes significantly).
 
-### Step 1 — Save a browser session
 
-Before recording, you need a saved browser session so codegen starts already logged in.
-
-```powershell
-# For customer flow
-python -m playwright codegen --save-storage "testGen/storage_states/session_customer.json" http://localhost:3000/login
-```
-
-A browser opens. **Log in as the customer user**, then close the browser. The session is saved.
-
-```powershell
-# For agent flow
-python -m playwright codegen --save-storage "testGen/storage_states/session_agent.json" http://localhost:3000/se-login
-```
-
-Log in as the agent user, then close.
-
-### Step 2 — Run the recorder
+### Step 1 — Run the recorder
 
 ```powershell
 python testGen/record.py --record customer_create_ticket
@@ -204,7 +170,7 @@ A browser opens at the form start page. You are already logged in.
 
 The raw recording is saved to `testGen/base_test_customer_create_ticket_recorded.py`.
 
-### Step 3 — Build the parameterised base script
+### Step 2 — Build the parameterised base script
 
 ```powershell
 python testGen/record.py --build customer_create_ticket

@@ -7,8 +7,10 @@
     "invalid_value",
     "cascade_dependency",
     "role_field_visibility",
-    "ui_capability"
+    "ui_capability",
+    "active_inactive_filter"
   ],
+  "primary_role": "",
   "files_manifest": [
     "CreateTicketForm.js",
     "AuthContext.js",
@@ -20,6 +22,7 @@
     "routingTagsService.js",
     "ticket.route.js",
     "ticket.controller.js",
+    "service_type.controller.js",
     "ticketAccessUtil.js",
     "ticketUtil.js",
     "slaDueDateUtils.js",
@@ -54,7 +57,8 @@
       "ticket.route.js": "const express = require(\"express\");\nconst router = express.Router();\nconst asyncHandler = require(\"../utilities/asyncHandler\");\nconst {\n\tgetAllTickets,\n\tsearchTickets,\n\tgetTicketsByStaff,\n\tcreateTicket,\n\tupdateTicket,\n\tchangeTicketStatus,\n\tchangeTicketPriority,\n\tchangeTicketDueDate,\n\tchangeTicketCreatedDate,\n\tchangeTicketAssignment,\n\tchangeTicketAccountable,\n\tcreateThread,\n\taddTicketItem,\n\tdeleteTicketItem,\n\tupdateTicketItem,\n\tgetTicketByTicketIdOrNumber,\n\tgetTicketsByUser,\n\tgetDocumentsByTickets,\n\tgenerateServicePDF,\n\tgetThreadsByTicketId,\n\tgetThreadsAndEventsByTicketId,\n\tchangeTicketDepartment,\n\tchangeTicketServiceType,\n\tgetDocumentsByTicketId,\n\tgetUserStaffSpecificTickets,\n\tgeTicketsByProvisionID,\n\tgetAgentsforTicketCollaborator,\n\tgetAgentsForTicketAssigneeAccountable,\n\tchangeTicketOwner,\n\tgetTicketStatuses,\n\tgetTicketPriorities,\n\tgetUserStaffSpecificTicketsV2,\n\tgetUserStaffSpecificTicketsV3, // V3 unified API\n\tdeleteTicket,\n\tgetUserStaffSpecificTicketsV4,\n\tcalculateDueDateByDepartment,\n\tdeleteTicketAttachment,\n\tconvertTicketAttachmentVisibility,\n} = require(\"../controllers/ticket.controller\");\nconst {\n\tlistTicketLinkTypes,\n\tlistTicketLinks,\n\tcreateLink,\n\tdeleteLink,\n\tsearchLinkCandidates,\n} = require(\"../controllers/ticket_link.controller\");\nconst { uploadMultipleWithRelativePath, uploadMixedFilesWithRelativePath } = require(\"../utilities/multerUtil\");\n\nrouter.post(\"/list\", asyncHandler(getAllTickets));\n// Note: ticket threads with `message_type: \"internal\"` are hidden for customer users and visible to staff (see ticket.controller).\nrouter.post(\"/by-id\", asyncHandler(getTicketByTicketIdOrNumber));\nrouter.post(\"/by-provision-id\", asyncHandler(geTicketsByProvisionID));\nrouter.post(\"/by-number\", asyncHandler(getTicketByTicketIdOrNumber));\nrouter.post(\"/search\", asyncHandler(searchTickets));\nrouter.post(\"/by-staff\", asyncHandler(getTicketsByStaff));\nrouter.post(\"/by-user\", asyncHandler(getTicketsByUser));\nrouter.post(\"/by-user-staff\", asyncHandler(getUserStaffSpecificTickets));\nrouter.post(\"/v2/by-user-staff\", asyncHandler(getUserStaffSpecificTicketsV2));\n// V3 - Unified lightweight API for Mobile & Web\nrouter.post(\"/v3/list\", asyncHandler(getUserStaffSpecificTicketsV3));\nrouter.post(\"/v4/list\", asyncHandler(getUserStaffSpecificTicketsV4));\n\n// router.post(\"/create\", uploadMultipleWithRelativePath(\"files\", 10, null, \"tickets\"), createTicket); // OG\n\n// Parameters: (ticketFieldName, customFormFieldPrefix, maxTicketFiles, maxFormFiles, allowedTypes, maxSizeMB, subfolder)\nrouter.post(\"/create\", uploadMixedFilesWithRelativePath(\"files\", \"custom_form_files\", 10, 5, null, 20, \"tickets\"), asyncHandler(createTicket));\n// router.post(\"/update\", updateTicket); // OG\nrouter.post(\"/update\", uploadMixedFilesWithRelativePath(\"files\", \"custom_form_files\", 10, 5, null, 20, \"tickets\"), asyncHandler(updateTicket));\n\nrouter.delete(\"/delete/:ticket_id\", asyncHandler(deleteTicket));\n\nrouter.post(\"/documents/list\", asyncHandler(getDocumentsByTickets));\nrouter.post(\"/documents/list/by-ticket-id\", asyncHandler(getDocumentsByTicketId));\n\nrouter.post(\"/status/update\", asyncHandler(changeTicketStatus));\nrouter.get(\"/status/list\", asyncHandler(getTicketStatuses));\nrouter.get(\"/priority/list\", asyncHandler(getTicketPriorities));\nrouter.post(\"/priority/update\", asyncHandler(changeTicketPriority));\nrouter.post(\"/due-date/update\", asyncHandler(changeTicketDueDate));\nrouter.post(\"/created-date/update\", asyncHandler(changeTicketCreatedDate));\nrouter.post(\"/assignment/update\", asyncHandler(changeTicketAssignment));\nrouter.post(\"/accountable/update\", asyncHandler(changeTicketAccountable));\nrouter.post(\"/owner/update\", asyncHandler(changeTicketOwner));\n\n// Thread creation with video support (20MB max file size)\n// Parameters: (fieldName, maxCount, allowedTypes, maxSizeMB, subfolder)\nrouter.post(\"/threads/create\", uploadMultipleWithRelativePath(\"files\", 15, null, 20, \"tickets\"), asyncHandler(createThread));\nrouter.post(\"/threads/get-by-ticket-id\", asyncHandler(getThreadsByTicketId));\nrouter.post(\"/threads/events/get-by-ticket-id\", asyncHandler(getThreadsAndEventsByTicketId));\nrouter.post(\"/attachments/delete\", asyncHandler(deleteTicketAttachment));\nrouter.post(\"/attachments/visibility/update\", asyncHandler(convertTicketAttachmentVisibility));\n\nrouter.post(\"/items/add\", asyncHandler(addTicketItem));\nrouter.post(\"/items/update\", asyncHandler(updateTicketItem));\nrouter.post(\"/items/delete\", asyncHandler(deleteTicketItem));\n\nrouter.post(\"/service/generate-pdf\", asyncHandler(generateServicePDF));\nrouter.post(\"/department/update\", asyncHandler(changeTicketDepartment));\nrouter.post(\"/service-type/update\", asyncHandler(changeTicketServiceType));\n\nrouter.post(\"/collaborators/options/list\", asyncHandler(getAgentsforTicketCollaborator));\nrouter.post(\"/assignee-and-accountables/options/list\", asyncHandler(getAgentsForTicketAssigneeAccountable));\nrouter.post(\"/calculate-due-date\", asyncHandler(calculateDueDateByDepartment));\n\n// Ticket Links (Jira-style)\nrouter.get(\"/link-types/list\", asyncHandler(listTicketLinkTypes));\nrouter.post(\"/links/list\", asyncHandler(listTicketLinks));\nrouter.post(\"/links/create\", asyncHandler(createLink));\nrouter.delete(\"/links/delete/:link_id\", asyncHandler(deleteLink));\nrouter.post(\"/links/search-candidates\", asyncHandler(searchLinkCandidates));\n\nmodule.exports = router;"
     },
     "controllers": {
-      "ticket.controller.js": "const { models, sequelize } = require(\"../models\");\nconst itemsModel = require(\"../models/items.model\");\nconst { formatDatePart, deepSerialize, handleControllerError } = require(\"../utilities/globalUtil\");\nconst { Op } = require(\"sequelize\");\nconst { enrichOrgEquipment, getEquipmentByIdHelper, fetchEquipmentDocsRecursive } = require(\"./equipment.controller\");\nconst { sendReply, sendEmail } = require(\"../utilities/emailUtil\");\nconst config = require(\"../config/config\");\nconst { resolveAccount, fetchStaffPerms } = require(\"../utilities/authUtil\");\nconst moment = require(\"moment-timezone\");\nconst { extractAttachmentsByField } = require(\"../utilities/customFormAttachmentUtil\");\nconst {\n\tgenerateAndSavePDF,\n\tgetTicketByIdOrNumberHelper,\n\tgenerateTicketNumber,\n\tgetTicketDetails,\n\tgetTicketStatusesHelper,\n\tgetTicketPrioritiesHelper,\n\tgetListTicketDetails,\n\tgetLoggedInUserTicketFilters,\n\tgetListTicketDetailsv4,\n\tgetAllowedDeptIds,\n\tgetListTicketDetailsSummary, // V3 function\n\tisStaffManagerOrAdmin,\n\tgetStaffInvolvedTicketIds,\n\thasPermsV2Backend,\n} = require(\"../utilities/ticketUtil\");\nconst { handleNewEvent } = require(\"../utilities/eventUtil\");\nconst { addAttachment, deleteAttachmentIfUnlinked } = require(\"../utilities/attachment.util\");\nconst { calculateTicketDueDate, resolveSlaForTicket } = require(\"../utilities/slaDueDateUtils\");\nconst analytics = require(\"../utilities/analytics\");\n// [...] (sliced at 'createTicket', line 975)\n};\n\nconst createTicket = async (req, res) => {\n\tconst formData = { ...req.body };\n\tconsole.log(\"createTicket:\", formData);\n\tconst numericFields = [\n\t\t\"customer\",\n\t\t\"user\",\n\t\t\"equipment\",\n\t\t\"priority\",\n\t\t\"department\",\n\t\t\"service_type\",\n\t\t\"staff_accountable\",\n\t\t\"staff_assigned\",\n\t];\n\tnumericFields.forEach((field) => {\n\t\tif (formData[field] && !isNaN(formData[field])) {\n\t\t\tformData[field] = parseInt(formData[field], 10);\n\t\t}\n\t});\n\ttry {\n\t\tconsole.log(JSON.stringify(req?.files?.files))\n\t\tconst createdTicket = await createTicketHelper({\n\t\t\tformData,\n\t\t\tip_address: req.ip,\n\t\t\tcreatedBy: req.user,\n\t\t\tfiles: req?.files?.files || [],\n\t\t\tcustom_form_files: req?.files?.custom_form_files || [],\n\t\t});\n\n\t\treturn res.json({\n\t\t\tstatus: true,\n\t\t\tmessage: `The ${getTicketNamingConvention()} has been created successfully`,\n\t\t\tdata: createdTicket,\n\t\t});\n\t} catch (error) {\n\t\tconsole.error(\"Error creating ticket:\", error);\n\t\treturn res.status(500).json({\n\t\t\tstatus: false,\n\t\t\tmessage: \"Error creating ticket\",\n\t\t\terror: error.message,\n\t\t});\n\t}\n};\n\nconst createTicketsService = async (formData) => {\n\ttry {\n\t\tawait createTicket({ formData });\n\t} catch (error) {\n\t\tconsole.error(\"Error creating tickets:\", error);\n\t}\n};\n\nconst createThreadAttachments = async (thread_id, files, transaction) => {\n\tif (!files || files.length === 0) return;\n\tconst attachmentIds = [];\n\tfor (const file of files) {\n\t\ttry {\n\t\t\t// Validate file object\n\t\t\tif (!file || (!file.originalname && file?.attachment_type !== \"URL\")) {\n\t\t\t\tconsole.error('Invalid file object:', file);\n\t\t\t\tcontinue; // Skip invalid files\n\t\t\t}\n\n\t\t\tif (file?.attachment_type === \"URL\") {\n\t\t\t\tconst uploadedAttachment = await addAttachment(\n\t\t\t\t\tfile,\n\t\t\t\t\t{\n\t\t\t\t\t\tobject_type: \"THD\",\n\t\t\t\t\t\tobject_id: thread_id,\n\t\t\t\t\t\tattachment_type: \"URL\",\n\t\t\t\t\t\ttitle: file.title || file.originalname || \"External Attachment\",\n\t\t\t\t\t\turl: file.url || \"\",\n\t\t\t\t\t},\n\t\t\t\t\ttransaction\n\t\t\t\t);\n\t\t\t\tattachmentIds.push({\n\t\t\t\t\tthread_id,\n\t\t\t\t\tattachment_id: uploadedAttachment.id,\n\t\t\t\t});\n\t\t\t\tcontinue;\n\t\t\t}\n\n\t\t\t// Determine if it's a video or regular file\n\t\t\tconst isVideo = file.mimetype && ALLOWED_VIDEO_TYPES.includes(file.mimetype);\n\t\t\t\n\t\t\t// Validate video size\n\t\t\tif (isVideo && file.size > MAX_VIDEO_SIZE) {\n\t\t\t\tthrow new Error(`Video file \"${file.originalname}\" exceeds maximum size of 20MB`);\n\t\t\t}\n\t\t\t\n\t\t\t// Ensure file has required properties for addAttachment\n\t\t\tconst attachmentData = {\n\t\t\t\tobject_type: \"THD\",\n\t\t\t\tobject_id: thread_id,\n\t\t\t\tattachment_type: isVideo ? \"VIDEO\" : \"FILE\",\n\t\t\t\ttitle: file.title || file.originalname || \"Untitled\",\n\t\t\t\turl: file.urlPath || \"\", // Use urlPath from multer middleware\n\t\t\t};\n\t\tconst uploadedAttachment = await addAttachment(\n\t\t\tfile,\n\t\t\tattachmentData,\n\t\t\ttransaction\n\t\t);\n\n\t\tattachmentIds.push({\n\t\t\tthread_id,\n\t\t\tattachment_id: uploadedAttachment.id,\n\t\t});\n\t} catch (fileError) {\n\t\tconsole.error(`Error processing file ${file?.originalname}:`, fileError);\n\t\tthrow fileError; \n\t}\n}\n\tif (attachmentIds.length > 0) {\n\t\tawait models.thread_attachment.bulkCreate(attachmentIds, {\n\t\t\ttransaction,\n\t\t});\n\t}\n\t\n\treturn attachmentIds;\n};\n\nconst createThreadHelper = async ({\n\tticket_id,\n\tticket_number,\n\tmessage,\n\towner,\n\towner_id,\n\ttype = \"reply\",\n\tfiles = [],\n\tvideos = [], // New parameter for videos\n\tsource = \"web\",\n\temailData = null,\n\tlinkToTicketAttachments = false,\n\tip_address,\n\tskipNotifyEvent = false,\n\tskipSocketBroadcast = false,\n}) => {\n\tlet transaction;\n\ttry {\n\t\ttransaction = await sequelize.transaction();\n\n\t\tconst whereCondition = ticket_id ? { ticket_id } : { ticket_number };\n\t\tconsole.log(\"Where Condition:\", whereCondition);\n\t\tconst ticket = await models.ticket.findOne({\n\t\t\twhere: whereCondition,\n\t\t\tinclude: [{ model: models.ticket_status, as: \"ticket_status\" }],\n\t\t\ttransaction,\n\t\t});"
+      "ticket.controller.js": "const { models, sequelize } = require(\"../models\");\nconst itemsModel = require(\"../models/items.model\");\nconst { formatDatePart, deepSerialize, handleControllerError } = require(\"../utilities/globalUtil\");\nconst { Op } = require(\"sequelize\");\nconst { enrichOrgEquipment, getEquipmentByIdHelper, fetchEquipmentDocsRecursive } = require(\"./equipment.controller\");\nconst { sendReply, sendEmail } = require(\"../utilities/emailUtil\");\nconst config = require(\"../config/config\");\nconst { resolveAccount, fetchStaffPerms } = require(\"../utilities/authUtil\");\nconst moment = require(\"moment-timezone\");\nconst { extractAttachmentsByField } = require(\"../utilities/customFormAttachmentUtil\");\nconst {\n\tgenerateAndSavePDF,\n\tgetTicketByIdOrNumberHelper,\n\tgenerateTicketNumber,\n\tgetTicketDetails,\n\tgetTicketStatusesHelper,\n\tgetTicketPrioritiesHelper,\n\tgetListTicketDetails,\n\tgetLoggedInUserTicketFilters,\n\tgetListTicketDetailsv4,\n\tgetAllowedDeptIds,\n\tgetListTicketDetailsSummary, // V3 function\n\tisStaffManagerOrAdmin,\n\tgetStaffInvolvedTicketIds,\n\thasPermsV2Backend,\n} = require(\"../utilities/ticketUtil\");\nconst { handleNewEvent } = require(\"../utilities/eventUtil\");\nconst { addAttachment, deleteAttachmentIfUnlinked } = require(\"../utilities/attachment.util\");\nconst { calculateTicketDueDate, resolveSlaForTicket } = require(\"../utilities/slaDueDateUtils\");\nconst analytics = require(\"../utilities/analytics\");\n// [...] (sliced at 'createTicket', line 975)\n};\n\nconst createTicket = async (req, res) => {\n\tconst formData = { ...req.body };\n\tconsole.log(\"createTicket:\", formData);\n\tconst numericFields = [\n\t\t\"customer\",\n\t\t\"user\",\n\t\t\"equipment\",\n\t\t\"priority\",\n\t\t\"department\",\n\t\t\"service_type\",\n\t\t\"staff_accountable\",\n\t\t\"staff_assigned\",\n\t];\n\tnumericFields.forEach((field) => {\n\t\tif (formData[field] && !isNaN(formData[field])) {\n\t\t\tformData[field] = parseInt(formData[field], 10);\n\t\t}\n\t});\n\ttry {\n\t\tconsole.log(JSON.stringify(req?.files?.files))\n\t\tconst createdTicket = await createTicketHelper({\n\t\t\tformData,\n\t\t\tip_address: req.ip,\n\t\t\tcreatedBy: req.user,\n\t\t\tfiles: req?.files?.files || [],\n\t\t\tcustom_form_files: req?.files?.custom_form_files || [],\n\t\t});\n\n\t\treturn res.json({\n\t\t\tstatus: true,\n\t\t\tmessage: `The ${getTicketNamingConvention()} has been created successfully`,\n\t\t\tdata: createdTicket,\n\t\t});\n\t} catch (error) {\n\t\tconsole.error(\"Error creating ticket:\", error);\n\t\treturn res.status(500).json({\n\t\t\tstatus: false,\n\t\t\tmessage: \"Error creating ticket\",\n\t\t\terror: error.message,\n\t\t});\n\t}\n};\n\nconst createTicketsService = async (formData) => {\n\ttry {\n\t\tawait createTicket({ formData });\n\t} catch (error) {\n\t\tconsole.error(\"Error creating tickets:\", error);\n\t}\n};\n\nconst createThreadAttachments = async (thread_id, files, transaction) => {\n\tif (!files || files.length === 0) return;\n\tconst attachmentIds = [];\n\tfor (const file of files) {\n\t\ttry {\n\t\t\t// Validate file object\n\t\t\tif (!file || (!file.originalname && file?.attachment_type !== \"URL\")) {\n\t\t\t\tconsole.error('Invalid file object:', file);\n\t\t\t\tcontinue; // Skip invalid files\n\t\t\t}\n\n\t\t\tif (file?.attachment_type === \"URL\") {\n\t\t\t\tconst uploadedAttachment = await addAttachment(\n\t\t\t\t\tfile,\n\t\t\t\t\t{\n\t\t\t\t\t\tobject_type: \"THD\",\n\t\t\t\t\t\tobject_id: thread_id,\n\t\t\t\t\t\tattachment_type: \"URL\",\n\t\t\t\t\t\ttitle: file.title || file.originalname || \"External Attachment\",\n\t\t\t\t\t\turl: file.url || \"\",\n\t\t\t\t\t},\n\t\t\t\t\ttransaction\n\t\t\t\t);\n\t\t\t\tattachmentIds.push({\n\t\t\t\t\tthread_id,\n\t\t\t\t\tattachment_id: uploadedAttachment.id,\n\t\t\t\t});\n\t\t\t\tcontinue;\n\t\t\t}\n\n\t\t\t// Determine if it's a video or regular file\n\t\t\tconst isVideo = file.mimetype && ALLOWED_VIDEO_TYPES.includes(file.mimetype);\n\t\t\t\n\t\t\t// Validate video size\n\t\t\tif (isVideo && file.size > MAX_VIDEO_SIZE) {\n\t\t\t\tthrow new Error(`Video file \"${file.originalname}\" exceeds maximum size of 20MB`);\n\t\t\t}\n\t\t\t\n\t\t\t// Ensure file has required properties for addAttachment\n\t\t\tconst attachmentData = {\n\t\t\t\tobject_type: \"THD\",\n\t\t\t\tobject_id: thread_id,\n\t\t\t\tattachment_type: isVideo ? \"VIDEO\" : \"FILE\",\n\t\t\t\ttitle: file.title || file.originalname || \"Untitled\",\n\t\t\t\turl: file.urlPath || \"\", // Use urlPath from multer middleware\n\t\t\t};\n\t\tconst uploadedAttachment = await addAttachment(\n\t\t\tfile,\n\t\t\tattachmentData,\n\t\t\ttransaction\n\t\t);\n\n\t\tattachmentIds.push({\n\t\t\tthread_id,\n\t\t\tattachment_id: uploadedAttachment.id,\n\t\t});\n\t} catch (fileError) {\n\t\tconsole.error(`Error processing file ${file?.originalname}:`, fileError);\n\t\tthrow fileError; \n\t}\n}\n\tif (attachmentIds.length > 0) {\n\t\tawait models.thread_attachment.bulkCreate(attachmentIds, {\n\t\t\ttransaction,\n\t\t});\n\t}\n\t\n\treturn attachmentIds;\n};\n\nconst createThreadHelper = async ({\n\tticket_id,\n\tticket_number,\n\tmessage,\n\towner,\n\towner_id,\n\ttype = \"reply\",\n\tfiles = [],\n\tvideos = [], // New parameter for videos\n\tsource = \"web\",\n\temailData = null,\n\tlinkToTicketAttachments = false,\n\tip_address,\n\tskipNotifyEvent = false,\n\tskipSocketBroadcast = false,\n}) => {\n\tlet transaction;\n\ttry {\n\t\ttransaction = await sequelize.transaction();\n\n\t\tconst whereCondition = ticket_id ? { ticket_id } : { ticket_number };\n\t\tconsole.log(\"Where Condition:\", whereCondition);\n\t\tconst ticket = await models.ticket.findOne({\n\t\t\twhere: whereCondition,\n\t\t\tinclude: [{ model: models.ticket_status, as: \"ticket_status\" }],\n\t\t\ttransaction,\n\t\t});",
+      "service_type.controller.js": "const models = require(\"../models\");\nconst namingCache = require(\"../services/global.service\").namingConventionCache;\nconst { capitalizeFirstLetter, checkDeactivation, deactivateEntity } = require(\"../services/global.service\");\nconst deactivationValidator = require(\"../utilities/deactivationValidator\");\nconst AppError = require(\"../errors/AppError\");\nconst { hasPermsV2Backend } = require(\"../utilities/ticketUtil\");\n\nconst getServiceTypeNamingConvention = () => namingCache.get(\"service_type\") || \"Service Type\";\n\n// Get all service types\nconst getAllServiceTypes = async (req, res, next) => {\n    try {\n        const isStaff = !!req.user?.staff_id;\n        const isUser = !!req.user?.user_id && !isStaff;\n\n        const where = isUser ? { ispublic: true } : undefined;\n\n        const serviceTypes = await models.service_type.findAll({ \n            where,\n            include: [\n                {\n                    model: models.service_type_departments,\n                    as: \"service_type_departments\",\n                    include: [\n                        {\n                            model: models.department,\n                            as: \"department\",\n                            attributes: [\"id\", \"name\"]\n                        }\n                    ]\n// [...] (sliced at 'getAllServiceTypes', line 11)\n\n// Get all service types\nconst getAllServiceTypes = async (req, res, next) => {\n    try {\n        const isStaff = !!req.user?.staff_id;\n        const isUser = !!req.user?.user_id && !isStaff;\n\n        const where = isUser ? { ispublic: true } : undefined;\n\n        const serviceTypes = await models.service_type.findAll({ \n            where,\n            include: [\n                {\n                    model: models.service_type_departments,\n                    as: \"service_type_departments\",\n                    include: [\n                        {\n                            model: models.department,\n                            as: \"department\",\n                            attributes: [\"id\", \"name\"]\n                        }\n                    ]\n                }\n            ]\n        });\n        return res.json({ status: true, data: serviceTypes });\n    } catch (error) {\n        console.error(\"Error fetching service types:\", error);\n        next(error);\n    }\n};\n\n// Get a single service type by ID\nconst getServiceTypeById = async (req, res, next) => {\n    const getServiceTypeNamingConvention = () => namingCache.get(\"service_type\") || \"Service Type\";\n    try {\n        const { id } = req.params;\n        const serviceType = await models.service_type.findByPk(id, {\n            include: [\n                {\n                    model: models.service_type_departments,\n                    as: \"service_type_departments\",\n                    include: [\n                        {\n                            model: models.department,\n                            as: \"department\",\n                            attributes: [\"id\", \"name\"]\n                        }\n                    ]\n                }\n            ]\n        });\n        \n        if (!serviceType) {\n            throw new AppError(\"NOT_FOUND\", { entity: `${capitalizeFirstLetter(getServiceTypeNamingConvention())}` });\n        }\n\n        // Format response to include departments array and default_department\n        const departments = serviceType.service_type_departments.map(std => ({\n            id: std.department.id,\n            name: std.department.name,\n            is_default: std.is_default\n        }));\n\n        const defaultDepartment = serviceType.service_type_departments.find(std => std.is_default);\n\n        const response = {\n            ...serviceType.toJSON(),\n            departments,\n            default_department: defaultDepartment ? {\n                id: defaultDepartment.department.id,\n                name: defaultDepartment.department.name\n            } : null\n        };\n\n        return res.json({ status: true, data: response });\n    } catch (error) {\n        console.error(\"Error fetching service type by ID:\", error);\n        next(error);\n    }\n};\n\n// Create a new service type\nconst createServiceType = async (req, res, next) => {\n    const getServiceTypeNamingConvention = () => namingCache.get(\"service_type\") || \"Service Type\";\n    let t;\n\n    try {\n        t = await models.sequelize.transaction();\n        if (req.user?.staff_id) {\n            const canCreate = await hasPermsV2Backend(\n                req.user.staff_id,\n                \"manage_app_settings.service_type.create\"\n            );\n            if (!canCreate) {\n                throw new AppError(\"FORBIDDEN\", {\n                    message: `You do not have permission to create ${capitalizeFirstLetter(getServiceTypeNamingConvention())}s`,\n                });\n            }\n        }\n        const { service_type, custom_form_id, notes, created_by, ispublic, departments } = req.body;\n        \n        // Validate basic fields\n        if (!service_type || !created_by) {\n            throw new AppError(\"BAD_REQUEST\", { entity: `${capitalizeFirstLetter(getServiceTypeNamingConvention())} and Created by` });\n        }\n\n        // Validate departments\n        if (!departments || !Array.isArray(departments) || departments.length === 0) {\n            throw new AppError(\"VALIDATION_ERROR\", { \n                message: `At least one department is required for ${capitalizeFirstLetter(getServiceTypeNamingConvention())}` \n            });\n        }\n\n        // Validate exactly one default department\n        const defaultDepartments = departments.filter(d => d.is_default);\n        if (defaultDepartments.length === 0) {\n            throw new AppError(\"VALIDATION_ERROR\", { \n                message: `Exactly one default department is required for ${capitalizeFirstLetter(getServiceTypeNamingConvention())}` \n            });\n        }\n        if (defaultDepartments.length > 1) {\n            throw new AppError(\"VALIDATION_ERROR\", { \n                message: `Only one default department is allowed for ${capitalizeFirstLetter(getServiceTypeNamingConvention())}` \n            });\n        }\n\n        // Check if service type already exists\n        const exists = await models.service_type.findOne({ where: { service_type } });\n        if (exists) {\n            throw new AppError(\"CONFLICT\", { message: `${capitalizeFirstLetter(getServiceTypeNamingConvention())} already exists` });\n        }\n\n        // Create service type\n        const newServiceType = await models.service_type.create({\n            service_type,\n            custom_form_id,\n            notes,\n            ispublic: typeof ispublic === \"boolean\" ? ispublic : true,\n            created_by\n        }, { transaction: t });\n\n        // Create department mappings\n        for (const dept of departments) {\n            await models.service_type_departments.create({\n                service_type_id: newServiceType.id,\n                department_id: dept.department_id,\n                is_default: dept.is_default || false\n            }, { transaction: t });\n        }"
     },
     "utilities": {
       "ticketAccessUtil.js": "const { models } = require(\"../models\");\nconst { getAllowedDeptIds, isStaffManagerOrAdmin } = require(\"./ticketUtil\");\nconst { getCustomerVisibleUserIds } = require(\"../services/customer_site_access.service\");\n\nconst createTicketAccessChecker = async (req) => {\n\tif (!req?.user) {\n\t\treturn async () => false;\n\t}\n\n\t// Staff access rules\n\tif (req.user.staff_id) {\n\t\tconst staffId = req.user.staff_id;\n\n\t\tconst collabTickets = await models.ticket_collaborators.findAll({\n\t\t\twhere: { staff_id: staffId },\n\t\t\tattributes: [\"ticket_id\"],\n\t\t\traw: true,\n\t\t});\n\t\tconst collabTicketIds = new Set(collabTickets.map((c) => Number(c.ticket_id)));\n\n\t\tconst allowedDeptIds = await getAllowedDeptIds(staffId, \"ticket_management.ticket.view\");\n\t\tconst allowedDeptIdSet = new Set((allowedDeptIds || []).map((d) => Number(d)));\n\n\t\tconst isManagerOrAdmin = await isStaffManagerOrAdmin(staffId);\n\n\t\treturn async (ticketData) => {\n\t\t\tif (!ticketData) return false;\n\t\t\tconst ticketId = Number(ticketData.ticket_id ?? ticketData.id);\n\n\t\t\tif (Number(ticketData.accountable_staff_id) === Number(staffId)) return true;\n\t\t\tif (Number(ticketData.assigned_staff_id) === Number(staffId)) return true;\n\t\t\tif (Number(ticketData.created_by_staff_id) === Number(staffId)) return true;\n\t\t\tif (collabTicketIds.has(ticketId)) return true;\n\n\t\t\tif (isManagerOrAdmin && allowedDeptIdSet.has(Number(ticketData.dept_id))) return true;\n\n\t\t\treturn false;\n\t\t};\n\t}\n\n\t// Customer/end-user access rules\n\tif (req.user.user_id) {\n\t\tconst userId = req.user.user_id;\n\n\t\t// Use central \"customer visible users\" logic so ticket visibility stays consistent\n\t\t// across org-wide vs child-site visibility settings.\n\t\tconst visibleUserIds = await getCustomerVisibleUserIds(userId);\n\t\tconst visibleUserIdSet = new Set((visibleUserIds || []).map((id) => Number(id)));\n\n\t\treturn async (ticketData) => {\n\t\t\tif (!ticketData) return false;\n\t\t\tconst ticketOwnerUserId = Number(ticketData.user_id);\n\t\t\tif (Number(ticketOwnerUserId) === Number(userId)) return true;\n\t\t\tif (visibleUserIdSet.has(ticketOwnerUserId)) return true;\n\t\t\treturn false;\n\t\t};\n\t}\n\n\treturn async () => false;\n};\n\nconst checkTicketAccess = async (ticketData, req) => {\n\tconst canAccess = await createTicketAccessChecker(req);\n\treturn canAccess(ticketData);\n};\n\nmodule.exports = {\n\tcreateTicketAccessChecker,\n\tcheckTicketAccess,\n};\n",
@@ -82,7 +86,9 @@
               "id": 1,
               "name": "Alice Smith",
               "org_id": 1
-            },
+            }
+          ],
+          "inactive_users": [
             {
               "id": 3,
               "name": "Charlie Brown",
@@ -96,34 +102,11 @@
               "org_id": 1,
               "site_id": 1
             }
-          ]
-        },
-        {
-          "id": 2,
-          "name": "Beta LLC",
-          "users": [
-            {
-              "id": 2,
-              "name": "Bob Johnson",
-              "org_id": 2
-            }
           ],
-          "equipment": [
-            {
-              "id": 2,
-              "provision_name": "Beta - Router 1",
-              "org_id": 2,
-              "site_id": 2
-            },
-            {
-              "id": 3,
-              "provision_name": "Beta - Router 2",
-              "org_id": 2,
-              "site_id": 2
-            }
-          ]
+          "inactive_equipment": []
         }
       ],
+      "inactive_customers": [],
       "departments": [
         {
           "id": 1,
@@ -135,56 +118,66 @@
               "name": "John Doe",
               "email": "johndoe@abc.com",
               "dept_id": 1,
-              "role_id": 10
+              "role_id": 10,
+              "role_name": "Limited Access"
             },
             {
               "staff_id": 3,
               "name": "Liam Hughes",
               "email": "liamh@abc.com",
               "dept_id": 1,
-              "role_id": 2
+              "role_id": 2,
+              "role_name": "Limited Access"
             },
             {
               "staff_id": 4,
               "name": "Natalie Scott",
               "email": "natalie@abc.com",
               "dept_id": 1,
-              "role_id": 6
+              "role_id": 6,
+              "role_name": "Limited Access"
             },
             {
               "staff_id": 7,
               "name": "Sophie Nguyen",
               "email": "sophien@abc.com",
               "dept_id": 1,
-              "role_id": 6
+              "role_id": 6,
+              "role_name": "Limited Access"
             },
             {
               "staff_id": 8,
               "name": "Carlos Silva",
               "email": "carloss@abc.com",
               "dept_id": 1,
-              "role_id": 6
+              "role_id": 5,
+              "role_name": "All Access"
             },
             {
               "staff_id": 9,
               "name": "David Collins",
               "email": "david@abc.com",
               "dept_id": 1,
-              "role_id": 6
+              "role_id": 6,
+              "role_name": "Limited Access"
             }
           ],
+          "inactive_staff": [],
           "service_types": [
             {
               "id": 2,
               "name": "Breakdown Repair",
+              "ispublic": 1,
               "department_id": 1
             },
             {
               "id": 4,
               "name": "Remote Support",
+              "ispublic": 1,
               "department_id": 1
             }
-          ]
+          ],
+          "inactive_service_types": []
         },
         {
           "id": 2,
@@ -196,49 +189,97 @@
               "name": "John Doe",
               "email": "johndoe@abc.com",
               "dept_id": 2,
-              "role_id": 9
+              "role_id": 9,
+              "role_name": "All Access"
             },
             {
               "staff_id": 2,
               "name": "Jane Smith",
               "email": "janesmith@abc.com",
               "dept_id": 2,
-              "role_id": 5
+              "role_id": 6,
+              "role_name": "Limited Access"
             },
             {
               "staff_id": 3,
               "name": "Liam Hughes",
               "email": "liamh@abc.com",
               "dept_id": 2,
-              "role_id": 1
+              "role_id": 1,
+              "role_name": "All Access"
             },
             {
               "staff_id": 5,
               "name": "Omar Bennett",
               "email": "omarb@abc.com",
               "dept_id": 2,
-              "role_id": 6
+              "role_id": 6,
+              "role_name": "Limited Access"
             }
           ],
+          "inactive_staff": [],
           "service_types": [
             {
               "id": 1,
               "name": "Preventive Maintenance",
+              "ispublic": 1,
               "department_id": 2
             },
             {
               "id": 2,
               "name": "Breakdown Repair",
+              "ispublic": 1,
               "department_id": 2
             },
             {
               "id": 3,
               "name": "Installation",
+              "ispublic": 1,
               "department_id": 2
             }
-          ]
+          ],
+          "inactive_service_types": []
         }
-      ]
+      ],
+      "inactive_departments": [],
+      "role_definitions": {
+        "1": {
+          "name": "All Access",
+          "type": "department",
+          "staff_type": "service_manager",
+          "permissions": "{\"quote_management\": {\"quote\": {\"edit\": true, \"view\": true, \"create\": true, \"delete\": true}, \"submit_quote\": {\"edit\": true}, \"approval_rejection\": {\"edit\": true}, \"labour_material_expense_lme\": {\"edit\": true, \"view\": true, \"create\": true, \"delete\": true}}, \"tasks_management\": {\"tasks\": {\"edit\": true, \"view\": true, \"create\": true, \"delete\": true}, \"task_status\": {\"edit\": true, \"view\": true}, \"task_assignee\": {\"edit\": true, \"view\": true}}, \"ticket_management\": {\"ticket\": {\"edit\": true, \"view\": true, \"create\": true, \"delete\": \"limited\"}, \"post_reply\": {\"view\": true, \"create\": true}, \"ticket_status\": {\"edit\": true, \"view\": true}, \"ticket_assignee\": {\"edit\": true, \"view\": true, \"create\": true}, \"thread_attachments\": {\"view\": true, \"create\": true, \"delete\": true}, \"ticket_attachments\": {\"view\": true, \"create\": true, \"delete\": true}, \"post_internal_notes\": {\"view\": true, \"create\": true}, \"transfer_department\": {\"edit\": true}, \"ticket_collaborators\": {\"edit\": true, \"view\": true}, \"ticket_claim_accountable\": {\"edit\": true, \"view\": true, \"create\": true}}, \"invoice_management\": {\"invoice\": {\"edit\": true, \"view\": true, \"create\": true, \"delete\": true}}, \"schedule_management\": {\"schedule\": {\"edit\": true, \"view\": true, \"create\": true, \"delete\": true}}, \"appointment_management\": {\"appointment\": {\"edit\": true, \"view\": true, \"create\": true, \"delete\": true}, \"appointment_status\": {\"edit\": true, \"view\": true}}, \"service_report_management\": {\"work_logs\": {\"edit\": true, \"view\": true, \"create\": true, \"delete\": true}, \"submit_report\": {\"edit\": true}, \"service_report\": {\"edit\": true, \"view\": true, \"create\": true, \"delete\": true}, \"approval_rejection\": {\"edit\": true}}}"
+        },
+        "2": {
+          "name": "Limited Access",
+          "type": "department",
+          "staff_type": "service_manager",
+          "permissions": "{\"quote_management\": {\"quote\": {\"edit\": true, \"view\": true, \"create\": true, \"delete\": true}, \"submit_quote\": {\"edit\": true}, \"approval_rejection\": {\"edit\": true}, \"labour_material_expense_lme\": {\"edit\": true, \"view\": true, \"create\": true, \"delete\": true}}, \"tasks_management\": {\"tasks\": {\"edit\": true, \"view\": true, \"create\": true, \"delete\": true}, \"task_status\": {\"edit\": true, \"view\": true}, \"task_assignee\": {\"edit\": true, \"view\": true}}, \"ticket_management\": {\"ticket\": {\"edit\": false, \"view\": false, \"create\": false, \"delete\": false}, \"post_reply\": {\"view\": false, \"create\": false}, \"ticket_status\": {\"edit\": false, \"view\": false}, \"ticket_assignee\": {\"edit\": false, \"view\": false, \"create\": false}, \"thread_attachments\": {\"view\": false, \"create\": false, \"delete\": false}, \"ticket_attachments\": {\"view\": false, \"create\": false, \"delete\": false}, \"post_internal_notes\": {\"view\": false, \"create\": false}, \"transfer_department\": {\"edit\": false}, \"ticket_collaborators\": {\"edit\": false, \"view\": false}, \"ticket_claim_accountable\": {\"edit\": false, \"view\": false, \"create\": false}}, \"invoice_management\": {\"invoice\": {\"edit\": true, \"view\": true, \"create\": true, \"delete\": true}}, \"schedule_management\": {\"schedule\": {\"edit\": true, \"view\": true, \"create\": true, \"delete\": true}}, \"appointment_management\": {\"appointment\": {\"edit\": true, \"view\": true, \"create\": true, \"delete\": true}, \"appointment_status\": {\"edit\": true, \"view\": true}}, \"service_report_management\": {\"work_logs\": {\"edit\": true, \"view\": true, \"create\": true, \"delete\": true}, \"submit_report\": {\"edit\": true}, \"service_report\": {\"edit\": true, \"view\": true, \"create\": true, \"delete\": true}, \"approval_rejection\": {\"edit\": true}}}"
+        },
+        "5": {
+          "name": "All Access",
+          "type": "department",
+          "staff_type": "service_engineer",
+          "permissions": "{\"tasks_management\": {\"tasks\": {\"edit\": true, \"view\": true, \"create\": true, \"delete\": true}, \"task_status\": {\"edit\": \"limited\", \"view\": \"limited\"}, \"task_assignee\": {\"edit\": true, \"view\": true}}, \"ticket_management\": {\"ticket\": {\"edit\": \"limited\", \"view\": true, \"create\": true, \"delete\": \"limited\"}, \"post_reply\": {\"view\": true, \"create\": true}, \"ticket_status\": {\"edit\": \"limited\", \"view\": true}, \"ticket_assignee\": {\"edit\": true, \"view\": true, \"create\": true}, \"thread_attachments\": {\"view\": true, \"create\": true, \"delete\": \"limited\"}, \"ticket_attachments\": {\"view\": true, \"create\": true, \"delete\": \"limited\"}, \"post_internal_notes\": {\"view\": true, \"create\": true}, \"transfer_department\": {\"edit\": true}, \"ticket_collaborators\": {\"edit\": true, \"view\": true}, \"ticket_claim_accountable\": {\"edit\": true, \"view\": true, \"create\": true}}, \"schedule_management\": {\"schedule\": {\"edit\": true, \"view\": true, \"create\": true, \"delete\": true}}, \"appointment_management\": {\"appointment\": {\"edit\": \"limited\", \"view\": \"limited\", \"create\": \"limited\", \"delete\": \"limited\"}, \"appointment_status\": {\"edit\": \"limited\", \"view\": \"limited\"}}, \"service_report_management\": {\"work_logs\": {\"edit\": true, \"view\": true, \"create\": true, \"delete\": true}, \"submit_report\": {\"edit\": true}, \"service_report\": {\"edit\": \"limited\", \"view\": \"limited\", \"create\": true, \"delete\": true}, \"approval_rejection\": {\"edit\": \"limited\"}}}"
+        },
+        "6": {
+          "name": "Limited Access",
+          "type": "department",
+          "staff_type": "service_engineer",
+          "permissions": "{\"tasks_management\": {\"tasks\": {\"edit\": true, \"view\": true, \"create\": true, \"delete\": true}, \"task_status\": {\"edit\": \"limited\", \"view\": \"limited\"}, \"task_assignee\": {\"edit\": true, \"view\": true}}, \"ticket_management\": {\"ticket\": {\"edit\": false, \"view\": false, \"create\": false, \"delete\": false}, \"post_reply\": {\"view\": false, \"create\": false}, \"ticket_status\": {\"edit\": false, \"view\": false}, \"ticket_assignee\": {\"edit\": false, \"view\": false, \"create\": false}, \"thread_attachments\": {\"view\": false, \"create\": false, \"delete\": false}, \"ticket_attachments\": {\"view\": false, \"create\": false, \"delete\": false}, \"post_internal_notes\": {\"view\": false, \"create\": false}, \"transfer_department\": {\"edit\": false}, \"ticket_collaborators\": {\"edit\": false, \"view\": false}, \"ticket_claim_accountable\": {\"edit\": false, \"view\": false, \"create\": false}}, \"schedule_management\": {\"schedule\": {\"edit\": true, \"view\": true, \"create\": true, \"delete\": true}}, \"appointment_management\": {\"appointment\": {\"edit\": \"limited\", \"view\": \"limited\", \"create\": \"limited\", \"delete\": \"limited\"}, \"appointment_status\": {\"edit\": \"limited\", \"view\": \"limited\"}}, \"service_report_management\": {\"work_logs\": {\"edit\": true, \"view\": true, \"create\": true, \"delete\": true}, \"submit_report\": {\"edit\": true}, \"service_report\": {\"edit\": \"limited\", \"view\": \"limited\", \"create\": true, \"delete\": true}, \"approval_rejection\": {\"edit\": \"limited\"}}, \"service_report_pack_management\": {\"service_report_pack\": {\"edit\": false, \"view\": true, \"create\": false, \"delete\": false}}}"
+        },
+        "9": {
+          "name": "All Access",
+          "type": "department",
+          "staff_type": "admin",
+          "permissions": "{\"quote_management\": {\"quote\": {\"edit\": true, \"view\": true, \"create\": true, \"delete\": true}, \"submit_quote\": {\"edit\": true}, \"approval_rejection\": {\"edit\": true}, \"labour_material_expense_lme\": {\"edit\": true, \"view\": true, \"create\": true, \"delete\": true}}, \"tasks_management\": {\"tasks\": {\"edit\": true, \"view\": true, \"create\": true, \"delete\": true}, \"task_status\": {\"edit\": true, \"view\": true}, \"task_assignee\": {\"edit\": true, \"view\": true}}, \"ticket_management\": {\"ticket\": {\"edit\": true, \"view\": true, \"create\": true, \"delete\": true}, \"post_reply\": {\"view\": true, \"create\": true}, \"ticket_status\": {\"edit\": true, \"view\": true}, \"ticket_assignee\": {\"edit\": true, \"view\": true, \"create\": true}, \"thread_attachments\": {\"view\": true, \"create\": true, \"delete\": true}, \"ticket_attachments\": {\"view\": true, \"create\": true, \"delete\": true}, \"post_internal_notes\": {\"view\": true, \"create\": true}, \"transfer_department\": {\"edit\": true}, \"ticket_collaborators\": {\"edit\": true, \"view\": true}, \"ticket_claim_accountable\": {\"edit\": true, \"view\": true, \"create\": true}}, \"invoice_management\": {\"invoice\": {\"edit\": true, \"view\": true, \"create\": true, \"delete\": true}}, \"schedule_management\": {\"schedule\": {\"edit\": true, \"view\": true, \"create\": true, \"delete\": true}}, \"appointment_management\": {\"appointment\": {\"edit\": true, \"view\": true, \"create\": true, \"delete\": true}, \"appointment_status\": {\"edit\": true, \"view\": true}}, \"service_report_management\": {\"work_logs\": {\"edit\": true, \"view\": true, \"create\": true, \"delete\": true}, \"submit_report\": {\"edit\": true}, \"service_report\": {\"edit\": true, \"view\": true, \"create\": true, \"delete\": true}, \"approval_rejection\": {\"edit\": true}}}"
+        },
+        "10": {
+          "name": "Limited Access",
+          "type": "department",
+          "staff_type": "admin",
+          "permissions": "{\"quote_management\": {\"quote\": {\"edit\": true, \"view\": true, \"create\": true, \"delete\": true}, \"submit_quote\": {\"edit\": true}, \"approval_rejection\": {\"edit\": true}, \"labour_material_expense_lme\": {\"edit\": true, \"view\": true, \"create\": true, \"delete\": true}}, \"tasks_management\": {\"tasks\": {\"edit\": true, \"view\": true, \"create\": true, \"delete\": true}, \"task_status\": {\"edit\": true, \"view\": true}, \"task_assignee\": {\"edit\": true, \"view\": true}}, \"ticket_management\": {\"ticket\": {\"edit\": true, \"view\": true, \"create\": true, \"delete\": true}, \"post_reply\": {\"view\": true, \"create\": true}, \"ticket_status\": {\"edit\": true, \"view\": true}, \"ticket_assignee\": {\"edit\": true, \"view\": true, \"create\": true}, \"thread_attachments\": {\"view\": true, \"create\": true, \"delete\": true}, \"ticket_attachments\": {\"view\": true, \"create\": true, \"delete\": true}, \"post_internal_notes\": {\"view\": true, \"create\": true}, \"transfer_department\": {\"edit\": true}, \"ticket_collaborators\": {\"edit\": true, \"view\": true}, \"ticket_claim_accountable\": {\"edit\": true, \"view\": true, \"create\": true}}, \"invoice_management\": {\"invoice\": {\"edit\": true, \"view\": true, \"create\": true, \"delete\": true}}, \"schedule_management\": {\"schedule\": {\"edit\": true, \"view\": true, \"create\": true, \"delete\": true}}, \"appointment_management\": {\"appointment\": {\"edit\": true, \"view\": true, \"create\": true, \"delete\": true}, \"appointment_status\": {\"edit\": true, \"view\": true}}, \"service_report_management\": {\"work_logs\": {\"edit\": true, \"view\": true, \"create\": true, \"delete\": true}, \"submit_report\": {\"edit\": true}, \"service_report\": {\"edit\": true, \"view\": true, \"create\": true, \"delete\": true}, \"approval_rejection\": {\"edit\": true}}}"
+        }
+      }
     },
     "cascade_entities": {
       "customers": [
@@ -250,7 +291,9 @@
               "id": 1,
               "name": "Alice Smith",
               "org_id": 1
-            },
+            }
+          ],
+          "inactive_users": [
             {
               "id": 3,
               "name": "Charlie Brown",
@@ -264,7 +307,8 @@
               "org_id": 1,
               "site_id": 1
             }
-          ]
+          ],
+          "inactive_equipment": []
         },
         {
           "id": 2,
@@ -276,6 +320,7 @@
               "org_id": 2
             }
           ],
+          "inactive_users": [],
           "equipment": [
             {
               "id": 2,
@@ -289,7 +334,8 @@
               "org_id": 2,
               "site_id": 2
             }
-          ]
+          ],
+          "inactive_equipment": []
         },
         {
           "id": 3,
@@ -301,9 +347,12 @@
               "org_id": 3
             }
           ],
-          "equipment": []
+          "inactive_users": [],
+          "equipment": [],
+          "inactive_equipment": []
         }
       ],
+      "inactive_customers": [],
       "departments": [
         {
           "id": 1,
@@ -315,56 +364,66 @@
               "name": "John Doe",
               "email": "johndoe@abc.com",
               "dept_id": 1,
-              "role_id": 10
+              "role_id": 10,
+              "role_name": "Limited Access"
             },
             {
               "staff_id": 3,
               "name": "Liam Hughes",
               "email": "liamh@abc.com",
               "dept_id": 1,
-              "role_id": 2
+              "role_id": 2,
+              "role_name": "Limited Access"
             },
             {
               "staff_id": 4,
               "name": "Natalie Scott",
               "email": "natalie@abc.com",
               "dept_id": 1,
-              "role_id": 6
+              "role_id": 6,
+              "role_name": "Limited Access"
             },
             {
               "staff_id": 7,
               "name": "Sophie Nguyen",
               "email": "sophien@abc.com",
               "dept_id": 1,
-              "role_id": 6
+              "role_id": 6,
+              "role_name": "Limited Access"
             },
             {
               "staff_id": 8,
               "name": "Carlos Silva",
               "email": "carloss@abc.com",
               "dept_id": 1,
-              "role_id": 6
+              "role_id": 5,
+              "role_name": "All Access"
             },
             {
               "staff_id": 9,
               "name": "David Collins",
               "email": "david@abc.com",
               "dept_id": 1,
-              "role_id": 6
+              "role_id": 6,
+              "role_name": "Limited Access"
             }
           ],
+          "inactive_staff": [],
           "service_types": [
             {
               "id": 2,
               "name": "Breakdown Repair",
+              "ispublic": 1,
               "department_id": 1
             },
             {
               "id": 4,
               "name": "Remote Support",
+              "ispublic": 1,
               "department_id": 1
             }
-          ]
+          ],
+          "inactive_service_types": []
         },
         {
           "id": 2,
@@ -376,47 +435,56 @@
               "name": "John Doe",
               "email": "johndoe@abc.com",
               "dept_id": 2,
-              "role_id": 9
+              "role_id": 9,
+              "role_name": "All Access"
             },
             {
               "staff_id": 2,
               "name": "Jane Smith",
               "email": "janesmith@abc.com",
               "dept_id": 2,
-              "role_id": 5
+              "role_id": 6,
+              "role_name": "Limited Access"
             },
             {
               "staff_id": 3,
               "name": "Liam Hughes",
               "email": "liamh@abc.com",
               "dept_id": 2,
-              "role_id": 1
+              "role_id": 1,
+              "role_name": "All Access"
             },
             {
               "staff_id": 5,
               "name": "Omar Bennett",
               "email": "omarb@abc.com",
               "dept_id": 2,
-              "role_id": 6
+              "role_id": 6,
+              "role_name": "Limited Access"
             }
           ],
+          "inactive_staff": [],
           "service_types": [
             {
               "id": 1,
               "name": "Preventive Maintenance",
+              "ispublic": 1,
               "department_id": 2
             },
             {
               "id": 2,
               "name": "Breakdown Repair",
+              "ispublic": 1,
               "department_id": 2
             },
             {
               "id": 3,
               "name": "Installation",
+              "ispublic": 1,
               "department_id": 2
             }
-          ]
+          ],
+          "inactive_service_types": []
         },
         {
           "id": 3,
@@ -428,44 +496,44 @@
               "name": "John Doe",
               "email": "johndoe@abc.com",
               "dept_id": 3,
-              "role_id": 10
-            },
-            {
-              "staff_id": 2,
-              "name": "Jane Smith",
-              "email": "janesmith@abc.com",
-              "dept_id": 3,
-              "role_id": 6
+              "role_id": 10,
+              "role_name": "Limited Access"
             },
             {
               "staff_id": 3,
               "name": "Liam Hughes",
               "email": "liamh@abc.com",
               "dept_id": 3,
-              "role_id": 1
+              "role_id": 1,
+              "role_name": "All Access"
             },
             {
               "staff_id": 6,
               "name": "Morgan Hayes",
               "email": "morgan@abc.com",
               "dept_id": 3,
-              "role_id": 6
+              "role_id": 6,
+              "role_name": "Limited Access"
             },
             {
               "staff_id": 7,
               "name": "Sophie Nguyen",
               "email": "sophien@abc.com",
               "dept_id": 3,
-              "role_id": 6
+              "role_id": 6,
+              "role_name": "Limited Access"
             }
           ],
+          "inactive_staff": [],
           "service_types": [
             {
               "id": 1,
               "name": "Preventive Maintenance",
+              "ispublic": 1,
               "department_id": 3
             }
-          ]
+          ],
+          "inactive_service_types": []
         },
         {
           "id": 4,
@@ -477,23 +545,158 @@
               "name": "John Doe",
               "email": "johndoe@abc.com",
               "dept_id": 4,
-              "role_id": 10
+              "role_id": 10,
+              "role_name": "Limited Access"
             },
             {
               "staff_id": 3,
               "name": "Liam Hughes",
               "email": "liamh@abc.com",
               "dept_id": 4,
-              "role_id": 1
+              "role_id": 1,
+              "role_name": "All Access"
             }
           ],
-          "service_types": []
+          "inactive_staff": [],
+          "service_types": [],
+          "inactive_service_types": []
         }
-      ]
+      ],
+      "inactive_departments": [],
+      "role_definitions": {
+        "1": {
+          "name": "All Access",
+          "type": "department",
+          "staff_type": "service_manager",
+          "permissions": "{\"quote_management\": {\"quote\": {\"edit\": true, \"view\": true, \"create\": true, \"delete\": true}, \"submit_quote\": {\"edit\": true}, \"approval_rejection\": {\"edit\": true}, \"labour_material_expense_lme\": {\"edit\": true, \"view\": true, \"create\": true, \"delete\": true}}, \"tasks_management\": {\"tasks\": {\"edit\": true, \"view\": true, \"create\": true, \"delete\": true}, \"task_status\": {\"edit\": true, \"view\": true}, \"task_assignee\": {\"edit\": true, \"view\": true}}, \"ticket_management\": {\"ticket\": {\"edit\": true, \"view\": true, \"create\": true, \"delete\": \"limited\"}, \"post_reply\": {\"view\": true, \"create\": true}, \"ticket_status\": {\"edit\": true, \"view\": true}, \"ticket_assignee\": {\"edit\": true, \"view\": true, \"create\": true}, \"thread_attachments\": {\"view\": true, \"create\": true, \"delete\": true}, \"ticket_attachments\": {\"view\": true, \"create\": true, \"delete\": true}, \"post_internal_notes\": {\"view\": true, \"create\": true}, \"transfer_department\": {\"edit\": true}, \"ticket_collaborators\": {\"edit\": true, \"view\": true}, \"ticket_claim_accountable\": {\"edit\": true, \"view\": true, \"create\": true}}, \"invoice_management\": {\"invoice\": {\"edit\": true, \"view\": true, \"create\": true, \"delete\": true}}, \"schedule_management\": {\"schedule\": {\"edit\": true, \"view\": true, \"create\": true, \"delete\": true}}, \"appointment_management\": {\"appointment\": {\"edit\": true, \"view\": true, \"create\": true, \"delete\": true}, \"appointment_status\": {\"edit\": true, \"view\": true}}, \"service_report_management\": {\"work_logs\": {\"edit\": true, \"view\": true, \"create\": true, \"delete\": true}, \"submit_report\": {\"edit\": true}, \"service_report\": {\"edit\": true, \"view\": true, \"create\": true, \"delete\": true}, \"approval_rejection\": {\"edit\": true}}}"
+        },
+        "2": {
+          "name": "Limited Access",
+          "type": "department",
+          "staff_type": "service_manager",
+          "permissions": "{\"quote_management\": {\"quote\": {\"edit\": true, \"view\": true, \"create\": true, \"delete\": true}, \"submit_quote\": {\"edit\": true}, \"approval_rejection\": {\"edit\": true}, \"labour_material_expense_lme\": {\"edit\": true, \"view\": true, \"create\": true, \"delete\": true}}, \"tasks_management\": {\"tasks\": {\"edit\": true, \"view\": true, \"create\": true, \"delete\": true}, \"task_status\": {\"edit\": true, \"view\": true}, \"task_assignee\": {\"edit\": true, \"view\": true}}, \"ticket_management\": {\"ticket\": {\"edit\": false, \"view\": false, \"create\": false, \"delete\": false}, \"post_reply\": {\"view\": false, \"create\": false}, \"ticket_status\": {\"edit\": false, \"view\": false}, \"ticket_assignee\": {\"edit\": false, \"view\": false, \"create\": false}, \"thread_attachments\": {\"view\": false, \"create\": false, \"delete\": false}, \"ticket_attachments\": {\"view\": false, \"create\": false, \"delete\": false}, \"post_internal_notes\": {\"view\": false, \"create\": false}, \"transfer_department\": {\"edit\": false}, \"ticket_collaborators\": {\"edit\": false, \"view\": false}, \"ticket_claim_accountable\": {\"edit\": false, \"view\": false, \"create\": false}}, \"invoice_management\": {\"invoice\": {\"edit\": true, \"view\": true, \"create\": true, \"delete\": true}}, \"schedule_management\": {\"schedule\": {\"edit\": true, \"view\": true, \"create\": true, \"delete\": true}}, \"appointment_management\": {\"appointment\": {\"edit\": true, \"view\": true, \"create\": true, \"delete\": true}, \"appointment_status\": {\"edit\": true, \"view\": true}}, \"service_report_management\": {\"work_logs\": {\"edit\": true, \"view\": true, \"create\": true, \"delete\": true}, \"submit_report\": {\"edit\": true}, \"service_report\": {\"edit\": true, \"view\": true, \"create\": true, \"delete\": true}, \"approval_rejection\": {\"edit\": true}}}"
+        },
+        "5": {
+          "name": "All Access",
+          "type": "department",
+          "staff_type": "service_engineer",
+          "permissions": "{\"tasks_management\": {\"tasks\": {\"edit\": true, \"view\": true, \"create\": true, \"delete\": true}, \"task_status\": {\"edit\": \"limited\", \"view\": \"limited\"}, \"task_assignee\": {\"edit\": true, \"view\": true}}, \"ticket_management\": {\"ticket\": {\"edit\": \"limited\", \"view\": true, \"create\": true, \"delete\": \"limited\"}, \"post_reply\": {\"view\": true, \"create\": true}, \"ticket_status\": {\"edit\": \"limited\", \"view\": true}, \"ticket_assignee\": {\"edit\": true, \"view\": true, \"create\": true}, \"thread_attachments\": {\"view\": true, \"create\": true, \"delete\": \"limited\"}, \"ticket_attachments\": {\"view\": true, \"create\": true, \"delete\": \"limited\"}, \"post_internal_notes\": {\"view\": true, \"create\": true}, \"transfer_department\": {\"edit\": true}, \"ticket_collaborators\": {\"edit\": true, \"view\": true}, \"ticket_claim_accountable\": {\"edit\": true, \"view\": true, \"create\": true}}, \"schedule_management\": {\"schedule\": {\"edit\": true, \"view\": true, \"create\": true, \"delete\": true}}, \"appointment_management\": {\"appointment\": {\"edit\": \"limited\", \"view\": \"limited\", \"create\": \"limited\", \"delete\": \"limited\"}, \"appointment_status\": {\"edit\": \"limited\", \"view\": \"limited\"}}, \"service_report_management\": {\"work_logs\": {\"edit\": true, \"view\": true, \"create\": true, \"delete\": true}, \"submit_report\": {\"edit\": true}, \"service_report\": {\"edit\": \"limited\", \"view\": \"limited\", \"create\": true, \"delete\": true}, \"approval_rejection\": {\"edit\": \"limited\"}}}"
+        },
+        "6": {
+          "name": "Limited Access",
+          "type": "department",
+          "staff_type": "service_engineer",
+          "permissions": "{\"tasks_management\": {\"tasks\": {\"edit\": true, \"view\": true, \"create\": true, \"delete\": true}, \"task_status\": {\"edit\": \"limited\", \"view\": \"limited\"}, \"task_assignee\": {\"edit\": true, \"view\": true}}, \"ticket_management\": {\"ticket\": {\"edit\": false, \"view\": false, \"create\": false, \"delete\": false}, \"post_reply\": {\"view\": false, \"create\": false}, \"ticket_status\": {\"edit\": false, \"view\": false}, \"ticket_assignee\": {\"edit\": false, \"view\": false, \"create\": false}, \"thread_attachments\": {\"view\": false, \"create\": false, \"delete\": false}, \"ticket_attachments\": {\"view\": false, \"create\": false, \"delete\": false}, \"post_internal_notes\": {\"view\": false, \"create\": false}, \"transfer_department\": {\"edit\": false}, \"ticket_collaborators\": {\"edit\": false, \"view\": false}, \"ticket_claim_accountable\": {\"edit\": false, \"view\": false, \"create\": false}}, \"schedule_management\": {\"schedule\": {\"edit\": true, \"view\": true, \"create\": true, \"delete\": true}}, \"appointment_management\": {\"appointment\": {\"edit\": \"limited\", \"view\": \"limited\", \"create\": \"limited\", \"delete\": \"limited\"}, \"appointment_status\": {\"edit\": \"limited\", \"view\": \"limited\"}}, \"service_report_management\": {\"work_logs\": {\"edit\": true, \"view\": true, \"create\": true, \"delete\": true}, \"submit_report\": {\"edit\": true}, \"service_report\": {\"edit\": \"limited\", \"view\": \"limited\", \"create\": true, \"delete\": true}, \"approval_rejection\": {\"edit\": \"limited\"}}, \"service_report_pack_management\": {\"service_report_pack\": {\"edit\": false, \"view\": true, \"create\": false, \"delete\": false}}}"
+        },
+        "9": {
+          "name": "All Access",
+          "type": "department",
+          "staff_type": "admin",
+          "permissions": "{\"quote_management\": {\"quote\": {\"edit\": true, \"view\": true, \"create\": true, \"delete\": true}, \"submit_quote\": {\"edit\": true}, \"approval_rejection\": {\"edit\": true}, \"labour_material_expense_lme\": {\"edit\": true, \"view\": true, \"create\": true, \"delete\": true}}, \"tasks_management\": {\"tasks\": {\"edit\": true, \"view\": true, \"create\": true, \"delete\": true}, \"task_status\": {\"edit\": true, \"view\": true}, \"task_assignee\": {\"edit\": true, \"view\": true}}, \"ticket_management\": {\"ticket\": {\"edit\": true, \"view\": true, \"create\": true, \"delete\": true}, \"post_reply\": {\"view\": true, \"create\": true}, \"ticket_status\": {\"edit\": true, \"view\": true}, \"ticket_assignee\": {\"edit\": true, \"view\": true, \"create\": true}, \"thread_attachments\": {\"view\": true, \"create\": true, \"delete\": true}, \"ticket_attachments\": {\"view\": true, \"create\": true, \"delete\": true}, \"post_internal_notes\": {\"view\": true, \"create\": true}, \"transfer_department\": {\"edit\": true}, \"ticket_collaborators\": {\"edit\": true, \"view\": true}, \"ticket_claim_accountable\": {\"edit\": true, \"view\": true, \"create\": true}}, \"invoice_management\": {\"invoice\": {\"edit\": true, \"view\": true, \"create\": true, \"delete\": true}}, \"schedule_management\": {\"schedule\": {\"edit\": true, \"view\": true, \"create\": true, \"delete\": true}}, \"appointment_management\": {\"appointment\": {\"edit\": true, \"view\": true, \"create\": true, \"delete\": true}, \"appointment_status\": {\"edit\": true, \"view\": true}}, \"service_report_management\": {\"work_logs\": {\"edit\": true, \"view\": true, \"create\": true, \"delete\": true}, \"submit_report\": {\"edit\": true}, \"service_report\": {\"edit\": true, \"view\": true, \"create\": true, \"delete\": true}, \"approval_rejection\": {\"edit\": true}}}"
+        },
+        "10": {
+          "name": "Limited Access",
+          "type": "department",
+          "staff_type": "admin",
+          "permissions": "{\"quote_management\": {\"quote\": {\"edit\": true, \"view\": true, \"create\": true, \"delete\": true}, \"submit_quote\": {\"edit\": true}, \"approval_rejection\": {\"edit\": true}, \"labour_material_expense_lme\": {\"edit\": true, \"view\": true, \"create\": true, \"delete\": true}}, \"tasks_management\": {\"tasks\": {\"edit\": true, \"view\": true, \"create\": true, \"delete\": true}, \"task_status\": {\"edit\": true, \"view\": true}, \"task_assignee\": {\"edit\": true, \"view\": true}}, \"ticket_management\": {\"ticket\": {\"edit\": true, \"view\": true, \"create\": true, \"delete\": true}, \"post_reply\": {\"view\": true, \"create\": true}, \"ticket_status\": {\"edit\": true, \"view\": true}, \"ticket_assignee\": {\"edit\": true, \"view\": true, \"create\": true}, \"thread_attachments\": {\"view\": true, \"create\": true, \"delete\": true}, \"ticket_attachments\": {\"view\": true, \"create\": true, \"delete\": true}, \"post_internal_notes\": {\"view\": true, \"create\": true}, \"transfer_department\": {\"edit\": true}, \"ticket_collaborators\": {\"edit\": true, \"view\": true}, \"ticket_claim_accountable\": {\"edit\": true, \"view\": true, \"create\": true}}, \"invoice_management\": {\"invoice\": {\"edit\": true, \"view\": true, \"create\": true, \"delete\": true}}, \"schedule_management\": {\"schedule\": {\"edit\": true, \"view\": true, \"create\": true, \"delete\": true}}, \"appointment_management\": {\"appointment\": {\"edit\": true, \"view\": true, \"create\": true, \"delete\": true}, \"appointment_status\": {\"edit\": true, \"view\": true}}, \"service_report_management\": {\"work_logs\": {\"edit\": true, \"view\": true, \"create\": true, \"delete\": true}, \"submit_report\": {\"edit\": true}, \"service_report\": {\"edit\": true, \"view\": true, \"create\": true, \"delete\": true}, \"approval_rejection\": {\"edit\": true}}}"
+        }
+      }
+    },
+    "namespace_map": {
+      "active_department_sla": "active sla",
+      "active_department_slas": "active slas",
+      "admin": "admin",
+      "agent": "staff",
+      "appointment": "appointment",
+      "appointments": "appointments",
+      "billing_profile": "billing profile",
+      "category": "category",
+      "custom_form": "checklist",
+      "customer_tier": "tier",
+      "dept_active_schedules": "active schedule",
+      "dept_active_scheduless": "active schedules",
+      "dept_active_staffs": "member",
+      "dept_open_tasks": "open task",
+      "dept_open_taskss": "open tasks",
+      "dept_open_tickets": "open case",
+      "dept_open_ticketss": "open cases",
+      "equipment": "model",
+      "equipment_active_forms": "active checklist",
+      "equipment_active_formss": "active checklists",
+      "equipment_active_provisions": "active unit",
+      "equipment_active_provisionss": "active units",
+      "equipments": "models",
+      "form_schema": "checklist",
+      "invoice_lines": "invoice",
+      "items_master": "item master",
+      "knowledgebase": "document",
+      "org_active_equipments": "active unit",
+      "org_active_equipmentss": "active units",
+      "org_active_users": "active customer user",
+      "org_active_userss": "active customer users",
+      "org_id": "customer",
+      "org_open_tickets": "open case",
+      "org_open_ticketss": "open cases",
+      "org_pending_appointments": "pending appointment",
+      "org_pending_appointmentss": "pending appointments",
+      "organization": "organization",
+      "organization_equipments": "units",
+      "organization_site": "site",
+      "organization_sites": "sites",
+      "organization_sites_default": "-- default --",
+      "organization_user": "customer user",
+      "performance_monitoring": "performance monitoring",
+      "provision_equipment": "unit",
+      "provision_open_tickets": "open case",
+      "provision_open_ticketss": "open cases",
+      "provision_pending_appointments": "pending appointment",
+      "provision_pending_appointmentss": "pending appointments",
+      "quote": "quote",
+      "quote_header": "quote",
+      "quote_lines": "quote",
+      "routing_tag": "routing tag",
+      "serial_number": "serial number",
+      "service_engineer": "service_engineer",
+      "service_manager": "service_manager",
+      "service_report": "service report",
+      "service_report_header": "service report",
+      "service_report_lines": "service report",
+      "service_type": "service type",
+      "sla_tickets": "case",
+      "staff": "staff",
+      "staff_active_schedules": "active schedule",
+      "staff_active_scheduless": "active schedules",
+      "staff_billing_profile": "billing profile",
+      "staff_dept_access": "staff",
+      "staff_managed_departments": "department lead",
+      "staff_managed_departmentss": "department leads",
+      "staff_managed_organizations": "managed organization",
+      "staff_managed_organizationss": "managed organizations",
+      "staff_open_tasks": "open task",
+      "staff_open_taskss": "open tasks",
+      "staff_open_tickets": "open case",
+      "staff_open_ticketss": "open cases",
+      "staff_pending_appointments": "appointment",
+      "staff_pending_appointmentss": "appointments",
+      "staff_pending_invoices": "pending invoice",
+      "staff_pending_invoicess": "pending invoices",
+      "staff_pending_quotes": "pending quote",
+      "staff_pending_quotess": "pending quotes",
+      "staff_pending_service_reports": "pending service report",
+      "staff_pending_service_reportss": "pending service reports",
+      "ticket": "case",
+      "ticket_schedule": "schedule",
+      "time_rules": "schedule",
+      "user_active_schedules": "active schedule",
+      "user_active_scheduless": "active schedules",
+      "user_open_tickets": "open case",
+      "user_open_ticketss": "open cases",
+      "user_pending_appointments": "pending appointment",
+      "user_pending_appointmentss": "pending appointments"
     }
   },
   "meta": {
-    "files_read": 20,
+    "files_read": 21,
     "db_queried": true
   }
 }

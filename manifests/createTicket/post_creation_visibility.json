@@ -1,0 +1,42 @@
+{
+  "form": "create_ticket",
+  "primary_role": "agent",
+  "scenario_categories": [
+    "happy_path",
+    "post_creation_visibility"
+  ],
+  "files": {
+    "frontend": {
+      "form": [
+        { "path": "iserv_portal/src/Components/CreateTicketForm/CreateTicketForm.js", "read_mode": "full" }
+      ],
+      "auth": [
+        { "path": "iserv_portal/src/Context/AuthContext.js",     "read_mode": "auto" },
+        { "path": "iserv_portal/src/Data/DefaultPermissions.js", "read_mode": "full" }
+      ]
+    },
+    "backend": {
+      "routes": [
+        { "path": "iserv_server/src/routes/ticket.route.js", "read_mode": "auto" }
+      ],
+      "controllers": [
+        { "path": "iserv_server/src/controllers/ticket.controller.js", "read_mode": "slice", "slice_target": "createTicket" },
+        { "path": "iserv_server/src/controllers/ticket.controller.js", "read_mode": "slice", "slice_target": "getTicket" }
+      ],
+      "utilities": [
+        { "path": "iserv_server/src/utilities/ticketAccessUtil.js", "read_mode": "full" },
+        { "path": "iserv_server/src/utilities/ticketUtil.js", "read_mode": "slice", "slice_target": "isStaffManagerOrAdmin" }
+      ]
+    },
+    "models": [
+      { "path": "iserv_server/src/models/ticket.model.js",                  "read_mode": "full" },
+      { "path": "iserv_server/src/models/ticket_collaborators.model.js",    "read_mode": "full" },
+      { "path": "iserv_server/src/models/staff_dept_access.model.js",       "read_mode": "full" },
+      { "path": "iserv_server/src/models/user.model.js",                    "read_mode": "full" },
+      { "path": "iserv_server/src/models/department.model.js",              "read_mode": "full" },
+      { "path": "iserv_server/src/models/service_type.model.js",            "read_mode": "full" },
+      { "path": "iserv_server/src/models/service_type_departments.model.js","read_mode": "full" },
+      { "path": "iserv_server/src/models/organization_equipments.model.js", "read_mode": "full" }
+    ]
+  }
+}

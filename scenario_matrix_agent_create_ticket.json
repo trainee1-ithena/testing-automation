@@ -1,6 +1,6 @@
 {
   "flow": "agent_create_ticket",
-  "inventory_text": "A1. customer | ui_label: Organization | type: select | required: yes | constraints: none | auto_filled: no\nA2. user | ui_label: Organization User | type: select | required: yes | constraints: none | auto_filled: no\nA3. equipment | ui_label: Provision Equipment | type: select | required: no | constraints: none | auto_filled: no\nA4. service_type | ui_label: Service Type | type: select | required: yes | constraints: none | auto_filled: yes\nA5. department | ui_label: Department | type: select | required: yes | constraints: none | auto_filled: yes\nA6. staff_accountable | ui_label: Accountable | type: select | required: no | constraints: none | auto_filled: yes\nA7. staff_assigned | ui_label: Assignee | type: select | required: no | constraints: none | auto_filled: yes\nA8. priority | ui_label: Priority | type: select | required: yes | constraints: none | auto_filled: yes\nA9. due_date | ui_label: Due Date | type: date | required: yes | constraints: none | auto_filled: yes\nA10. subject | ui_label: Subject | type: text | required: yes | constraints: maxLength 175 | auto_filled: no\nA11. description | ui_label: Description | type: textarea | required: no | constraints: none | auto_filled: no\nA12. files | ui_label: Attachment | type: file | required: no | constraints: Allowed file types: Image, PDF, Word, Excel, CSV, Eml, Easm, Mp4, Mov | auto_filled: no\n\nB1. service_type -> department | EFFECT: filter | GUARD: isAgent | REVERSAL: reset department if no longer valid\nB2. department -> staff_accountable | EFFECT: auto-fill | GUARD: isAgent | REVERSAL: reset staff_accountable if no longer valid\nB3. department -> staff_assigned | EFFECT: filter | GUARD: isAgent | REVERSAL: reset staff_assigned if no longer valid\nB4. customer -> user | EFFECT: filter | GUARD: none | REVERSAL: reset user if no longer valid\nB5. customer -> equipment | EFFECT: filter | GUARD: none | REVERSAL: reset equipment if no longer valid\nB6. equipment -> service_type | EFFECT: filter | GUARD: none | REVERSAL: reset service_type if no longer valid\nB7. service_type -> due_date | EFFECT: calculate | GUARD: formOpen | REVERSAL: none\n\nC1. FIELD: customer | CONDITION: isAgent | SHOWN TO: agent | HIDDEN FROM: non-agent | TYPE: role_exclusion\nC2. FIELD: user | CONDITION: isAgent | SHOWN TO: agent | HIDDEN FROM: non-agent | TYPE: role_exclusion\nC3. FIELD: equipment | CONDITION: isAgent | SHOWN TO: agent | HIDDEN FROM: non-agent | TYPE: role_exclusion\nC4. FIELD: department | CONDITION: isAgent | SHOWN TO: agent | HIDDEN FROM: non-agent | TYPE: role_exclusion\nC5. FIELD: staff_accountable | CONDITION: isAgent | SHOWN TO: agent | HIDDEN FROM: non-agent | TYPE: role_exclusion\nC6. FIELD: staff_assigned | CONDITION: isAgent | SHOWN TO: agent | HIDDEN FROM: non-agent | TYPE: role_exclusion\nC7. FIELD: due_date | CONDITION: isAgent | SHOWN TO: agent | HIDDEN FROM: non-agent | TYPE: role_exclusion\n\nD1. agent CAN see the record | WHEN: they are the creator, accountable, or assigned staff\nD2. agent CAN see the record | WHEN: they have department access with view permission\n\nE1. FIELD: customer | SOURCE: known_entities.customers | DISPLAY LABEL: name\nE2. FIELD: user | SOURCE: known_entities.customers[].users | DISPLAY LABEL: name\nE3. FIELD: equipment | SOURCE: known_entities.customers[].equipment | DISPLAY LABEL: provision_name\nE4. FIELD: service_type | SOURCE: known_entities.departments[].service_types | DISPLAY LABEL: name\nE5. FIELD: department | SOURCE: known_entities.departments | DISPLAY LABEL: name\nE6. FIELD: staff_accountable | SOURCE: known_entities.departments[].staff | DISPLAY LABEL: name\nE7. FIELD: staff_assigned | SOURCE: known_entities.departments[].staff | DISPLAY LABEL: name\nCONSTRAINT: customer and user must share the same org_id\nCONSTRAINT: customer and equipment must share the same org_id",
+  "inventory_text": "A1. customer | ui_label: Organization | type: select | required: yes | constraints: none | auto_filled: no\nA2. user | ui_label: Organization User | type: select | required: yes | constraints: none | auto_filled: no\nA3. equipment | ui_label: Provision Equipment | type: select | required: no | constraints: none | auto_filled: no\nA4. service_type | ui_label: Service Type | type: select | required: yes | constraints: none | auto_filled: yes\nA5. department | ui_label: Department | type: select | required: yes | constraints: none | auto_filled: yes\nA6. staff_accountable | ui_label: Accountable | type: select | required: no | constraints: none | auto_filled: yes\nA7. staff_assigned | ui_label: Assignee | type: select | required: no | constraints: none | auto_filled: yes\nA8. priority | ui_label: Priority | type: select | required: yes | constraints: none | auto_filled: yes\nA9. due_date | ui_label: Due Date | type: date | required: yes | constraints: none | auto_filled: yes\nA10. subject | ui_label: Subject | type: text | required: yes | constraints: maxLength 175 | auto_filled: no\nA11. description | ui_label: Description | type: textarea | required: no | constraints: none | auto_filled: no\nA12. files | ui_label: Attachment | type: file | required: no | constraints: Allowed file types: Image, PDF, Word, Excel, CSV, Eml, Easm, Mp4, Mov | auto_filled: no\n\nB1. customer -> user | EFFECT: filter | GUARD: none | REVERSAL: reset user\nB2. customer -> equipment | EFFECT: filter | GUARD: none | REVERSAL: reset equipment\nB3. service_type -> department | EFFECT: filter | GUARD: none | REVERSAL: reset department\nB4. department -> staff_accountable | EFFECT: auto-fill | GUARD: none | REVERSAL: reset staff_accountable\nB5. department -> staff_assigned | EFFECT: filter | GUARD: none | REVERSAL: reset staff_assigned\nB6. department -> due_date | EFFECT: auto-fill | GUARD: none | REVERSAL: reset due_date\nB7. service_type + priority + customer -> due_date | EFFECT: calculate | GUARD: none | REVERSAL: reset due_date\n\n\nD1. agent CAN see the record | WHEN: staff_assigned=agent\nD2. agent CAN see the record | WHEN: staff_accountable=agent\nD3. agent CAN see the record | WHEN: created_by_staff_id=agent\nD4. agent CAN see the record | WHEN: department has ticket.view permission AND agent is manager/admin\n\nE1. FIELD: customer | SOURCE: known_entities.customers | DISPLAY LABEL: name\nE2. FIELD: user | SOURCE: known_entities.customers.users | DISPLAY LABEL: name | SCOPE: current_user_org\nE3. FIELD: equipment | SOURCE: known_entities.customers.equipment | DISPLAY LABEL: provision_name | SCOPE: current_user_org\nE4. FIELD: service_type | SOURCE: known_entities.departments.service_types | DISPLAY LABEL: name\nE5. FIELD: department | SOURCE: known_entities.departments | DISPLAY LABEL: name\nE6. FIELD: staff_accountable | SOURCE: known_entities.departments.staff | DISPLAY LABEL: name\nE7. FIELD: staff_assigned | SOURCE: known_entities.departments.staff | DISPLAY LABEL: name\nE8. FIELD: priority | SOURCE: static | DISPLAY LABEL: label",
   "scenarios": [
     {
       "id": "TC001",
@@ -10,23 +10,25 @@
         "agent_create_ticket"
       ],
       "role": "agent",
-      "description": "Agent creates a ticket with all required fields filled correctly.",
+      "description": "Agent creates a ticket with all required fields filled with valid values.",
       "inputs": {
         "customer": "Acme Corp",
         "user": "Alice Smith",
-        "equipment": "Acme HQ - Main Server",
+        "subject": "Server not responding",
         "service_type": "Breakdown Repair",
-        "department": "Technical Support",
-        "subject": "Server not responding"
+        "priority": "High"
       },
       "expected_outcome": "pass",
       "expected_message": null,
-      "assertion": "Ticket is successfully created and visible in the ticket list.",
+      "assertion": "Ticket is successfully created and visible in the system.",
       "field": null,
       "cascade_trigger": null,
+      "scope": null,
       "second_session": null,
-      "business_rule": "A1, A2, A4, A5, A8, A9, A10",
-      "test_mode": "ui"
+      "business_rule": "A1, A2, A10",
+      "test_mode": "ui",
+      "permission_agent": null,
+      "permission_element": null
     },
     {
       "id": "TC002",
@@ -36,20 +38,22 @@
         "agent_create_ticket"
       ],
       "role": "agent",
-      "description": "Omit the 'customer' field which is required and not auto-filled.",
+      "description": "Attempt to create a ticket without specifying the Organization.",
       "inputs": {
         "user": "Alice Smith",
-        "subject": "Network Issue",
-        "description": "The network is down in the main office."
+        "subject": "Server not responding"
       },
       "expected_outcome": "fail",
-      "expected_message": "Customer field is required.",
-      "assertion": "Form submission fails with a missing customer field error.",
+      "expected_message": "Organization is required.",
+      "assertion": "Error message 'Organization is required.' is displayed.",
       "field": "customer",
       "cascade_trigger": null,
+      "scope": null,
       "second_session": null,
       "business_rule": "A1",
-      "test_mode": "ui"
+      "test_mode": "ui",
+      "permission_agent": null,
+      "permission_element": null
     },
     {
       "id": "TC003",
@@ -59,20 +63,22 @@
         "agent_create_ticket"
       ],
       "role": "agent",
-      "description": "Omit the 'user' field which is required and not auto-filled.",
+      "description": "Attempt to create a ticket without specifying the Organization User.",
       "inputs": {
         "customer": "Acme Corp",
-        "subject": "Network Issue",
-        "description": "The network is down in the main office."
+        "subject": "Server not responding"
       },
       "expected_outcome": "fail",
-      "expected_message": "User field is required.",
-      "assertion": "Form submission fails with a missing user field error.",
+      "expected_message": "Organization User is required.",
+      "assertion": "Error message 'Organization User is required.' is displayed.",
       "field": "user",
       "cascade_trigger": null,
+      "scope": null,
       "second_session": null,
       "business_rule": "A2",
-      "test_mode": "ui"
+      "test_mode": "ui",
+      "permission_agent": null,
+      "permission_element": null
     },
     {
       "id": "TC004",
@@ -82,20 +88,22 @@
         "agent_create_ticket"
       ],
       "role": "agent",
-      "description": "Omit the 'subject' field which is required and not auto-filled.",
+      "description": "Attempt to create a ticket without specifying the Subject.",
       "inputs": {
         "customer": "Acme Corp",
-        "user": "Alice Smith",
-        "description": "The network is down in the main office."
+        "user": "Alice Smith"
       },
       "expected_outcome": "fail",
-      "expected_message": "Subject field is required.",
-      "assertion": "Form submission fails with a missing subject field error.",
+      "expected_message": "Subject is required.",
+      "assertion": "Error message 'Subject is required.' is displayed.",
       "field": "subject",
       "cascade_trigger": null,
+      "scope": null,
       "second_session": null,
       "business_rule": "A10",
-      "test_mode": "ui"
+      "test_mode": "ui",
+      "permission_agent": null,
+      "permission_element": null
     },
     {
       "id": "TC005",
@@ -105,22 +113,26 @@
         "agent_create_ticket"
       ],
       "role": "agent",
-      "description": "Test subject field with maximum allowed length of 175 characters.",
+      "description": "Test subject field at maximum length of 175 characters.",
       "inputs": {
         "customer": "Acme Corp",
         "user": "Alice Smith",
         "subject": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-        "description": "Test description",
-        "files": "test.pdf"
+        "description": "Server not responding",
+        "service_type": "Breakdown Repair",
+        "priority": "High"
       },
       "expected_outcome": "pass",
       "expected_message": null,
       "assertion": "Form submits successfully with subject at max length.",
       "field": "subject",
       "cascade_trigger": null,
+      "scope": null,
       "second_session": null,
       "business_rule": "A10",
-      "test_mode": "ui"
+      "test_mode": "ui",
+      "permission_agent": null,
+      "permission_element": null
     },
     {
       "id": "TC006",
@@ -130,22 +142,26 @@
         "agent_create_ticket"
       ],
       "role": "agent",
-      "description": "Test subject field with length exceeding maximum allowed length by one character.",
+      "description": "Test subject field with length exceeding maximum limit of 175 characters.",
       "inputs": {
         "customer": "Acme Corp",
         "user": "Alice Smith",
         "subject": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-        "description": "Test description",
-        "files": "test.pdf"
+        "description": "Server not responding",
+        "service_type": "Breakdown Repair",
+        "priority": "High"
       },
       "expected_outcome": "fail",
       "expected_message": "Subject cannot exceed 175 characters.",
-      "assertion": "Form shows error message for subject exceeding max length.",
+      "assertion": "Error message displayed for subject exceeding max length.",
       "field": "subject",
       "cascade_trigger": null,
+      "scope": null,
       "second_session": null,
       "business_rule": "A10",
-      "test_mode": "ui"
+      "test_mode": "ui",
+      "permission_agent": null,
+      "permission_element": null
     },
     {
       "id": "TC007",
@@ -155,22 +171,27 @@
         "agent_create_ticket"
       ],
       "role": "agent",
-      "description": "Test file attachment with allowed file type PDF.",
+      "description": "Test attachment field with allowed file type (PDF).",
       "inputs": {
         "customer": "Acme Corp",
         "user": "Alice Smith",
-        "subject": "Test Subject",
-        "description": "Test description",
-        "files": "test.pdf"
+        "subject": "Server Issue",
+        "description": "Server not responding",
+        "files": "report.pdf",
+        "service_type": "Breakdown Repair",
+        "priority": "High"
       },
       "expected_outcome": "pass",
       "expected_message": null,
-      "assertion": "Form accepts PDF file type successfully.",
+      "assertion": "Form submits successfully with allowed file type.",
       "field": "files",
       "cascade_trigger": null,
+      "scope": null,
       "second_session": null,
       "business_rule": "A12",
-      "test_mode": "ui"
+      "test_mode": "ui",
+      "permission_agent": null,
+      "permission_element": null
     },
     {
       "id": "TC008",
@@ -180,22 +201,27 @@
         "agent_create_ticket"
       ],
       "role": "agent",
-      "description": "Test file attachment with disallowed file type TXT.",
+      "description": "Test attachment field with disallowed file type (exe).",
       "inputs": {
         "customer": "Acme Corp",
         "user": "Alice Smith",
-        "subject": "Test Subject",
-        "description": "Test description",
-        "files": "test.txt"
+        "subject": "Server Issue",
+        "description": "Server not responding",
+        "files": "malware.exe",
+        "service_type": "Breakdown Repair",
+        "priority": "High"
       },
       "expected_outcome": "fail",
-      "expected_message": "File type not supported. Allowed types: Image, PDF, Word, Excel, CSV, Eml, Easm, Mp4, Mov.",
-      "assertion": "Form shows error message for unsupported file type.",
+      "expected_message": "File type not allowed. Please upload a valid file type.",
+      "assertion": "Error message displayed for disallowed file type.",
       "field": "files",
       "cascade_trigger": null,
+      "scope": null,
       "second_session": null,
       "business_rule": "A12",
-      "test_mode": "ui"
+      "test_mode": "ui",
+      "permission_agent": null,
+      "permission_element": null
     },
     {
       "id": "TC009",
@@ -209,19 +235,22 @@
       "inputs": {
         "customer": "Acme Corp",
         "user": "Alice Smith",
-        "equipment": "Acme HQ - Main Server",
-        "subject": "Server Issue",
-        "description": "The main server is down.",
-        "files": "unsupported_file_type.xyz"
+        "subject": "Server not responding",
+        "files": "unsupported_file_type.xyz",
+        "service_type": "Breakdown Repair",
+        "priority": "High"
       },
       "expected_outcome": "fail",
       "expected_message": "Invalid file type. Allowed types are: Image, PDF, Word, Excel, CSV, Eml, Easm, Mp4, Mov.",
-      "assertion": "Error message is displayed indicating the file type is not supported.",
+      "assertion": "Error message displayed for unsupported file type.",
       "field": "files",
       "cascade_trigger": null,
+      "scope": null,
       "second_session": null,
       "business_rule": "A12",
-      "test_mode": "ui"
+      "test_mode": "ui",
+      "permission_agent": null,
+      "permission_element": null
     },
     {
       "id": "TC010",
@@ -231,19 +260,21 @@
         "agent_create_ticket"
       ],
       "role": "agent",
-      "description": "Verify department is filtered based on selected service_type.",
+      "description": "Happy-order: Setting customer should filter users.",
       "inputs": {
-        "service_type": "Breakdown Repair"
+        "customer": "Acme Corp"
       },
       "expected_outcome": "pass",
       "expected_message": null,
-      "assertion": "Department options are filtered based on the selected service_type.",
-      "field": "department",
-      "cascade_trigger": [
-        "service_type"
-      ],
+      "assertion": "User dropdown is filtered based on selected customer.",
+      "field": "user",
+      "cascade_trigger": "customer",
+      "scope": null,
       "second_session": null,
-      "business_rule": "B1"
+      "business_rule": "B1",
+      "test_mode": "ui",
+      "permission_agent": null,
+      "permission_element": null
     },
     {
       "id": "TC011",
@@ -253,19 +284,22 @@
         "agent_create_ticket"
       ],
       "role": "agent",
-      "description": "Verify department resets when service_type is cleared.",
+      "description": "Wrong-order: Interacting with user before setting customer should reset user.",
       "inputs": {
-        "service_type": "Breakdown Repair"
+        "user": "Alice Smith",
+        "customer": "Acme Corp"
       },
       "expected_outcome": "pass",
       "expected_message": null,
-      "assertion": "Department resets when service_type is cleared.",
-      "field": "department",
-      "cascade_trigger": [
-        "service_type"
-      ],
+      "assertion": "User dropdown resets after setting customer.",
+      "field": "user",
+      "cascade_trigger": "customer",
+      "scope": null,
       "second_session": null,
-      "business_rule": "B1"
+      "business_rule": "B1",
+      "test_mode": "ui",
+      "permission_agent": null,
+      "permission_element": null
     },
     {
       "id": "TC012",
@@ -275,19 +309,22 @@
         "agent_create_ticket"
       ],
       "role": "agent",
-      "description": "Verify staff_accountable is auto-filled based on selected department.",
+      "description": "Clear-trigger: Clearing customer should reset user.",
       "inputs": {
-        "department": "Technical Support"
+        "customer": "Acme Corp",
+        "user": "Alice Smith"
       },
       "expected_outcome": "pass",
       "expected_message": null,
-      "assertion": "Staff accountable is auto-filled based on the selected department.",
-      "field": "staff_accountable",
-      "cascade_trigger": [
-        "department"
-      ],
+      "assertion": "User dropdown resets after clearing customer.",
+      "field": "user",
+      "cascade_trigger": "customer",
+      "scope": null,
       "second_session": null,
-      "business_rule": "B2"
+      "business_rule": "B1",
+      "test_mode": "ui",
+      "permission_agent": null,
+      "permission_element": null
     },
     {
       "id": "TC013",
@@ -297,19 +334,21 @@
         "agent_create_ticket"
       ],
       "role": "agent",
-      "description": "Verify staff_accountable resets when department is cleared.",
+      "description": "Happy-order: Setting customer should filter equipment.",
       "inputs": {
-        "department": "Technical Support"
+        "customer": "Acme Corp"
       },
       "expected_outcome": "pass",
       "expected_message": null,
-      "assertion": "Staff accountable resets when department is cleared.",
-      "field": "staff_accountable",
-      "cascade_trigger": [
-        "department"
-      ],
+      "assertion": "Equipment dropdown is filtered based on selected customer.",
+      "field": "equipment",
+      "cascade_trigger": "customer",
+      "scope": null,
       "second_session": null,
-      "business_rule": "B2"
+      "business_rule": "B2",
+      "test_mode": "ui",
+      "permission_agent": null,
+      "permission_element": null
     },
     {
       "id": "TC014",
@@ -319,19 +358,22 @@
         "agent_create_ticket"
       ],
       "role": "agent",
-      "description": "Verify staff_assigned is filtered based on selected department.",
+      "description": "Wrong-order: Interacting with equipment before setting customer should reset equipment.",
       "inputs": {
-        "department": "Technical Support"
+        "equipment": "Acme HQ - Main Server",
+        "customer": "Acme Corp"
       },
       "expected_outcome": "pass",
       "expected_message": null,
-      "assertion": "Staff assigned options are filtered based on the selected department.",
-      "field": "staff_assigned",
-      "cascade_trigger": [
-        "department"
-      ],
+      "assertion": "Equipment dropdown resets after setting customer.",
+      "field": "equipment",
+      "cascade_trigger": "customer",
+      "scope": null,
       "second_session": null,
-      "business_rule": "B3"
+      "business_rule": "B2",
+      "test_mode": "ui",
+      "permission_agent": null,
+      "permission_element": null
     },
     {
       "id": "TC015",
@@ -341,19 +383,22 @@
         "agent_create_ticket"
       ],
       "role": "agent",
-      "description": "Verify staff_assigned resets when department is cleared.",
+      "description": "Clear-trigger: Clearing customer should reset equipment.",
       "inputs": {
-        "department": "Technical Support"
+        "customer": "Acme Corp",
+        "equipment": "Acme HQ - Main Server"
       },
       "expected_outcome": "pass",
       "expected_message": null,
-      "assertion": "Staff assigned resets when department is cleared.",
-      "field": "staff_assigned",
-      "cascade_trigger": [
-        "department"
-      ],
+      "assertion": "Equipment dropdown resets after clearing customer.",
+      "field": "equipment",
+      "cascade_trigger": "customer",
+      "scope": null,
       "second_session": null,
-      "business_rule": "B3"
+      "business_rule": "B2",
+      "test_mode": "ui",
+      "permission_agent": null,
+      "permission_element": null
     },
     {
       "id": "TC016",
@@ -363,19 +408,21 @@
         "agent_create_ticket"
       ],
       "role": "agent",
-      "description": "Verify user is filtered based on selected customer.",
+      "description": "Happy-order: Setting service type should filter department.",
       "inputs": {
-        "customer": "Acme Corp"
+        "service_type": "Breakdown Repair"
       },
       "expected_outcome": "pass",
       "expected_message": null,
-      "assertion": "User options are filtered based on the selected customer.",
-      "field": "user",
-      "cascade_trigger": [
-        "customer"
-      ],
+      "assertion": "Department dropdown is filtered based on selected service type.",
+      "field": "department",
+      "cascade_trigger": "service_type",
+      "scope": null,
       "second_session": null,
-      "business_rule": "B4"
+      "business_rule": "B3",
+      "test_mode": "ui",
+      "permission_agent": null,
+      "permission_element": null
     },
     {
       "id": "TC017",
@@ -385,19 +432,22 @@
         "agent_create_ticket"
       ],
       "role": "agent",
-      "description": "Verify user resets when customer is cleared.",
+      "description": "Wrong-order: Interacting with department before setting service type should reset department.",
       "inputs": {
-        "customer": "Acme Corp"
+        "department": "Technical Support",
+        "service_type": "Breakdown Repair"
       },
       "expected_outcome": "pass",
       "expected_message": null,
-      "assertion": "User resets when customer is cleared.",
-      "field": "user",
-      "cascade_trigger": [
-        "customer"
-      ],
+      "assertion": "Department dropdown resets after setting service type.",
+      "field": "department",
+      "cascade_trigger": "service_type",
+      "scope": null,
       "second_session": null,
-      "business_rule": "B4"
+      "business_rule": "B3",
+      "test_mode": "ui",
+      "permission_agent": null,
+      "permission_element": null
     },
     {
       "id": "TC018",
@@ -407,19 +457,22 @@
         "agent_create_ticket"
       ],
       "role": "agent",
-      "description": "Verify equipment is filtered based on selected customer.",
+      "description": "Clear-trigger: Clearing service type should reset department.",
       "inputs": {
-        "customer": "Acme Corp"
+        "service_type": "Breakdown Repair",
+        "department": "Technical Support"
       },
       "expected_outcome": "pass",
       "expected_message": null,
-      "assertion": "Equipment options are filtered based on the selected customer.",
-      "field": "equipment",
-      "cascade_trigger": [
-        "customer"
-      ],
+      "assertion": "Department dropdown resets after clearing service type.",
+      "field": "department",
+      "cascade_trigger": "service_type",
+      "scope": null,
       "second_session": null,
-      "business_rule": "B5"
+      "business_rule": "B3",
+      "test_mode": "ui",
+      "permission_agent": null,
+      "permission_element": null
     },
     {
       "id": "TC019",
@@ -429,19 +482,21 @@
         "agent_create_ticket"
       ],
       "role": "agent",
-      "description": "Verify equipment resets when customer is cleared.",
+      "description": "Happy-order: Setting department should auto-fill staff accountable.",
       "inputs": {
-        "customer": "Acme Corp"
+        "department": "Technical Support"
       },
       "expected_outcome": "pass",
       "expected_message": null,
-      "assertion": "Equipment resets when customer is cleared.",
-      "field": "equipment",
-      "cascade_trigger": [
-        "customer"
-      ],
+      "assertion": "Staff accountable is auto-filled based on selected department.",
+      "field": "staff_accountable",
+      "cascade_trigger": "department",
+      "scope": null,
       "second_session": null,
-      "business_rule": "B5"
+      "business_rule": "B4",
+      "test_mode": "ui",
+      "permission_agent": null,
+      "permission_element": null
     },
     {
       "id": "TC020",
@@ -451,19 +506,22 @@
         "agent_create_ticket"
       ],
       "role": "agent",
-      "description": "Verify service_type is filtered based on selected equipment.",
+      "description": "Wrong-order: Interacting with staff accountable before setting department should reset staff accountable.",
       "inputs": {
-        "equipment": "Acme HQ - Main Server"
+        "staff_accountable": "John Doe",
+        "department": "Technical Support"
       },
       "expected_outcome": "pass",
       "expected_message": null,
-      "assertion": "Service type options are filtered based on the selected equipment.",
-      "field": "service_type",
-      "cascade_trigger": [
-        "equipment"
-      ],
+      "assertion": "Staff accountable resets after setting department.",
+      "field": "staff_accountable",
+      "cascade_trigger": "department",
+      "scope": null,
       "second_session": null,
-      "business_rule": "B6"
+      "business_rule": "B4",
+      "test_mode": "ui",
+      "permission_agent": null,
+      "permission_element": null
     },
     {
       "id": "TC021",
@@ -473,19 +531,22 @@
         "agent_create_ticket"
       ],
       "role": "agent",
-      "description": "Verify service_type resets when equipment is cleared.",
+      "description": "Clear-trigger: Clearing department should reset staff accountable.",
       "inputs": {
-        "equipment": "Acme HQ - Main Server"
+        "department": "Technical Support",
+        "staff_accountable": "John Doe"
       },
       "expected_outcome": "pass",
       "expected_message": null,
-      "assertion": "Service type resets when equipment is cleared.",
-      "field": "service_type",
-      "cascade_trigger": [
-        "equipment"
-      ],
+      "assertion": "Staff accountable resets after clearing department.",
+      "field": "staff_accountable",
+      "cascade_trigger": "department",
+      "scope": null,
       "second_session": null,
-      "business_rule": "B6"
+      "business_rule": "B4",
+      "test_mode": "ui",
+      "permission_agent": null,
+      "permission_element": null
     },
     {
       "id": "TC022",
@@ -495,176 +556,225 @@
         "agent_create_ticket"
       ],
       "role": "agent",
-      "description": "Verify due_date is calculated based on selected service_type.",
+      "description": "Happy-order: Setting department should filter staff assigned.",
       "inputs": {
-        "service_type": "Breakdown Repair"
+        "department": "Technical Support"
       },
       "expected_outcome": "pass",
       "expected_message": null,
-      "assertion": "Due date is calculated based on the selected service_type.",
-      "field": "due_date",
-      "cascade_trigger": [
-        "service_type"
-      ],
+      "assertion": "Staff assigned dropdown is filtered based on selected department.",
+      "field": "staff_assigned",
+      "cascade_trigger": "department",
+      "scope": null,
       "second_session": null,
-      "business_rule": "B7"
+      "business_rule": "B5",
+      "test_mode": "ui",
+      "permission_agent": null,
+      "permission_element": null
     },
     {
       "id": "TC023",
-      "category": "role_field_visibility",
-      "flow": "agent_create_ticket",
-      "flow_sequence": [
-        "agent_create_ticket"
-      ],
-      "role": "non-agent",
-      "description": "Verify that the 'Organization' field is not present in the DOM for non-agent users.",
-      "inputs": {},
-      "expected_outcome": "pass",
-      "expected_message": null,
-      "assertion": "Organization field is not present in the DOM",
-      "field": "customer",
-      "cascade_trigger": null,
-      "second_session": null,
-      "business_rule": "C1",
-      "test_mode": "ui"
-    },
-    {
-      "id": "TC024",
-      "category": "role_field_visibility",
-      "flow": "agent_create_ticket",
-      "flow_sequence": [
-        "agent_create_ticket"
-      ],
-      "role": "non-agent",
-      "description": "Verify that the 'Organization User' field is not present in the DOM for non-agent users.",
-      "inputs": {},
-      "expected_outcome": "pass",
-      "expected_message": null,
-      "assertion": "Organization User field is not present in the DOM",
-      "field": "user",
-      "cascade_trigger": null,
-      "second_session": null,
-      "business_rule": "C2",
-      "test_mode": "ui"
-    },
-    {
-      "id": "TC025",
-      "category": "role_field_visibility",
-      "flow": "agent_create_ticket",
-      "flow_sequence": [
-        "agent_create_ticket"
-      ],
-      "role": "non-agent",
-      "description": "Verify that the 'Provision Equipment' field is not present in the DOM for non-agent users.",
-      "inputs": {},
-      "expected_outcome": "pass",
-      "expected_message": null,
-      "assertion": "Provision Equipment field is not present in the DOM",
-      "field": "equipment",
-      "cascade_trigger": null,
-      "second_session": null,
-      "business_rule": "C3",
-      "test_mode": "ui"
-    },
-    {
-      "id": "TC026",
-      "category": "role_field_visibility",
-      "flow": "agent_create_ticket",
-      "flow_sequence": [
-        "agent_create_ticket"
-      ],
-      "role": "non-agent",
-      "description": "Verify that the 'Department' field is not present in the DOM for non-agent users.",
-      "inputs": {},
-      "expected_outcome": "pass",
-      "expected_message": null,
-      "assertion": "Department field is not present in the DOM",
-      "field": "department",
-      "cascade_trigger": null,
-      "second_session": null,
-      "business_rule": "C4",
-      "test_mode": "ui"
-    },
-    {
-      "id": "TC027",
-      "category": "role_field_visibility",
-      "flow": "agent_create_ticket",
-      "flow_sequence": [
-        "agent_create_ticket"
-      ],
-      "role": "non-agent",
-      "description": "Verify that the 'Accountable' field is not present in the DOM for non-agent users.",
-      "inputs": {},
-      "expected_outcome": "pass",
-      "expected_message": null,
-      "assertion": "Accountable field is not present in the DOM",
-      "field": "staff_accountable",
-      "cascade_trigger": null,
-      "second_session": null,
-      "business_rule": "C5",
-      "test_mode": "ui"
-    },
-    {
-      "id": "TC028",
-      "category": "role_field_visibility",
-      "flow": "agent_create_ticket",
-      "flow_sequence": [
-        "agent_create_ticket"
-      ],
-      "role": "non-agent",
-      "description": "Verify that the 'Assignee' field is not present in the DOM for non-agent users.",
-      "inputs": {},
-      "expected_outcome": "pass",
-      "expected_message": null,
-      "assertion": "Assignee field is not present in the DOM",
-      "field": "staff_assigned",
-      "cascade_trigger": null,
-      "second_session": null,
-      "business_rule": "C6",
-      "test_mode": "ui"
-    },
-    {
-      "id": "TC029",
-      "category": "role_field_visibility",
-      "flow": "agent_create_ticket",
-      "flow_sequence": [
-        "agent_create_ticket"
-      ],
-      "role": "non-agent",
-      "description": "Verify that the 'Due Date' field is not present in the DOM for non-agent users.",
-      "inputs": {},
-      "expected_outcome": "pass",
-      "expected_message": null,
-      "assertion": "Due Date field is not present in the DOM",
-      "field": "due_date",
-      "cascade_trigger": null,
-      "second_session": null,
-      "business_rule": "C7",
-      "test_mode": "ui"
-    },
-    {
-      "id": "TC030",
-      "category": "ui_capability",
+      "category": "cascade_dependency",
       "flow": "agent_create_ticket",
       "flow_sequence": [
         "agent_create_ticket"
       ],
       "role": "agent",
-      "description": "Verify that the 'Due Date' field is usable as a date input.",
+      "description": "Wrong-order: Interacting with staff assigned before setting department should reset staff assigned.",
       "inputs": {
-        "due_date": "2023-10-15",
-        "customer": "Acme Corp",
-        "user": "Alice Smith",
-        "subject": "Test Subject"
+        "staff_assigned": "John Doe",
+        "department": "Technical Support"
       },
       "expected_outcome": "pass",
       "expected_message": null,
-      "assertion": "User can select a date from the date picker.",
-      "field": "due_date",
-      "cascade_trigger": null,
+      "assertion": "Staff assigned dropdown resets after setting department.",
+      "field": "staff_assigned",
+      "cascade_trigger": "department",
+      "scope": null,
       "second_session": null,
-      "business_rule": "A9",
-      "test_mode": "ui"
+      "business_rule": "B5",
+      "test_mode": "ui",
+      "permission_agent": null,
+      "permission_element": null
+    },
+    {
+      "id": "TC024",
+      "category": "cascade_dependency",
+      "flow": "agent_create_ticket",
+      "flow_sequence": [
+        "agent_create_ticket"
+      ],
+      "role": "agent",
+      "description": "Clear-trigger: Clearing department should reset staff assigned.",
+      "inputs": {
+        "department": "Technical Support",
+        "staff_assigned": "John Doe"
+      },
+      "expected_outcome": "pass",
+      "expected_message": null,
+      "assertion": "Staff assigned dropdown resets after clearing department.",
+      "field": "staff_assigned",
+      "cascade_trigger": "department",
+      "scope": null,
+      "second_session": null,
+      "business_rule": "B5",
+      "test_mode": "ui",
+      "permission_agent": null,
+      "permission_element": null
+    },
+    {
+      "id": "TC025",
+      "category": "cascade_dependency",
+      "flow": "agent_create_ticket",
+      "flow_sequence": [
+        "agent_create_ticket"
+      ],
+      "role": "agent",
+      "description": "Happy-order: Setting department should auto-fill due date.",
+      "inputs": {
+        "department": "Technical Support"
+      },
+      "expected_outcome": "pass",
+      "expected_message": null,
+      "assertion": "Due date is auto-filled based on selected department.",
+      "field": "due_date",
+      "cascade_trigger": "department",
+      "scope": null,
+      "second_session": null,
+      "business_rule": "B6",
+      "test_mode": "ui",
+      "permission_agent": null,
+      "permission_element": null
+    },
+    {
+      "id": "TC026",
+      "category": "cascade_dependency",
+      "flow": "agent_create_ticket",
+      "flow_sequence": [
+        "agent_create_ticket"
+      ],
+      "role": "agent",
+      "description": "Wrong-order: Interacting with due date before setting department should reset due date.",
+      "inputs": {
+        "due_date": "2023-12-31",
+        "department": "Technical Support"
+      },
+      "expected_outcome": "pass",
+      "expected_message": null,
+      "assertion": "Due date resets after setting department.",
+      "field": "due_date",
+      "cascade_trigger": "department",
+      "scope": null,
+      "second_session": null,
+      "business_rule": "B6",
+      "test_mode": "ui",
+      "permission_agent": null,
+      "permission_element": null
+    },
+    {
+      "id": "TC027",
+      "category": "cascade_dependency",
+      "flow": "agent_create_ticket",
+      "flow_sequence": [
+        "agent_create_ticket"
+      ],
+      "role": "agent",
+      "description": "Clear-trigger: Clearing department should reset due date.",
+      "inputs": {
+        "department": "Technical Support",
+        "due_date": "2023-12-31"
+      },
+      "expected_outcome": "pass",
+      "expected_message": null,
+      "assertion": "Due date resets after clearing department.",
+      "field": "due_date",
+      "cascade_trigger": "department",
+      "scope": null,
+      "second_session": null,
+      "business_rule": "B6",
+      "test_mode": "ui",
+      "permission_agent": null,
+      "permission_element": null
+    },
+    {
+      "id": "TC028",
+      "category": "cascade_dependency",
+      "flow": "agent_create_ticket",
+      "flow_sequence": [
+        "agent_create_ticket"
+      ],
+      "role": "agent",
+      "description": "Happy-order: Setting service type, priority, and customer should calculate due date.",
+      "inputs": {
+        "service_type": "Breakdown Repair",
+        "priority": "High",
+        "customer": "Acme Corp"
+      },
+      "expected_outcome": "pass",
+      "expected_message": null,
+      "assertion": "Due date is calculated based on service type, priority, and customer.",
+      "field": "due_date",
+      "cascade_trigger": "service_type, priority, customer",
+      "scope": null,
+      "second_session": null,
+      "business_rule": "B7",
+      "test_mode": "ui",
+      "permission_agent": null,
+      "permission_element": null
+    },
+    {
+      "id": "TC029",
+      "category": "cascade_dependency",
+      "flow": "agent_create_ticket",
+      "flow_sequence": [
+        "agent_create_ticket"
+      ],
+      "role": "agent",
+      "description": "Wrong-order: Interacting with due date before setting service type, priority, and customer should reset due date.",
+      "inputs": {
+        "due_date": "2023-12-31",
+        "service_type": "Breakdown Repair",
+        "priority": "High",
+        "customer": "Acme Corp"
+      },
+      "expected_outcome": "pass",
+      "expected_message": null,
+      "assertion": "Due date resets after setting service type, priority, and customer.",
+      "field": "due_date",
+      "cascade_trigger": "service_type, priority, customer",
+      "scope": null,
+      "second_session": null,
+      "business_rule": "B7",
+      "test_mode": "ui",
+      "permission_agent": null,
+      "permission_element": null
+    },
+    {
+      "id": "TC030",
+      "category": "cascade_dependency",
+      "flow": "agent_create_ticket",
+      "flow_sequence": [
+        "agent_create_ticket"
+      ],
+      "role": "agent",
+      "description": "Clear-trigger: Clearing service type, priority, or customer should reset due date.",
+      "inputs": {
+        "service_type": "Breakdown Repair",
+        "priority": "High",
+        "customer": "Acme Corp",
+        "due_date": "2023-12-31"
+      },
+      "expected_outcome": "pass",
+      "expected_message": null,
+      "assertion": "Due date resets after clearing service type, priority, or customer.",
+      "field": "due_date",
+      "cascade_trigger": "service_type, priority, customer",
+      "scope": null,
+      "second_session": null,
+      "business_rule": "B7",
+      "test_mode": "ui",
+      "permission_agent": null,
+      "permission_element": null
     },
     {
       "id": "TC031",
@@ -674,21 +784,25 @@
         "agent_create_ticket"
       ],
       "role": "agent",
-      "description": "Verify that the 'Attachment' field is usable for file uploads.",
+      "description": "Verify the date picker widget is usable for the Due Date field.",
       "inputs": {
-        "files": "example.pdf",
         "customer": "Acme Corp",
+        "subject": "Server not responding",
         "user": "Alice Smith",
-        "subject": "Test Subject"
+        "service_type": "Breakdown Repair",
+        "priority": "High"
       },
       "expected_outcome": "pass",
       "expected_message": null,
-      "assertion": "User can upload a file of allowed types.",
-      "field": "files",
+      "assertion": "Due Date field allows date selection",
+      "field": "due_date",
       "cascade_trigger": null,
+      "scope": null,
       "second_session": null,
-      "business_rule": "A12",
-      "test_mode": "ui"
+      "business_rule": "A9",
+      "test_mode": "ui",
+      "permission_agent": null,
+      "permission_element": null
     },
     {
       "id": "TC032",
@@ -698,20 +812,25 @@
         "agent_create_ticket"
       ],
       "role": "agent",
-      "description": "Verify that the 'Organization' field is usable as a select input.",
+      "description": "Verify the file upload widget is usable for the Attachment field.",
       "inputs": {
         "customer": "Acme Corp",
+        "subject": "Server not responding",
         "user": "Alice Smith",
-        "subject": "Test Subject"
+        "service_type": "Breakdown Repair",
+        "priority": "High"
       },
       "expected_outcome": "pass",
       "expected_message": null,
-      "assertion": "User can select an organization from the dropdown.",
-      "field": "customer",
+      "assertion": "Attachment field allows file upload",
+      "field": "files",
       "cascade_trigger": null,
+      "scope": null,
       "second_session": null,
-      "business_rule": "A1",
-      "test_mode": "ui"
+      "business_rule": "A12",
+      "test_mode": "ui",
+      "permission_agent": null,
+      "permission_element": null
     },
     {
       "id": "TC033",
@@ -721,20 +840,25 @@
         "agent_create_ticket"
       ],
       "role": "agent",
-      "description": "Verify that the 'Subject' field is usable as a text input.",
+      "description": "Verify the select dropdown is usable for the Organization field.",
       "inputs": {
-        "subject": "Network Issue",
         "customer": "Acme Corp",
-        "user": "Alice Smith"
+        "subject": "Server not responding",
+        "user": "Alice Smith",
+        "service_type": "Breakdown Repair",
+        "priority": "High"
       },
       "expected_outcome": "pass",
       "expected_message": null,
-      "assertion": "User can enter text into the subject field.",
-      "field": "subject",
+      "assertion": "Organization field allows selection from dropdown",
+      "field": "customer",
       "cascade_trigger": null,
+      "scope": null,
       "second_session": null,
-      "business_rule": "A10",
-      "test_mode": "ui"
+      "business_rule": "A1",
+      "test_mode": "ui",
+      "permission_agent": null,
+      "permission_element": null
     },
     {
       "id": "TC034",
@@ -744,21 +868,157 @@
         "agent_create_ticket"
       ],
       "role": "agent",
-      "description": "Verify that the 'Description' field is usable as a textarea input.",
+      "description": "Verify the text input is usable for the Subject field.",
       "inputs": {
-        "description": "The network is down in the main office.",
         "customer": "Acme Corp",
+        "subject": "Server not responding",
         "user": "Alice Smith",
-        "subject": "Test Subject"
+        "service_type": "Breakdown Repair",
+        "priority": "High"
       },
       "expected_outcome": "pass",
       "expected_message": null,
-      "assertion": "User can enter text into the description field.",
+      "assertion": "Subject field allows text input",
+      "field": "subject",
+      "cascade_trigger": null,
+      "scope": null,
+      "second_session": null,
+      "business_rule": "A10",
+      "test_mode": "ui",
+      "permission_agent": null,
+      "permission_element": null
+    },
+    {
+      "id": "TC035",
+      "category": "ui_capability",
+      "flow": "agent_create_ticket",
+      "flow_sequence": [
+        "agent_create_ticket"
+      ],
+      "role": "agent",
+      "description": "Verify the textarea input is usable for the Description field.",
+      "inputs": {
+        "customer": "Acme Corp",
+        "subject": "Server not responding",
+        "user": "Alice Smith",
+        "service_type": "Breakdown Repair",
+        "priority": "High"
+      },
+      "expected_outcome": "pass",
+      "expected_message": null,
+      "assertion": "Description field allows text input",
       "field": "description",
       "cascade_trigger": null,
+      "scope": null,
       "second_session": null,
       "business_rule": "A11",
-      "test_mode": "ui"
+      "test_mode": "ui",
+      "permission_agent": null,
+      "permission_element": null
+    },
+    {
+      "id": "TC036",
+      "category": "role_permission_access",
+      "flow": "agent_create_ticket",
+      "flow_sequence": [
+        "agent_create_ticket"
+      ],
+      "role": "agent",
+      "description": "Agent with ALL access can create a ticket in the Technical Support department.",
+      "inputs": {
+        "customer": "Acme Corp",
+        "user": "Alice Smith",
+        "subject": "Server not responding"
+      },
+      "expected_outcome": "pass",
+      "expected_message": null,
+      "assertion": "Agent can create a ticket in the Technical Support department.",
+      "field": null,
+      "cascade_trigger": null,
+      "scope": null,
+      "second_session": null,
+      "business_rule": null,
+      "test_mode": "permission",
+      "permission_agent": "John Doe",
+      "permission_element": "case"
+    },
+    {
+      "id": "TC037",
+      "category": "role_permission_access",
+      "flow": "agent_create_ticket",
+      "flow_sequence": [
+        "agent_create_ticket"
+      ],
+      "role": "agent",
+      "description": "Agent with LIMITED access cannot create a ticket in the Electrical department.",
+      "inputs": {
+        "customer": "Acme Corp",
+        "user": "Alice Smith",
+        "subject": "Server not responding"
+      },
+      "expected_outcome": "fail",
+      "expected_message": "You do not have permission to create a ticket in this department.",
+      "assertion": "Agent cannot create a ticket in the Electrical department.",
+      "field": null,
+      "cascade_trigger": null,
+      "scope": null,
+      "second_session": null,
+      "business_rule": null,
+      "test_mode": "permission",
+      "permission_agent": "Jane Smith",
+      "permission_element": "case"
+    },
+    {
+      "id": "TC038",
+      "category": "role_permission_access",
+      "flow": "agent_create_ticket",
+      "flow_sequence": [
+        "agent_create_ticket"
+      ],
+      "role": "agent",
+      "description": "Agent with MIXED access can create a ticket in the Electrical department but not in Technical Support.",
+      "inputs": {
+        "customer": "Acme Corp",
+        "user": "Alice Smith",
+        "subject": "Server not responding"
+      },
+      "expected_outcome": "pass",
+      "expected_message": null,
+      "assertion": "Agent can create a ticket in the Electrical department.",
+      "field": null,
+      "cascade_trigger": null,
+      "scope": null,
+      "second_session": null,
+      "business_rule": null,
+      "test_mode": "permission",
+      "permission_agent": "Liam Hughes",
+      "permission_element": "case"
+    },
+    {
+      "id": "TC039",
+      "category": "role_permission_access",
+      "flow": "agent_create_ticket",
+      "flow_sequence": [
+        "agent_create_ticket"
+      ],
+      "role": "agent",
+      "description": "Agent with ALL access can create a ticket in the Technical Support department.",
+      "inputs": {
+        "customer": "Acme Corp",
+        "user": "Alice Smith",
+        "subject": "Server not responding"
+      },
+      "expected_outcome": "pass",
+      "expected_message": null,
+      "assertion": "Agent can create a ticket in the Technical Support department.",
+      "field": null,
+      "cascade_trigger": null,
+      "scope": null,
+      "second_session": null,
+      "business_rule": null,
+      "test_mode": "permission",
+      "permission_agent": "Carlos Silva",
+      "permission_element": "case"
     }
   ]
 }

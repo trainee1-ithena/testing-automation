@@ -6,17 +6,20 @@
     "test_mode": "multi_session",
     "description": "Create a ticket with all required fields filled with valid values for the primary role.",
     "inputs": {
-      "ticket_subject": "Server Down",
-      "priority_id": "High",
-      "status_id": "Open",
-      "dept_id": "Technical Support"
+      "customer": "Acme Corp",
+      "user": "Alice Smith",
+      "service_type": "Breakdown Repair",
+      "department": "Technical Support",
+      "priority": "High",
+      "subject": "Server not responding",
+      "staff_assigned": "John Doe"
     },
     "expected_outcome": "pass",
     "expected_message": null,
     "actual_outcome": "pass",
-    "actual_message": "Ticket 122 visible to Session B (agent)",
+    "actual_message": "Ticket 234 visible to Session B (John Doe)",
     "passed": true,
-    "raw_output": "============================= test session starts =============================\ncollecting ... collected 1 item\n\n..\\..\\..\\..\\..\\..\\AppData\\Local\\Temp\\tmppk7ggblx\\test_TC001.py::test_session_b[chromium] PASSED [100%]\n\n============================= 1 passed in 22.30s ==============================\n",
+    "raw_output": "============================= test session starts =============================\ncollecting ... collected 1 item\n\n..\\..\\..\\..\\..\\..\\AppData\\Local\\Temp\\tmpk0gurzcw\\test_TC001.py::test_session_b[chromium] PASSED [100%]\n\n============================= 1 passed in 19.24s ==============================\n",
     "artifacts": []
   },
   {
@@ -24,20 +27,22 @@
     "category": "post_creation_visibility",
     "flow": "post_creation_visibility",
     "test_mode": "multi_session",
-    "description": "Verify that an agent who is the accountable staff can see the ticket record.",
+    "description": "Session B user CAN see the record when staff_assigned is the agent.",
     "inputs": {
-      "ticket_subject": "Server Down",
-      "priority_id": "High",
-      "status_id": "Open",
-      "dept_id": "Technical Support",
-      "accountable_staff_id": "John Doe"
+      "customer": "Acme Corp",
+      "user": "Alice Smith",
+      "service_type": "Breakdown Repair",
+      "department": "Technical Support",
+      "staff_assigned": "John Doe",
+      "priority": "High",
+      "subject": "Test Subject"
     },
     "expected_outcome": "pass",
     "expected_message": null,
     "actual_outcome": "pass",
-    "actual_message": "Ticket 123 visible to Session B (John Doe)",
+    "actual_message": "Ticket 235 visible to Session B (John Doe)",
     "passed": true,
-    "raw_output": "============================= test session starts =============================\ncollecting ... collected 1 item\n\n..\\..\\..\\..\\..\\..\\AppData\\Local\\Temp\\tmpx7i_e4zh\\test_TC002.py::test_session_b[chromium] PASSED [100%]\n\n============================= 1 passed in 18.79s ==============================\n",
+    "raw_output": "============================= test session starts =============================\ncollecting ... collected 1 item\n\n..\\..\\..\\..\\..\\..\\AppData\\Local\\Temp\\tmpi7r2vlya\\test_TC002.py::test_session_b[chromium] PASSED [100%]\n\n============================= 1 passed in 21.93s ==============================\n",
     "artifacts": []
   },
   {
@@ -45,19 +50,22 @@
     "category": "post_creation_visibility",
     "flow": "post_creation_visibility",
     "test_mode": "multi_session",
-    "description": "Verify that an agent who is in the same department as the ticket can see the ticket record.",
+    "description": "Session B user CAN see the record when staff_accountable is the agent.",
     "inputs": {
-      "ticket_subject": "Network Issue",
-      "priority_id": "Normal",
-      "status_id": "In Progress",
-      "dept_id": "Technical Support"
+      "customer": "Acme Corp",
+      "user": "Alice Smith",
+      "service_type": "Breakdown Repair",
+      "department": "Technical Support",
+      "staff_accountable": "John Doe",
+      "priority": "High",
+      "subject": "Test Subject"
     },
     "expected_outcome": "pass",
     "expected_message": null,
     "actual_outcome": "pass",
-    "actual_message": "Ticket 124 visible to Session B (Liam Hughes)",
+    "actual_message": "Ticket 237 visible to Session B (John Doe)",
     "passed": true,
-    "raw_output": "============================= test session starts =============================\ncollecting ... collected 1 item\n\n..\\..\\..\\..\\..\\..\\AppData\\Local\\Temp\\tmpfx_epvvt\\test_TC003.py::test_session_b[chromium] PASSED [100%]\n\n============================= 1 passed in 18.68s ==============================\n",
+    "raw_output": "============================= test session starts =============================\ncollecting ... collected 1 item\n\n..\\..\\..\\..\\..\\..\\AppData\\Local\\Temp\\tmpocutgt7o\\test_TC003.py::test_session_b[chromium] PASSED [100%]\n\n============================= 1 passed in 18.30s ==============================\n",
     "artifacts": []
   },
   {
@@ -65,20 +73,43 @@
     "category": "post_creation_visibility",
     "flow": "post_creation_visibility",
     "test_mode": "multi_session",
-    "description": "Verify that an agent who is not the accountable staff and not in the same department cannot see the ticket record.",
+    "description": "Session B user CAN see the record when department has ticket.view permission and agent is manager/admin.",
     "inputs": {
-      "ticket_subject": "Power Outage",
-      "priority_id": "Low",
-      "status_id": "Closed",
-      "dept_id": "Electrical",
-      "accountable_staff_id": "Jane Smith"
+      "customer": "Acme Corp",
+      "user": "Alice Smith",
+      "service_type": "Breakdown Repair",
+      "department": "Electrical",
+      "priority": "High",
+      "subject": "Test Subject"
     },
-    "expected_outcome": "fail",
+    "expected_outcome": "pass",
     "expected_message": null,
     "actual_outcome": "pass",
-    "actual_message": "Ticket 125 visible to Session B (Carlos Silva)",
+    "actual_message": "Ticket 238 visible to Session B (John Doe)",
     "passed": true,
-    "raw_output": "============================= test session starts =============================\ncollecting ... collected 1 item\n\n..\\..\\..\\..\\..\\..\\AppData\\Local\\Temp\\tmp6l4snqxq\\test_TC004.py::test_session_b[chromium] PASSED [100%]\n\n============================= 1 passed in 19.75s ==============================\n",
+    "raw_output": "============================= test session starts =============================\ncollecting ... collected 1 item\n\n..\\..\\..\\..\\..\\..\\AppData\\Local\\Temp\\tmpgt0hgqjn\\test_TC004.py::test_session_b[chromium] PASSED [100%]\n\n============================= 1 passed in 19.33s ==============================\n",
+    "artifacts": []
+  },
+  {
+    "id": "TC005",
+    "category": "post_creation_visibility",
+    "flow": "post_creation_visibility",
+    "test_mode": "multi_session",
+    "description": "Session B user CANNOT see the record when conditions are not met.",
+    "inputs": {
+      "customer": "Acme Corp",
+      "user": "Alice Smith",
+      "service_type": "Breakdown Repair",
+      "department": "Technical Support",
+      "priority": "High",
+      "subject": "Test Subject"
+    },
+    "expected_outcome": "pass",
+    "expected_message": null,
+    "actual_outcome": "pass",
+    "actual_message": "Ticket 239 correctly hidden to Session B (Liam Hughes)",
+    "passed": true,
+    "raw_output": "============================= test session starts =============================\ncollecting ... collected 1 item\n\n..\\..\\..\\..\\..\\..\\AppData\\Local\\Temp\\tmpm_lx7jxk\\test_TC005.py::test_session_b[chromium] PASSED [100%]\n\n============================= 1 passed in 20.72s ==============================\n",
     "artifacts": []
   }
 ]

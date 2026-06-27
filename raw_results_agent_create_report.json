@@ -1,0 +1,548 @@
+[
+  {
+    "id": "TC001",
+    "category": "happy_path",
+    "flow": "agent_create_report",
+    "test_mode": "ui",
+    "description": "Agent creates a service report with all required fields filled with valid values.",
+    "inputs": {
+      "ticket_id": "0626400279 - Server not responding",
+      "internal_only": false,
+      "description": "Routine maintenance completed successfully.",
+      "report_type": "Fixed Fee & Materials",
+      "name": "Test Name",
+      "reportDate": "2023-10-15",
+      "org_id": "Acme Corp",
+      "user_id": "Alice Smith"
+    },
+    "expected_outcome": "pass",
+    "expected_message": null,
+    "actual_outcome": "submitted",
+    "actual_message": "",
+    "passed": true,
+    "raw_output": "============================= test session starts =============================\ncollecting ... collected 1 item\n\n..\\..\\..\\..\\..\\..\\AppData\\Local\\Temp\\tmp1edd5f57\\test_TC001.py::test_run[chromium] PASSED [100%]\n\n============================= 1 passed in 45.40s ==============================\n",
+    "artifacts": []
+  },
+  {
+    "id": "TC002",
+    "category": "missing_field",
+    "flow": "agent_create_report",
+    "test_mode": "ui",
+    "description": "Omit the required 'Case' field to test form submission failure.",
+    "inputs": {
+      "internal_only": false,
+      "appointment_id": "Meeting with client: 2023-10-10 10:00 - 2023-10-10 11:00",
+      "description": "Routine maintenance check",
+      "report_type": "Fixed Fee & Materials",
+      "name": "Test Name",
+      "reportDate": "2023-10-15",
+      "org_id": "Acme Corp",
+      "user_id": "Alice Smith"
+    },
+    "expected_outcome": "fail",
+    "expected_message": "The 'Case' field is required.",
+    "actual_outcome": "correctly rejected",
+    "actual_message": "The 'Case' field is required.",
+    "passed": true,
+    "raw_output": "============================= test session starts =============================\ncollecting ... collected 1 item\n\n..\\..\\..\\..\\..\\..\\AppData\\Local\\Temp\\tmpit7ix9wr\\test_TC002.py::test_run[chromium] PASSED [100%]\n\n============================= 1 passed in 41.10s ==============================\n",
+    "artifacts": []
+  },
+  {
+    "id": "TC003",
+    "category": "boundary",
+    "flow": "agent_create_report",
+    "test_mode": "ui",
+    "description": "Service Report Name field at max length limit (256 characters).",
+    "inputs": {
+      "name": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+      "ticket_id": "0626400279 - Server not responding",
+      "report_type": "Fixed Fee & Materials",
+      "reportDate": "2023-10-15",
+      "org_id": "Acme Corp",
+      "user_id": "Alice Smith"
+    },
+    "expected_outcome": "pass",
+    "expected_message": null,
+    "actual_outcome": "submitted",
+    "actual_message": "",
+    "passed": true,
+    "raw_output": "============================= test session starts =============================\ncollecting ... collected 1 item\n\n..\\..\\..\\..\\..\\..\\AppData\\Local\\Temp\\tmp3xnc0grx\\test_TC003.py::test_run[chromium] PASSED [100%]\n\n============================= 1 passed in 50.95s ==============================\n",
+    "artifacts": []
+  },
+  {
+    "id": "TC004",
+    "category": "boundary",
+    "flow": "agent_create_report",
+    "test_mode": "ui",
+    "description": "Service Report Name field exceeds max length limit (257 characters).",
+    "inputs": {
+      "name": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+      "ticket_id": "0626400279 - Server not responding",
+      "report_type": "Fixed Fee & Materials",
+      "reportDate": "2023-10-15",
+      "org_id": "Acme Corp",
+      "user_id": "Alice Smith"
+    },
+    "expected_outcome": "fail",
+    "expected_message": "Service Report Name cannot exceed 256 characters.",
+    "actual_outcome": "correctly rejected",
+    "actual_message": "Service Report Name cannot exceed 256 characters.",
+    "passed": true,
+    "raw_output": "============================= test session starts =============================\ncollecting ... collected 1 item\n\n..\\..\\..\\..\\..\\..\\AppData\\Local\\Temp\\tmp6kczspk6\\test_TC004.py::test_run[chromium] PASSED [100%]\n\n============================= 1 passed in 37.96s ==============================\n",
+    "artifacts": []
+  },
+  {
+    "id": "TC005",
+    "category": "cascade_dependency",
+    "flow": "agent_create_report",
+    "test_mode": "cascade",
+    "description": "Happy-order: Set org_id to filter ticket_id options.",
+    "inputs": {
+      "org_id": "Acme Corp"
+    },
+    "expected_outcome": "pass",
+    "expected_message": null,
+    "actual_outcome": "cascade failed",
+    "actual_message": "",
+    "passed": false,
+    "raw_output": "============================= test session starts =============================\ncollecting ... collected 1 item\n\n..\\..\\..\\..\\..\\..\\AppData\\Local\\Temp\\tmpy3hi1am5\\test_TC005.py::test_cascade_TC005[chromium] FAILED [100%]\n\n================================== FAILURES ===================================\n________________________ test_cascade_TC005[chromium] _________________________\nC:\\Users\\riyag\\AppData\\Local\\Temp\\tmpy3hi1am5\\test_TC005.py:12: in test_cascade_TC005\n    page.get_by_role(\"combobox\", name=\"Select Organization\").click(timeout=10000)\nC:\\Users\\riyag\\AppData\\Local\\Packages\\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\\LocalCache\\local-packages\\Python313\\site-packages\\playwright\\sync_api\\_generated.py:17422: in click\n    self._sync(\nC:\\Users\\riyag\\AppData\\Local\\Packages\\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\\LocalCache\\local-packages\\Python313\\site-packages\\playwright\\_impl\\_locator.py:163: in click\n    return await self._frame._click(self._selector, strict=True, **params)\nC:\\Users\\riyag\\AppData\\Local\\Packages\\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\\LocalCache\\local-packages\\Python313\\site-packages\\playwright\\_impl\\_frame.py:569: in _click\n    await self._channel.send(\"click\", self._timeout, locals_to_params(locals()))\nC:\\Users\\riyag\\AppData\\Local\\Packages\\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\\LocalCache\\local-packages\\Python313\\site-packages\\playwright\\_impl\\_connection.py:69: in send\n    return await self._connection.wrap_api_call(\nC:\\Users\\riyag\\AppData\\Local\\Packages\\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\\LocalCache\\local-packages\\Python313\\site-packages\\playwright\\_impl\\_connection.py:559: in wrap_api_call\n    raise rewrite_error(error, f\"{parsed_st['apiName']}: {error}\") from None\nE   playwright._impl._errors.TimeoutError: Locator.click: Timeout 10000ms exceeded.\nE   Call log:\nE     - waiting for get_by_role(\"combobox\", name=\"Select Organization\")\nE       - locator resolved to <input value=\"\" id=\"_r_2c_\" type=\"text\" role=\"combobox\" autocomplete=\"off\" spellcheck=\"false\" aria-invalid=\"false\" aria-expanded=\"false\" autocapitalize=\"none\" aria-autocomplete=\"list\" placeholder=\"Select Organization\" class=\"MuiInputBase-input MuiOutlinedInput-input MuiInputBase-inputSizeSmall MuiInputBase-inputAdornedEnd MuiAutocomplete-input MuiAutocomplete-inputFocused css-dixwyr-MuiInputBase-input-MuiOutlinedInput-input\"/>\nE     - attempting click action\nE       - waiting for element to be visible, enabled and stable\n=========================== short test summary info ===========================\nFAILED ..\\..\\..\\..\\..\\..\\AppData\\Local\\Temp\\tmpy3hi1am5\\test_TC005.py::test_cascade_TC005[chromium]\n============================= 1 failed in 27.37s ==============================\n",
+    "artifacts": [
+      "C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\testGen - Copy\\test_artifacts\\TC005\\appdata-local-temp-tmpy3hi1am5-test-tc005-py-test-cascade-tc005-chromium\\video.webm"
+    ]
+  },
+  {
+    "id": "TC006",
+    "category": "cascade_dependency",
+    "flow": "agent_create_report",
+    "test_mode": "cascade",
+    "description": "Wrong-order: Interact with ticket_id before setting org_id.",
+    "inputs": {
+      "org_id": "Acme Corp"
+    },
+    "expected_outcome": "pass",
+    "expected_message": null,
+    "actual_outcome": "cascade failed",
+    "actual_message": "",
+    "passed": false,
+    "raw_output": "============================= test session starts =============================\ncollecting ... collected 1 item\n\n..\\..\\..\\..\\..\\..\\AppData\\Local\\Temp\\tmppkzlmh91\\test_TC006.py::test_cascade_TC006[chromium] FAILED [100%]\n\n================================== FAILURES ===================================\n________________________ test_cascade_TC006[chromium] _________________________\nC:\\Users\\riyag\\AppData\\Local\\Temp\\tmppkzlmh91\\test_TC006.py:12: in test_cascade_TC006\n    page.get_by_role(\"combobox\", name=\"Select Organization\").click(timeout=10000)\nC:\\Users\\riyag\\AppData\\Local\\Packages\\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\\LocalCache\\local-packages\\Python313\\site-packages\\playwright\\sync_api\\_generated.py:17422: in click\n    self._sync(\nC:\\Users\\riyag\\AppData\\Local\\Packages\\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\\LocalCache\\local-packages\\Python313\\site-packages\\playwright\\_impl\\_locator.py:163: in click\n    return await self._frame._click(self._selector, strict=True, **params)\nC:\\Users\\riyag\\AppData\\Local\\Packages\\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\\LocalCache\\local-packages\\Python313\\site-packages\\playwright\\_impl\\_frame.py:569: in _click\n    await self._channel.send(\"click\", self._timeout, locals_to_params(locals()))\nC:\\Users\\riyag\\AppData\\Local\\Packages\\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\\LocalCache\\local-packages\\Python313\\site-packages\\playwright\\_impl\\_connection.py:69: in send\n    return await self._connection.wrap_api_call(\nC:\\Users\\riyag\\AppData\\Local\\Packages\\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\\LocalCache\\local-packages\\Python313\\site-packages\\playwright\\_impl\\_connection.py:559: in wrap_api_call\n    raise rewrite_error(error, f\"{parsed_st['apiName']}: {error}\") from None\nE   playwright._impl._errors.TimeoutError: Locator.click: Timeout 10000ms exceeded.\nE   Call log:\nE     - waiting for get_by_role(\"combobox\", name=\"Select Organization\")\nE       - locator resolved to <input value=\"\" id=\"_r_2c_\" type=\"text\" role=\"combobox\" autocomplete=\"off\" spellcheck=\"false\" aria-invalid=\"false\" aria-expanded=\"false\" autocapitalize=\"none\" aria-autocomplete=\"list\" placeholder=\"Select Organization\" class=\"MuiInputBase-input MuiOutlinedInput-input MuiInputBase-inputSizeSmall MuiInputBase-inputAdornedEnd MuiAutocomplete-input MuiAutocomplete-inputFocused css-dixwyr-MuiInputBase-input-MuiOutlinedInput-input\"/>\nE     - attempting click action\nE       - waiting for element to be visible, enabled and stable\n=========================== short test summary info ===========================\nFAILED ..\\..\\..\\..\\..\\..\\AppData\\Local\\Temp\\tmppkzlmh91\\test_TC006.py::test_cascade_TC006[chromium]\n============================= 1 failed in 27.80s ==============================\n",
+    "artifacts": [
+      "C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\testGen - Copy\\test_artifacts\\TC006\\appdata-local-temp-tmppkzlmh91-test-tc006-py-test-cascade-tc006-chromium\\video.webm"
+    ]
+  },
+  {
+    "id": "TC007",
+    "category": "cascade_dependency",
+    "flow": "agent_create_report",
+    "test_mode": "cascade",
+    "description": "Clear-trigger: Set and then clear org_id to reset ticket_id.",
+    "inputs": {},
+    "expected_outcome": "pass",
+    "expected_message": null,
+    "actual_outcome": "correctly cascaded",
+    "actual_message": "ticket_id correctly cleared after org_id changed",
+    "passed": true,
+    "raw_output": "============================= test session starts =============================\ncollecting ... collected 1 item\n\n..\\..\\..\\..\\..\\..\\AppData\\Local\\Temp\\tmp43j2t3jt\\test_TC007.py::test_cascade_TC007[chromium] PASSED [100%]\n\n============================= 1 passed in 29.68s ==============================\n",
+    "artifacts": []
+  },
+  {
+    "id": "TC008",
+    "category": "cascade_dependency",
+    "flow": "agent_create_report",
+    "test_mode": "cascade",
+    "description": "Happy-order: Set user_id to filter ticket_id options.",
+    "inputs": {
+      "user_id": "Alice Smith"
+    },
+    "expected_outcome": "pass",
+    "expected_message": null,
+    "actual_outcome": "cascade failed",
+    "actual_message": "",
+    "passed": false,
+    "raw_output": "============================= test session starts =============================\ncollecting ... collected 1 item\n\n..\\..\\..\\..\\..\\..\\AppData\\Local\\Temp\\tmpusslzlu0\\test_TC008.py::test_cascade_TC008[chromium] FAILED [100%]\n\n================================== FAILURES ===================================\n________________________ test_cascade_TC008[chromium] _________________________\nC:\\Users\\riyag\\AppData\\Local\\Temp\\tmpusslzlu0\\test_TC008.py:12: in test_cascade_TC008\n    page.get_by_role(\"combobox\", name=\"Select Customer User\").click(timeout=10000)\nC:\\Users\\riyag\\AppData\\Local\\Packages\\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\\LocalCache\\local-packages\\Python313\\site-packages\\playwright\\sync_api\\_generated.py:17422: in click\n    self._sync(\nC:\\Users\\riyag\\AppData\\Local\\Packages\\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\\LocalCache\\local-packages\\Python313\\site-packages\\playwright\\_impl\\_locator.py:163: in click\n    return await self._frame._click(self._selector, strict=True, **params)\nC:\\Users\\riyag\\AppData\\Local\\Packages\\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\\LocalCache\\local-packages\\Python313\\site-packages\\playwright\\_impl\\_frame.py:569: in _click\n    await self._channel.send(\"click\", self._timeout, locals_to_params(locals()))\nC:\\Users\\riyag\\AppData\\Local\\Packages\\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\\LocalCache\\local-packages\\Python313\\site-packages\\playwright\\_impl\\_connection.py:69: in send\n    return await self._connection.wrap_api_call(\nC:\\Users\\riyag\\AppData\\Local\\Packages\\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\\LocalCache\\local-packages\\Python313\\site-packages\\playwright\\_impl\\_connection.py:559: in wrap_api_call\n    raise rewrite_error(error, f\"{parsed_st['apiName']}: {error}\") from None\nE   playwright._impl._errors.TimeoutError: Locator.click: Timeout 10000ms exceeded.\nE   Call log:\nE     - waiting for get_by_role(\"combobox\", name=\"Select Customer User\")\n=========================== short test summary info ===========================\nFAILED ..\\..\\..\\..\\..\\..\\AppData\\Local\\Temp\\tmpusslzlu0\\test_TC008.py::test_cascade_TC008[chromium]\n============================= 1 failed in 27.00s ==============================\n",
+    "artifacts": [
+      "C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\testGen - Copy\\test_artifacts\\TC008\\appdata-local-temp-tmpusslzlu0-test-tc008-py-test-cascade-tc008-chromium\\video.webm"
+    ]
+  },
+  {
+    "id": "TC009",
+    "category": "cascade_dependency",
+    "flow": "agent_create_report",
+    "test_mode": "cascade",
+    "description": "Wrong-order: Interact with ticket_id before setting user_id.",
+    "inputs": {
+      "user_id": "Alice Smith"
+    },
+    "expected_outcome": "pass",
+    "expected_message": null,
+    "actual_outcome": "cascade failed",
+    "actual_message": "",
+    "passed": false,
+    "raw_output": "============================= test session starts =============================\ncollecting ... collected 1 item\n\n..\\..\\..\\..\\..\\..\\AppData\\Local\\Temp\\tmp5ei8wpq4\\test_TC009.py::test_cascade_TC009[chromium] FAILED [100%]\n\n================================== FAILURES ===================================\n________________________ test_cascade_TC009[chromium] _________________________\nC:\\Users\\riyag\\AppData\\Local\\Temp\\tmp5ei8wpq4\\test_TC009.py:12: in test_cascade_TC009\n    page.get_by_role(\"combobox\", name=\"Select Customer User\").click(timeout=10000)\nC:\\Users\\riyag\\AppData\\Local\\Packages\\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\\LocalCache\\local-packages\\Python313\\site-packages\\playwright\\sync_api\\_generated.py:17422: in click\n    self._sync(\nC:\\Users\\riyag\\AppData\\Local\\Packages\\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\\LocalCache\\local-packages\\Python313\\site-packages\\playwright\\_impl\\_locator.py:163: in click\n    return await self._frame._click(self._selector, strict=True, **params)\nC:\\Users\\riyag\\AppData\\Local\\Packages\\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\\LocalCache\\local-packages\\Python313\\site-packages\\playwright\\_impl\\_frame.py:569: in _click\n    await self._channel.send(\"click\", self._timeout, locals_to_params(locals()))\nC:\\Users\\riyag\\AppData\\Local\\Packages\\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\\LocalCache\\local-packages\\Python313\\site-packages\\playwright\\_impl\\_connection.py:69: in send\n    return await self._connection.wrap_api_call(\nC:\\Users\\riyag\\AppData\\Local\\Packages\\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\\LocalCache\\local-packages\\Python313\\site-packages\\playwright\\_impl\\_connection.py:559: in wrap_api_call\n    raise rewrite_error(error, f\"{parsed_st['apiName']}: {error}\") from None\nE   playwright._impl._errors.TimeoutError: Locator.click: Timeout 10000ms exceeded.\nE   Call log:\nE     - waiting for get_by_role(\"combobox\", name=\"Select Customer User\")\nE       - locator resolved to <input value=\"\" id=\"_r_2f_\" type=\"text\" role=\"combobox\" autocomplete=\"off\" spellcheck=\"false\" aria-invalid=\"false\" aria-expanded=\"false\" autocapitalize=\"none\" aria-autocomplete=\"list\" placeholder=\"Select Customer User\" class=\"MuiInputBase-input MuiOutlinedInput-input MuiInputBase-inputSizeSmall MuiInputBase-inputAdornedEnd MuiAutocomplete-input MuiAutocomplete-inputFocused css-dixwyr-MuiInputBase-input-MuiOutlinedInput-input\"/>\nE     - attempting click action\nE       - waiting for element to be visible, enabled and stable\nE       - element is visible, enabled and stable\nE       - scrolling into view if needed\n=========================== short test summary info ===========================\nFAILED ..\\..\\..\\..\\..\\..\\AppData\\Local\\Temp\\tmp5ei8wpq4\\test_TC009.py::test_cascade_TC009[chromium]\n============================= 1 failed in 24.83s ==============================\n",
+    "artifacts": [
+      "C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\testGen - Copy\\test_artifacts\\TC009\\appdata-local-temp-tmp5ei8wpq4-test-tc009-py-test-cascade-tc009-chromium\\test-failed-1.png",
+      "C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\testGen - Copy\\test_artifacts\\TC009\\appdata-local-temp-tmp5ei8wpq4-test-tc009-py-test-cascade-tc009-chromium\\video.webm"
+    ]
+  },
+  {
+    "id": "TC010",
+    "category": "cascade_dependency",
+    "flow": "agent_create_report",
+    "test_mode": "cascade",
+    "description": "Clear-trigger: Set and then clear user_id to reset ticket_id.",
+    "inputs": {},
+    "expected_outcome": "pass",
+    "expected_message": null,
+    "actual_outcome": "correctly cascaded",
+    "actual_message": "ticket_id correctly cleared after user_id changed",
+    "passed": true,
+    "raw_output": "============================= test session starts =============================\ncollecting ... collected 1 item\n\n..\\..\\..\\..\\..\\..\\AppData\\Local\\Temp\\tmph165omel\\test_TC010.py::test_cascade_TC010[chromium] PASSED [100%]\n\n============================= 1 passed in 28.98s ==============================\n",
+    "artifacts": []
+  },
+  {
+    "id": "TC011",
+    "category": "cascade_dependency",
+    "flow": "agent_create_report",
+    "test_mode": "cascade",
+    "description": "Happy-order: Set ticket_id to reset appointment_id.",
+    "inputs": {
+      "ticket_id": "0626400279 - Server not responding"
+    },
+    "expected_outcome": "pass",
+    "expected_message": null,
+    "actual_outcome": "error",
+    "actual_message": "Could not resolve expected values: '0626400279 - Server not responding' not found in tickets",
+    "passed": false,
+    "raw_output": "",
+    "artifacts": []
+  },
+  {
+    "id": "TC012",
+    "category": "cascade_dependency",
+    "flow": "agent_create_report",
+    "test_mode": "cascade",
+    "description": "Wrong-order: Interact with appointment_id before setting ticket_id.",
+    "inputs": {
+      "ticket_id": "0626400279 - Server not responding"
+    },
+    "expected_outcome": "pass",
+    "expected_message": null,
+    "actual_outcome": "error",
+    "actual_message": "Could not resolve expected values: '0626400279 - Server not responding' not found in tickets",
+    "passed": false,
+    "raw_output": "",
+    "artifacts": []
+  },
+  {
+    "id": "TC013",
+    "category": "cascade_dependency",
+    "flow": "agent_create_report",
+    "test_mode": "cascade",
+    "description": "Clear-trigger: Set and then clear ticket_id to reset appointment_id.",
+    "inputs": {},
+    "expected_outcome": "pass",
+    "expected_message": null,
+    "actual_outcome": "error",
+    "actual_message": "Could not resolve expected values: '' not found in tickets",
+    "passed": false,
+    "raw_output": "",
+    "artifacts": []
+  },
+  {
+    "id": "TC014",
+    "category": "ui_capability",
+    "flow": "agent_create_report",
+    "test_mode": "ui",
+    "description": "Verify the autocomplete field 'Case' is usable.",
+    "inputs": {
+      "ticket_id": "0626400279 - Server not responding",
+      "report_type": "Fixed Fee & Materials",
+      "name": "Test Name",
+      "reportDate": "2023-10-15",
+      "org_id": "Acme Corp",
+      "user_id": "Alice Smith"
+    },
+    "expected_outcome": "pass",
+    "expected_message": null,
+    "actual_outcome": "submitted",
+    "actual_message": "",
+    "passed": true,
+    "raw_output": "============================= test session starts =============================\ncollecting ... collected 1 item\n\n..\\..\\..\\..\\..\\..\\AppData\\Local\\Temp\\tmp6ty13f9_\\test_TC014.py::test_run[chromium] PASSED [100%]\n\n============================= 1 passed in 51.01s ==============================\n",
+    "artifacts": []
+  },
+  {
+    "id": "TC015",
+    "category": "ui_capability",
+    "flow": "agent_create_report",
+    "test_mode": "ui",
+    "description": "Verify the checkbox field 'Internal Only' is usable.",
+    "inputs": {
+      "internal_only": true,
+      "report_type": "Fixed Fee & Materials",
+      "name": "Test Name",
+      "reportDate": "2023-10-15",
+      "ticket_id": "0626400279",
+      "org_id": "Acme Corp",
+      "user_id": "Alice Smith"
+    },
+    "expected_outcome": "pass",
+    "expected_message": null,
+    "actual_outcome": "submitted",
+    "actual_message": "",
+    "passed": true,
+    "raw_output": "============================= test session starts =============================\ncollecting ... collected 1 item\n\n..\\..\\..\\..\\..\\..\\AppData\\Local\\Temp\\tmpzx75gocy\\test_TC015.py::test_run[chromium] PASSED [100%]\n\n============================= 1 passed in 45.44s ==============================\n",
+    "artifacts": []
+  },
+  {
+    "id": "TC016",
+    "category": "ui_capability",
+    "flow": "agent_create_report",
+    "test_mode": "ui",
+    "description": "Verify the date field 'Service Report Date' is usable.",
+    "inputs": {
+      "reportDate": "2023-10-15",
+      "report_type": "Fixed Fee & Materials",
+      "name": "Test Name",
+      "ticket_id": "0626400279",
+      "org_id": "Acme Corp",
+      "user_id": "Alice Smith"
+    },
+    "expected_outcome": "pass",
+    "expected_message": null,
+    "actual_outcome": "submitted",
+    "actual_message": "",
+    "passed": true,
+    "raw_output": "============================= test session starts =============================\ncollecting ... collected 1 item\n\n..\\..\\..\\..\\..\\..\\AppData\\Local\\Temp\\tmpvg5995e7\\test_TC016.py::test_run[chromium] PASSED [100%]\n\n============================= 1 passed in 50.36s ==============================\n",
+    "artifacts": []
+  },
+  {
+    "id": "TC017",
+    "category": "ui_capability",
+    "flow": "agent_create_report",
+    "test_mode": "ui",
+    "description": "Verify the groupedByCustomer-UserDropdown field 'Customer User' is usable.",
+    "inputs": {
+      "user_id": "Alice Smith",
+      "report_type": "Fixed Fee & Materials",
+      "name": "Test Name",
+      "reportDate": "2023-10-15",
+      "ticket_id": "0626400279",
+      "org_id": "Acme Corp"
+    },
+    "expected_outcome": "pass",
+    "expected_message": null,
+    "actual_outcome": "submitted",
+    "actual_message": "",
+    "passed": true,
+    "raw_output": "============================= test session starts =============================\ncollecting ... collected 1 item\n\n..\\..\\..\\..\\..\\..\\AppData\\Local\\Temp\\tmpy79h2tm9\\test_TC017.py::test_run[chromium] PASSED [100%]\n\n============================= 1 passed in 51.28s ==============================\n",
+    "artifacts": []
+  },
+  {
+    "id": "TC018",
+    "category": "ui_capability",
+    "flow": "agent_create_report",
+    "test_mode": "ui",
+    "description": "Verify the select field 'Service Report Type' is usable.",
+    "inputs": {
+      "report_type": "Fixed Fee & Materials",
+      "name": "Test Name",
+      "reportDate": "2023-10-15",
+      "ticket_id": "0626400279",
+      "org_id": "Acme Corp",
+      "user_id": "Alice Smith"
+    },
+    "expected_outcome": "pass",
+    "expected_message": null,
+    "actual_outcome": "submitted",
+    "actual_message": "",
+    "passed": true,
+    "raw_output": "============================= test session starts =============================\ncollecting ... collected 1 item\n\n..\\..\\..\\..\\..\\..\\AppData\\Local\\Temp\\tmpqt00srtg\\test_TC018.py::test_run[chromium] PASSED [100%]\n\n============================= 1 passed in 43.86s ==============================\n",
+    "artifacts": []
+  },
+  {
+    "id": "TC019",
+    "category": "ui_capability",
+    "flow": "agent_create_report",
+    "test_mode": "ui",
+    "description": "Verify the text field 'Service Report Name' is usable.",
+    "inputs": {
+      "name": "Quarterly Maintenance Report",
+      "report_type": "Fixed Fee & Materials",
+      "reportDate": "2023-10-15",
+      "ticket_id": "0626400279",
+      "org_id": "Acme Corp",
+      "user_id": "Alice Smith"
+    },
+    "expected_outcome": "pass",
+    "expected_message": null,
+    "actual_outcome": "submitted",
+    "actual_message": "",
+    "passed": true,
+    "raw_output": "============================= test session starts =============================\ncollecting ... collected 1 item\n\n..\\..\\..\\..\\..\\..\\AppData\\Local\\Temp\\tmp24duwarh\\test_TC019.py::test_run[chromium] PASSED [100%]\n\n============================= 1 passed in 51.67s ==============================\n",
+    "artifacts": []
+  },
+  {
+    "id": "TC020",
+    "category": "ui_capability",
+    "flow": "agent_create_report",
+    "test_mode": "ui",
+    "description": "Verify the textarea field 'Description' is usable.",
+    "inputs": {
+      "description": "Detailed description of the service report.",
+      "report_type": "Fixed Fee & Materials",
+      "name": "Test Name",
+      "reportDate": "2023-10-15",
+      "ticket_id": "0626400279",
+      "org_id": "Acme Corp",
+      "user_id": "Alice Smith"
+    },
+    "expected_outcome": "pass",
+    "expected_message": null,
+    "actual_outcome": "submitted",
+    "actual_message": "",
+    "passed": true,
+    "raw_output": "============================= test session starts =============================\ncollecting ... collected 1 item\n\n..\\..\\..\\..\\..\\..\\AppData\\Local\\Temp\\tmp1fsjb2jd\\test_TC020.py::test_run[chromium] PASSED [100%]\n\n============================= 1 passed in 45.64s ==============================\n",
+    "artifacts": []
+  },
+  {
+    "id": "TC021",
+    "category": "active_inactive_filter",
+    "flow": "agent_create_report",
+    "test_mode": "cascade",
+    "description": "Active ticket is visible in the Case dropdown.",
+    "inputs": {},
+    "expected_outcome": "pass",
+    "expected_message": null,
+    "actual_outcome": "fail",
+    "actual_message": "Expected \"'0626400279 - Server not responding'\" to appear in 'ticket_id' dropdown, but saw: ['0626400279 - Server not responding', '0626400278 - Server not responding', '0626400277 - Server not responding', '0626400276 - Server not responding', '0626400275 - Server not responding', '0626400274 - Ser",
+    "passed": false,
+    "raw_output": "============================= test session starts =============================\ncollecting ... collected 1 item\n\n..\\..\\..\\..\\..\\..\\AppData\\Local\\Temp\\tmpsxobbmop\\test_TC021.py::test_active_filter_TC021[chromium] FAILED [100%]\n\n================================== FAILURES ===================================\n_____________________ test_active_filter_TC021[chromium] ______________________\nC:\\Users\\riyag\\AppData\\Local\\Temp\\tmpsxobbmop\\test_TC021.py:20: in test_active_filter_TC021\n    assert any(item_name in t for t in option_texts), (\nE   AssertionError: Expected \"'0626400279 - Server not responding'\" to appear in 'ticket_id' dropdown, but saw: ['0626400279 - Server not responding', '0626400278 - Server not responding', '0626400277 - Server not responding', '0626400276 - Server not responding', '0626400275 - Server not responding', '0626400274 - Server Issue', '0626400273 - AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA', '0626400272 - Server not responding', '0626400271 - Server not responding', '0626400270 - Server Maintenance', '0626400269 - Server Maintenance', '0626400268 - Server Maintenance', '0626400267 - Server Maintenance', '0626400266 - Server Maintenance', '0626400265 - Server issue', '0626400264 - AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA', '0626400263 - Server not responding', '0626400262 - Server not responding', '0626400261 - AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA', '0626400260 - Server not responding', '0626400259 - Server not responding', '0626400258 - Server not responding', '0626400257 - Test Subject', '0626400256 - Server not responding', '0626400255 - Test Subject', '0626400254 - Test Subject', '0626400253 - Test Subject', '0626400252 - Test Subject', '0626400251 - Test Subject', '0626400250 - Server not responding', '0626400249 - Server not responding', '0626400248 - AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA', '0626400247 - Test Ticket', '0626400246 - Server not responding', '0626400245 - Server not responding', '0626400244 - AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA', '0626400243 - Server not responding', '0626400242 - Test Subject', '0626400241 - Test Subject', '0626400240 - Test Subject', '0626400239 - Test Subject', '0626400238 - Network Issue', '0626400237 - Test Subject', '0626400236 - Server not responding', '0626400235 - Test Subject', '0626400234 - Network Issue', '",
+    "artifacts": [
+      "C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\testGen - Copy\\test_artifacts\\TC021\\appdata-local-temp-tmpsxobbmop-test-tc021-py-test-active-filter-tc021-chromium\\test-failed-1.png",
+      "C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\testGen - Copy\\test_artifacts\\TC021\\appdata-local-temp-tmpsxobbmop-test-tc021-py-test-active-filter-tc021-chromium\\video.webm"
+    ]
+  },
+  {
+    "id": "TC022",
+    "category": "active_inactive_filter",
+    "flow": "agent_create_report",
+    "test_mode": "cascade",
+    "description": "Inactive ticket is absent from the Case dropdown.",
+    "inputs": {},
+    "expected_outcome": "pass",
+    "expected_message": null,
+    "actual_outcome": "skip",
+    "actual_message": "No test data \u2014 item name is a fragment, not a real entity: 'No inactive tickets are present in the Case dropdown'. Add inactive/private records to the test DB and regenerate.",
+    "passed": null,
+    "raw_output": "",
+    "artifacts": []
+  },
+  {
+    "id": "TC023",
+    "category": "role_permission_access",
+    "flow": "agent_create_report",
+    "test_mode": "permission",
+    "description": "All Access agent (Carlos Silva) has create permission in all departments \u2014 create report button is visible.",
+    "inputs": {},
+    "expected_outcome": "pass",
+    "expected_message": null,
+    "actual_outcome": "fail",
+    "actual_message": "Locator expected to be visible\nE   Actual value: - img \"Company Logo\"\nE   - button \"Collapse Menu\"\nE   - textbox \"Search Cases, Quotes, Service Reports, Invoices...\"\nE   - button\nE   - button \"Start Tour\"\nE   - button \"Help\"\nE   - button\nE   - button \"Service Hub\":\nE     - img\nE   - text: CS\nE   - p",
+    "passed": false,
+    "raw_output": "============================= test session starts =============================\ncollecting ... collected 1 item\n\n..\\..\\..\\..\\..\\..\\AppData\\Local\\Temp\\tmpg3q5itxq\\test_TC023.py::test_permission_TC023[chromium] FAILED [100%]\n\n================================== FAILURES ===================================\n_______________________ test_permission_TC023[chromium] _______________________\nC:\\Users\\riyag\\AppData\\Local\\Temp\\tmpg3q5itxq\\test_TC023.py:30: in test_permission_TC023\n    expect(btn.first).to_be_visible(timeout=10000)\nE   AssertionError: Locator expected to be visible\nE   Actual value: - img \"Company Logo\"\nE   - button \"Collapse Menu\"\nE   - textbox \"Search Cases, Quotes, Service Reports, Invoices...\"\nE   - button\nE   - button \"Start Tour\"\nE   - button \"Help\"\nE   - button\nE   - button \"Service Hub\":\nE     - img\nE   - text: CS\nE   - paragraph: Reports\nE   - paragraph: Dashboard\nE   - paragraph: Analytics\nE   - separator\nE   - paragraph: Operations\nE   - paragraph: Cases\nE   - paragraph: Schedules\nE   - paragraph: Service Reports\nE   - img\nE   - paragraph: Tasks\nE   - separator\nE   - paragraph: Service Documents\nE   - paragraph: Knowledgebase\nE   - separator\nE   - paragraph: Service Scheduling\nE   - img\nE   - paragraph: Appointments\nE   - separator\nE   - paragraph: Field Operations\nE   - paragraph: Organizations\nE   - paragraph: Models\nE   - paragraph: Units\nE   - separator\nE   - text: CS\nE   - paragraph: Welcome, Carlos S\nE   - paragraph: Service Engineer\nE   - button \"Go Back\"\nE   - heading \"Service Reports\" [level=5]\nE   - heading \"View, search, and manage all service reports\" [level=6]\nE   - button \"Open Quick Actions\": Quick Actions\nE   - button\nE   - paragraph: /\nE   - navigation \"breadcrumb\":\nE     - list:\nE       - listitem:\nE         - paragraph: Service Reports\nE   - paragraph: All\nE   - heading \"0\" [level=1]\nE   - separator\nE   - paragraph: In Progress\nE   - heading \"0\" [level=1]\nE   - paragraph: Awaiting Approval\nE   - heading \"0\" [level=1]\nE   - paragraph: To Be Invoiced\nE   - heading \"0\" [level=1]\nE   - paragraph: Closed\nE   - heading \"0\" [level=1]\nE   - textbox \"Search...\"\nE   - text: 0 of 0 Service Reports\nE   - paragraph: \"Sort Order: Descending By Date (Latest First)\"\nE   - button \"Sort by date ascending\":\nE     - img\nE   - button \"Service Report\"\nE   - alert: No in-progress service reports found\nE   - separator\nE   - text: \u00a9 2026 ITHENA. All rights reserved. |\nE   - paragraph: v1.2.0\nE   - link \"Need Help?\":\nE     - /url: /help-center\nE   - text: \"|\"\nE   - link \"Privacy Policy\":\nE     - /url: https://privacy.ithena.io\nE   - text: \"|\"\nE   - link \"Terms of Service\":\nE     - /url: http://terms.ithena.io/\nE   - text: \"|\"\nE   - link \"EULA\":\nE     - /url: https://eula.ithena.io\nE   - img\nE   - dialog \"Welcome to Service Report Management\":\nE     - banner:\nE       - heading \"Welcome to Service Report Management\" [level=3]:\nE         - strong: Welcome to Service Report Management\nE       - button \"Close Tour\"\nE     - text: This section al",
+    "artifacts": [
+      "C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\testGen - Copy\\test_artifacts\\TC023\\appdata-local-temp-tmpg3q5itxq-test-tc023-py-test-permission-tc023-chromium\\test-failed-1.png",
+      "C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\testGen - Copy\\test_artifacts\\TC023\\appdata-local-temp-tmpg3q5itxq-test-tc023-py-test-permission-tc023-chromium\\video.webm"
+    ]
+  },
+  {
+    "id": "TC024",
+    "category": "role_permission_access",
+    "flow": "agent_create_report",
+    "test_mode": "permission",
+    "description": "Limited Access agent (Jane Smith) does not have create permission in any department \u2014 create report button is absent.",
+    "inputs": {},
+    "expected_outcome": "pass",
+    "expected_message": null,
+    "actual_outcome": "pass",
+    "actual_message": "'Create Report' correctly absent for Jane Smith",
+    "passed": true,
+    "raw_output": "============================= test session starts =============================\ncollecting ... collected 1 item\n\n..\\..\\..\\..\\..\\..\\AppData\\Local\\Temp\\tmp_uifwksf\\test_TC024.py::test_permission_TC024[chromium] PASSED [100%]\n\n============================== 1 passed in 7.82s ==============================\n",
+    "artifacts": []
+  },
+  {
+    "id": "TC025",
+    "category": "role_permission_access",
+    "flow": "agent_create_report",
+    "test_mode": "permission",
+    "description": "Mixed-access agent (Liam Hughes) has create permission in at least one department \u2014 create report button is visible.",
+    "inputs": {},
+    "expected_outcome": "pass",
+    "expected_message": null,
+    "actual_outcome": "fail",
+    "actual_message": "Locator expected to be visible\nE   Actual value: - img \"Company Logo\"\nE   - button \"Collapse Menu\"\nE   - textbox \"Search Cases, Quotes, Service Reports, Invoices...\"\nE   - button\nE   - button \"Start Tour\"\nE   - button \"Help\"\nE   - button\nE   - button \"Service Hub\":\nE     - img\nE   - text: LH\nE   - p",
+    "passed": false,
+    "raw_output": "============================= test session starts =============================\ncollecting ... collected 1 item\n\n..\\..\\..\\..\\..\\..\\AppData\\Local\\Temp\\tmpilv_9b7m\\test_TC025.py::test_permission_TC025[chromium] FAILED [100%]\n\n================================== FAILURES ===================================\n_______________________ test_permission_TC025[chromium] _______________________\nC:\\Users\\riyag\\AppData\\Local\\Temp\\tmpilv_9b7m\\test_TC025.py:30: in test_permission_TC025\n    expect(btn.first).to_be_visible(timeout=10000)\nE   AssertionError: Locator expected to be visible\nE   Actual value: - img \"Company Logo\"\nE   - button \"Collapse Menu\"\nE   - textbox \"Search Cases, Quotes, Service Reports, Invoices...\"\nE   - button\nE   - button \"Start Tour\"\nE   - button \"Help\"\nE   - button\nE   - button \"Service Hub\":\nE     - img\nE   - text: LH\nE   - paragraph: Reports\nE   - paragraph: Dashboard\nE   - paragraph: Analytics\nE   - separator\nE   - paragraph: Operations\nE   - paragraph: Cases\nE   - paragraph: Schedules\nE   - img\nE   - paragraph: Quotes\nE   - paragraph: Service Reports\nE   - paragraph: Invoices\nE   - img\nE   - paragraph: Tasks\nE   - separator\nE   - paragraph: Service Documents\nE   - paragraph: Knowledgebase\nE   - separator\nE   - paragraph: Service Scheduling\nE   - img\nE   - paragraph: Appointments\nE   - separator\nE   - paragraph: Field Operations\nE   - paragraph: Organizations\nE   - paragraph: Models\nE   - paragraph: Units\nE   - separator\nE   - text: LH\nE   - paragraph: Welcome, Liam H\nE   - paragraph: Service Manager\nE   - button \"Go Back\"\nE   - heading \"Service Reports\" [level=5]\nE   - heading \"View, search, and manage all service reports\" [level=6]\nE   - button \"Open Quick Actions\": Quick Actions\nE   - button\nE   - paragraph: /\nE   - navigation \"breadcrumb\":\nE     - list:\nE       - listitem:\nE         - paragraph: Service Reports\nE   - separator\nE   - text: \u00a9 2026 ITHENA. All rights reserved. |\nE   - paragraph: v1.2.0\nE   - link \"Need Help?\":\nE     - /url: /help-center\nE   - text: \"|\"\nE   - link \"Privacy Policy\":\nE     - /url: https://privacy.ithena.io\nE   - text: \"|\"\nE   - link \"Terms of Service\":\nE     - /url: http://terms.ithena.io/\nE   - text: \"|\"\nE   - link \"EULA\":\nE     - /url: https://eula.ithena.io\nE   Error: element(s) not found \nE   Call log:\nE     - Expect \"to_be_visible\" with timeout 10000ms\nE     - waiting for get_by_role(\"button\", name=\"Create Report\").first\n=========================== short test summary info ===========================\nFAILED ..\\..\\..\\..\\..\\..\\AppData\\Local\\Temp\\tmpilv_9b7m\\test_TC025.py::test_permission_TC025[chromium]\n============================= 1 failed in 22.76s ==============================\n",
+    "artifacts": [
+      "C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\testGen - Copy\\test_artifacts\\TC025\\appdata-local-temp-tmpilv-9b7m-test-tc025-py-test-permission-tc025-chromium\\video.webm"
+    ]
+  },
+  {
+    "id": "TC026",
+    "category": "appointment_field_flows",
+    "flow": "agent_create_report",
+    "test_mode": "cascade",
+    "description": "Agent with appointment create permission sees the 'Create New Appointment' option in the appointment dropdown.",
+    "inputs": {
+      "ticket_id": "0626400279 - Server not responding"
+    },
+    "expected_outcome": "pass",
+    "expected_message": null,
+    "actual_outcome": "cascade failed",
+    "actual_message": "",
+    "passed": false,
+    "raw_output": "============================= test session starts =============================\ncollecting ... collected 1 item\n\n..\\..\\..\\..\\..\\..\\AppData\\Local\\Temp\\tmpbj2v2qy2\\test_TC026.py::test_cascade_TC026[chromium] FAILED [100%]\n\n================================== FAILURES ===================================\n________________________ test_cascade_TC026[chromium] _________________________\nC:\\Users\\riyag\\AppData\\Local\\Temp\\tmpbj2v2qy2\\test_TC026.py:14: in test_cascade_TC026\n    page.get_by_role(\"option\", name=\"Acme Corp\", exact=False).click(timeout=10000)\nC:\\Users\\riyag\\AppData\\Local\\Packages\\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\\LocalCache\\local-packages\\Python313\\site-packages\\playwright\\sync_api\\_generated.py:17422: in click\n    self._sync(\nC:\\Users\\riyag\\AppData\\Local\\Packages\\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\\LocalCache\\local-packages\\Python313\\site-packages\\playwright\\_impl\\_locator.py:163: in click\n    return await self._frame._click(self._selector, strict=True, **params)\nC:\\Users\\riyag\\AppData\\Local\\Packages\\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\\LocalCache\\local-packages\\Python313\\site-packages\\playwright\\_impl\\_frame.py:569: in _click\n    await self._channel.send(\"click\", self._timeout, locals_to_params(locals()))\nC:\\Users\\riyag\\AppData\\Local\\Packages\\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\\LocalCache\\local-packages\\Python313\\site-packages\\playwright\\_impl\\_connection.py:69: in send\n    return await self._connection.wrap_api_call(\nC:\\Users\\riyag\\AppData\\Local\\Packages\\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\\LocalCache\\local-packages\\Python313\\site-packages\\playwright\\_impl\\_connection.py:559: in wrap_api_call\n    raise rewrite_error(error, f\"{parsed_st['apiName']}: {error}\") from None\nE   playwright._impl._errors.TimeoutError: Locator.click: Timeout 10000ms exceeded.\nE   Call log:\nE     - waiting for get_by_role(\"option\", name=\"Acme Corp\")\nE       - locator resolved to <li tabindex=\"-1\" role=\"option\" id=\"_r_2a_-option-0\" data-option-index=\"0\" aria-disabled=\"false\" aria-selected=\"false\" class=\"MuiAutocomplete-option\">Acme Corp</li>\nE     - attempting click action\nE       2 \u00d7 waiting for element to be visible, enabled and stable\nE         - element is visible, enabled and stable\nE         - scrolling into view if needed\nE         - done scrolling\nE         - <path d=\"M1280,720H0V0H1280V720ZM0,0a0,0,0,0,0-0,0V0a0,0,0,0,0,0,0H0a0,0,0,0,0,0-0V0a0,0,0,0,0-0-0Z\"></path> from <svg class=\"shepherd-modal-is-visible shepherd-modal-overlay-container\">\u2026</svg> subtree intercepts pointer events\nE       - retrying click action\nE       - waiting 20ms\nE       - waiting for element to be visible, enabled and stable\nE       - element is visible, enabled and stable\nE       - scrolling into view if needed\nE       - done scrolling\nE       - element is not visible\nE     - retrying click action\nE       - waiting 100ms\nE       - waiting for element to be visible, enabled and stable\nE     - element was detached ",
+    "artifacts": [
+      "C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\testGen - Copy\\test_artifacts\\TC026\\appdata-local-temp-tmpbj2v2qy2-test-tc026-py-test-cascade-tc026-chromium\\test-failed-1.png",
+      "C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\testGen - Copy\\test_artifacts\\TC026\\appdata-local-temp-tmpbj2v2qy2-test-tc026-py-test-cascade-tc026-chromium\\video.webm"
+    ]
+  },
+  {
+    "id": "TC027",
+    "category": "appointment_field_flows",
+    "flow": "agent_create_report",
+    "test_mode": "cascade",
+    "description": "Agent without appointment create permission does not see the 'Create New Appointment' option in the appointment dropdown.",
+    "inputs": {
+      "ticket_id": "0626400279 - Server not responding"
+    },
+    "expected_outcome": "pass",
+    "expected_message": null,
+    "actual_outcome": "cascade failed",
+    "actual_message": "",
+    "passed": false,
+    "raw_output": "============================= test session starts =============================\ncollecting ... collected 1 item\n\n..\\..\\..\\..\\..\\..\\AppData\\Local\\Temp\\tmpeuf6jdoz\\test_TC027.py::test_cascade_TC027[chromium] FAILED [100%]\n\n================================== FAILURES ===================================\n________________________ test_cascade_TC027[chromium] _________________________\nC:\\Users\\riyag\\AppData\\Local\\Temp\\tmpeuf6jdoz\\test_TC027.py:8: in test_cascade_TC027\n    page.get_by_role(\"button\", name=\"Service Report\", exact=True).click(timeout=30000)\nC:\\Users\\riyag\\AppData\\Local\\Packages\\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\\LocalCache\\local-packages\\Python313\\site-packages\\playwright\\sync_api\\_generated.py:17422: in click\n    self._sync(\nC:\\Users\\riyag\\AppData\\Local\\Packages\\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\\LocalCache\\local-packages\\Python313\\site-packages\\playwright\\_impl\\_locator.py:163: in click\n    return await self._frame._click(self._selector, strict=True, **params)\nC:\\Users\\riyag\\AppData\\Local\\Packages\\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\\LocalCache\\local-packages\\Python313\\site-packages\\playwright\\_impl\\_frame.py:569: in _click\n    await self._channel.send(\"click\", self._timeout, locals_to_params(locals()))\nC:\\Users\\riyag\\AppData\\Local\\Packages\\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\\LocalCache\\local-packages\\Python313\\site-packages\\playwright\\_impl\\_connection.py:69: in send\n    return await self._connection.wrap_api_call(\nC:\\Users\\riyag\\AppData\\Local\\Packages\\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\\LocalCache\\local-packages\\Python313\\site-packages\\playwright\\_impl\\_connection.py:559: in wrap_api_call\n    raise rewrite_error(error, f\"{parsed_st['apiName']}: {error}\") from None\nE   playwright._impl._errors.TimeoutError: Locator.click: Timeout 30000ms exceeded.\nE   Call log:\nE     - waiting for get_by_role(\"button\", name=\"Service Report\", exact=True)\n=========================== short test summary info ===========================\nFAILED ..\\..\\..\\..\\..\\..\\AppData\\Local\\Temp\\tmpeuf6jdoz\\test_TC027.py::test_cascade_TC027[chromium]\n============================= 1 failed in 38.01s ==============================\n",
+    "artifacts": [
+      "C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\testGen - Copy\\test_artifacts\\TC027\\appdata-local-temp-tmpeuf6jdoz-test-tc027-py-test-cascade-tc027-chromium\\test-failed-1.png",
+      "C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\testGen - Copy\\test_artifacts\\TC027\\appdata-local-temp-tmpeuf6jdoz-test-tc027-py-test-cascade-tc027-chromium\\video.webm"
+    ]
+  },
+  {
+    "id": "TC028",
+    "category": "complex_state_dependencies",
+    "flow": "agent_create_report",
+    "test_mode": "ui_test",
+    "description": "Auto-generation of Service Report Name by concatenating ticket number and subject.",
+    "inputs": {
+      "ticket_id": "0626400279 - Server not responding"
+    },
+    "expected_outcome": "pass",
+    "expected_message": null,
+    "actual_outcome": "timeout",
+    "actual_message": "Test timed out",
+    "passed": false,
+    "raw_output": "============================= test session starts =============================\ncollecting ... collected 1 item\n\n..\\..\\..\\..\\..\\..\\AppData\\Local\\Temp\\tmp0cvqhxp_\\test_TC028.py::test_run[chromium] FAILED [100%]\n\n================================== FAILURES ===================================\n_____________________________ test_run[chromium] ______________________________\nC:\\Users\\riyag\\AppData\\Local\\Temp\\tmp0cvqhxp_\\test_TC028.py:46: in test_run\n    run_test(page, inputs, expected_outcome, expected_message)\nC:\\Users\\riyag\\AppData\\Local\\Temp\\tmp0cvqhxp_\\test_TC028.py:25: in run_test\n    page.get_by_role(\"textbox\", name=\"Please enter name for the\").click()\nC:\\Users\\riyag\\AppData\\Local\\Packages\\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\\LocalCache\\local-packages\\Python313\\site-packages\\playwright\\sync_api\\_generated.py:17422: in click\n    self._sync(\nC:\\Users\\riyag\\AppData\\Local\\Packages\\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\\LocalCache\\local-packages\\Python313\\site-packages\\playwright\\_impl\\_locator.py:163: in click\n    return await self._frame._click(self._selector, strict=True, **params)\nC:\\Users\\riyag\\AppData\\Local\\Packages\\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\\LocalCache\\local-packages\\Python313\\site-packages\\playwright\\_impl\\_frame.py:569: in _click\n    await self._channel.send(\"click\", self._timeout, locals_to_params(locals()))\nC:\\Users\\riyag\\AppData\\Local\\Packages\\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\\LocalCache\\local-packages\\Python313\\site-packages\\playwright\\_impl\\_connection.py:69: in send\n    return await self._connection.wrap_api_call(\nC:\\Users\\riyag\\AppData\\Local\\Packages\\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\\LocalCache\\local-packages\\Python313\\site-packages\\playwright\\_impl\\_connection.py:559: in wrap_api_call\n    raise rewrite_error(error, f\"{parsed_st['apiName']}: {error}\") from None\nE   playwright._impl._errors.TimeoutError: Locator.click: Timeout 30000ms exceeded.\nE   Call log:\nE     - waiting for get_by_role(\"textbox\", name=\"Please enter name for the\")\nE       - locator resolved to <input value=\"\" id=\"_r_25_\" type=\"text\" name=\"name\" aria-invalid=\"false\" placeholder=\"Please enter name for the Service Report\" class=\"MuiInputBase-input MuiOutlinedInput-input MuiInputBase-inputSizeSmall css-1apxcyh-MuiInputBase-input-MuiOutlinedInput-input\"/>\nE     - attempting click action\nE       - waiting for element to be visible, enabled and stable\nE       - element is visible, enabled and stable\nE       - scrolling into view if needed\n=========================== short test summary info ===========================\nFAILED ..\\..\\..\\..\\..\\..\\AppData\\Local\\Temp\\tmp0cvqhxp_\\test_TC028.py::test_run[chromium]\n============================= 1 failed in 46.67s ==============================\n",
+    "artifacts": [
+      "C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\testGen - Copy\\test_artifacts\\TC028\\appdata-local-temp-tmp0cvqhxp-test-tc028-py-test-run-chromium\\video.webm"
+    ]
+  }
+]

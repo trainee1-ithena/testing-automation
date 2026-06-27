@@ -97,6 +97,19 @@ FLOW_CONFIG: dict[str, dict] = {
             f'page.wait_for_url("**/dashboard**", timeout={PLAYWRIGHT_TIMEOUT_MS})'
         ),
     },
+    "agent_create_report": {
+        "role": "agent",
+        "start_path": "/service_reports",
+        # Fill order as recorded — matches the order actions appear in the codegen output.
+        # Verify against base_test_agent_create_report_recorded.py after --record step.
+        "field_map": [
+            "report_type", "internal_only", "name", "reportDate",
+            "org_id", "user_id", "ticket_id", "assignee", "appointment_id", "description",
+        ],
+        "pass_assertion": (
+            f'page.wait_for_timeout(2000)'
+        ),
+    },
 }
 
 
@@ -197,6 +210,21 @@ _SET_INPUT_FILES_RE = re.compile(
     r'^\s*(?P<target>page\.[^\n]*?)\.set_input_files\((?P<q>["\'])(?P<value>.*?)(?P=q)\)\s*$'
 )
 
+# checkbox.check() — treated as a conditional value selection
+_CHECKBOX_RE = re.compile(
+    r'^\s*(?P<target>page\..*?)\.check\(\)\s*$'
+)
+
+# date-picker opener: get_by_role("button", name="Choose date...").click()
+_DATE_BUTTON_RE = re.compile(
+    r'^\s*page\..*get_by_role\(["\']button["\'][^)]*[Cc]hoose date.*\.click\(\)\s*$'
+)
+
+# date-picker value: get_by_role("gridcell", name="DD").click()
+_GRIDCELL_CLICK_RE = re.compile(
+    r'^\s*(?P<target>page\..*get_by_role\(["\']gridcell["\'].*\))\.click\(\)\s*$'
+)
+
 _SKIP_PREFIXES = (
     "from playwright", "import re", "with sync_playwright",
     "browser =", "context =", "page =", "context.close", "browser.close",
@@ -211,6 +239,8 @@ def _is_potential_opener(stripped: str) -> bool:
 
     Combobox clicks: get_by_role("combobox", ...).click()
     Filter-div clicks: locator("div").filter(...).click()  — precede set_input_files
+    MUI "Open" icon button: get_by_role("button", name="Open")...click()
+    Date-picker button: get_by_role("button", ...) with "Choose date" in name
     """
     return (
         'get_by_role("combobox"' in stripped and stripped.endswith('.click()')
@@ -221,6 +251,12 @@ def _is_potential_opener(stripped: str) -> bool:
         # It's only treated as a value-selection when pending_opener is already set (text-click
         # branch); when pending_opener is None it falls here and becomes an opener for set_input_files.
         'get_by_text(' in stripped and stripped.endswith('.click()')
+    ) or (
+        # MUI Autocomplete "Open" icon button — opens the listbox for option selection
+        'get_by_role("button"' in stripped and 'name="Open"' in stripped and stripped.endswith('.click()')
+    ) or (
+        # MUI date-picker trigger — followed by a gridcell click for the day value
+        'get_by_role("button"' in stripped and 'hoose date' in stripped and stripped.endswith('.click()')
     )
 
 
@@ -259,13 +295,15 @@ def _build_run_test_body(recorded_source: str, flow: str) -> str:
             continue
 
         # ── classify the line ─────────────────────────────────────────────────
-        m_fill   = _ACTION_RE.match(line)
-        m_option = _OPTION_CLICK_RE.match(line)
-        m_files  = _SET_INPUT_FILES_RE.match(line)
+        m_fill     = _ACTION_RE.match(line)
+        m_option   = _OPTION_CLICK_RE.match(line)
+        m_files    = _SET_INPUT_FILES_RE.match(line)
+        m_checkbox = _CHECKBOX_RE.match(line)
+        m_gridcell = _GRIDCELL_CLICK_RE.match(line)
         # text-click is only a value selection when a combobox was just opened
-        m_text   = _TEXT_CLICK_RE.match(line) if pending_opener else None
+        m_text     = _TEXT_CLICK_RE.match(line) if pending_opener else None
 
-        is_value_sel = bool(m_fill or m_option or m_files or m_text)
+        is_value_sel = bool(m_fill or m_option or m_files or m_text or m_checkbox or m_gridcell)
 
         if is_value_sel:
             if field_idx >= len(field_map):
@@ -297,15 +335,43 @@ def _build_run_test_body(recorded_source: str, flow: str) -> str:
                 # opener before a fill is a focus-click — leave it verbatim (already emitted)
                 pending_opener = None
 
+            elif m_checkbox:
+                # Checkbox: wrap in conditional — only check when the scenario wants it
+                target = m_checkbox.group("target").strip()
+                body_lines.append(f'if inputs.get("{field}"):')
+                body_lines.append(f'    {target}.check()')
+                pending_opener = None
+
+            elif m_gridcell:
+                # Date-picker value: the opener (Choose date button) is already in pending_opener.
+                # Wrap both lines so the picker is only opened when the field is provided.
+                # The opener name reflects the currently selected date (dynamic aria-label),
+                # so replace with a partial regex match that works on a fresh form too.
+                val_line = f'{m_gridcell.group("target").strip()}.click()'
+                if pending_opener and body_lines and body_lines[-1] == pending_opener:
+                    stable_opener = re.sub(
+                        r'get_by_role\("button",\s*name=["\'][^"\']*["\']',
+                        r'get_by_role("button", name=re.compile(r"hoose date", re.I)',
+                        pending_opener,
+                    )
+                    body_lines.pop()
+                    body_lines.append(f'if inputs.get("{field}"):')
+                    body_lines.append(f'    {stable_opener}')
+                    body_lines.append(f'    {val_line}')
+                else:
+                    body_lines.append(f'if inputs.get("{field}"):')
+                    body_lines.append(f'    {val_line}')
+                pending_opener = None
+
             else:
                 # option / text / set_input_files: must be conditional
                 if m_option:
-                    val_line = f'page.get_by_role("option", name=str(inputs["{field}"])).click()'
+                    val_line = f'page.get_by_role("option", name=str(inputs["{field}"]), exact=False).click()'
                 elif m_text:
                     # Scope to the open listbox so names that appear elsewhere on the
                     # page (other form fields, sidebar, header) don't cause strict-mode
                     # violations. .first handles rare duplicates inside the dropdown itself.
-                    val_line = f'page.get_by_role("listbox").get_by_text(str(inputs["{field}"]), exact=True).first.click()'
+                    val_line = f'page.get_by_role("listbox").get_by_text(str(inputs["{field}"]), exact=False).first.click()'
                 else:  # m_files — always target the hidden <input type="file">, not the MUI div wrapper
                     val_line = f'page.locator("input[type=\'file\']").set_input_files(str(inputs["{field}"]))'
 
@@ -343,6 +409,18 @@ def _build_run_test_body(recorded_source: str, flow: str) -> str:
                 body_lines.append('except Exception:')
                 body_lines.append('    pass  # Submit may be disabled (e.g. invalid file type rejected by dropzone)')
             else:
+                # Button clicks without exact=True can match multiple elements when the
+                # button name is a short string that appears in other aria-labels on the page.
+                if (
+                    'get_by_role("button"' in stripped
+                    and 'exact=' not in stripped
+                    and 'hoose date' not in stripped  # date-picker opener uses dynamic name
+                ):
+                    stripped = re.sub(
+                        r'(get_by_role\("button",[^)]*)\)\.click\(\)',
+                        r'\1, exact=True).click()',
+                        stripped,
+                    )
                 body_lines.append(stripped)
 
     if field_idx < len(field_map):

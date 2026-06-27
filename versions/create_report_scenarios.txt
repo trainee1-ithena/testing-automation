@@ -1,0 +1,209 @@
+════════════════════════════════════════════════════════════
+FORM-SPECIFIC SCENARIO CATEGORIES — AGENT CREATE REPORT
+════════════════════════════════════════════════════════════
+The following categories supplement the standard scenario rules above.
+Generate them exactly like any other category — same output schema, same VISIBILITY GATE rule.
+
+role_permission_access
+  Tests whether each dept role's permissions produce the correct UI behaviour for creating service reports.
+
+  ── PERMISSION MODEL ─────────────────────────────────────────────────────────
+  Service report creation permission is per department. An agent may hold different roles across
+  departments, so their access can vary per department. Three types exist:
+
+    ALL ACCESS    — service_report.create = true in every department they belong to
+    LIMITED ACCESS — service_report.create = false in every department they belong to
+    MIXED ACCESS  — service_report.create = true in some departments, false in others
+
+  ── STEP 1 — find the permission ─────────────────────────────────────────────
+  Read the source files to find:
+    a. The permission key path that gates service report creation. DO NOT assume a key name —
+       search the source for permission checks on the form entry point and submit path.
+    b. The button on the list/reports page that opens the CreateReportForm drawer
+       and is conditionally shown or hidden based on that permission.
+       Do NOT use the submit/save button inside the form.
+       Read the button's rendered label by following any namespace function calls or
+       dynamic label expressions in the JSX — do NOT infer the text from the form name
+       or feature name. Use the exact string that will appear in the browser.
+
+  ── STEP 2 — classify agents and generate scenarios ──────────────────────────
+  Scan every staff member across every department in known_entities. For each agent,
+  check their dept_role_id in EVERY department they appear in, then look up
+  role_definitions[<dept_role_id>].permissions and find the service report create key.
+  Classify each agent based on that value across ALL their departments.
+
+  Do NOT re-derive classification from any pre-computed summary — scan departments[*].staff
+  directly and check role_definitions for every dept_role_id.
+
+  For ALL ACCESS and LIMITED ACCESS: one scenario per distinct role_id.
+    permission_agent   : exact staff name
+    permission_element : the button text found in Step 1
+    description        : include "All Access" or "Limited Access" label
+    assertion          : button visible or absent
+    test_mode          : "permission"
+    inputs             : {}
+    field              : null
+
+  For MIXED ACCESS agents: generate TWO scenarios —
+
+    Scenario M1 — button is visible (permission test):
+      permission_element : the button text found in Step 1
+      description        : "Mixed-access agent (<name>) has create permission in at least
+                           one department — create report button is visible."
+      assertion          : button is visible
+      test_mode          : "permission"
+      inputs             : {}
+      field              : null
+
+    Scenario M2a — ticket from allowed department is visible in the ticket dropdown:
+      The ticket dropdown is pre-filtered by the backend using service_report.create permission,
+      so a mixed-access agent only sees tickets from departments where they have access.
+      Pick ONE ticket from known_entities.tickets[] whose department this agent can create in.
+      Cross-reference the ticket's department against the agent's dept_role_id entries and
+      role_definitions to confirm it is an allowed dept.
+      category           : active_inactive_filter
+      test_mode          : "cascade"
+      permission_agent   : <same agent name>
+      field              : ticket_id
+      cascade_trigger    : null
+      inputs             : {}
+      assertion          : "<ticket display label> is visible in the ticket dropdown"
+      description        : "Mixed-access agent (<name>): ticket from allowed department is
+                           visible in the ticket dropdown."
+
+    Scenario M2b — ticket from denied department is absent from the ticket dropdown:
+      Pick ONE ticket from known_entities.tickets[] whose department this agent CANNOT create in.
+      Cross-reference the ticket's department against the agent's dept_role_id entries and
+      role_definitions to confirm it is a denied dept.
+      If no denied-dept ticket exists in known_entities.tickets[], SKIP M2b entirely.
+      category           : active_inactive_filter
+      test_mode          : "cascade"
+      permission_agent   : <same agent name>
+      field              : ticket_id
+      cascade_trigger    : null
+      inputs             : {}
+      assertion          : "<ticket display label> is absent from the ticket dropdown"
+      description        : "Mixed-access agent (<name>): ticket from denied department is
+                           absent from the ticket dropdown."
+
+  All scenarios: expected_outcome "pass", business_rule "role_definitions[<dept_role_id>] (<role_name>)
+  — <permission_key>=<value>"
+
+active_inactive_filter
+  Per F<n>:
+
+  ACTIVE/INACTIVE FILTER (FILTER is NOT "role_unrestricted" and NOT "ispublic"):
+  1. Active item is present — find ONE specific named active item in known_entities:
+     assertion: "<exact name of active item> is visible in the <field_name> dropdown"
+     expected_outcome: "pass"
+  2. Inactive item is absent — find ONE specific named inactive item in known_entities.
+     If NO inactive item exists in known_entities for this field, SKIP this scenario entirely.
+     assertion: "<exact name of inactive item> is absent from the <field_name> dropdown"
+     expected_outcome: "pass"
+
+  CRITICAL ASSERTION FORMAT — applies to all cases above:
+  - Use the EXACT display name of ONE specific item from known_entities. Never name multiple items.
+  - "is visible in the" and "is absent from the" are the only two allowed formats.
+  - If you cannot find a real named item, SKIP the scenario. Never write a vague or invented
+    assertion — execute.py will misparse it and the test will fail.
+
+  Entity paths for create_report fields:
+  - ticket_id         : active items from known_entities.tickets[], inactive from known_entities.inactive_tickets[]
+  - report_form_id    : active items from known_entities.report_forms[], inactive from known_entities.inactive_report_forms[]
+  - appointment_id    : no inactive items in known_entities — SKIP all "absent" scenarios for this field
+
+  For both cases:
+  If this dropdown only populates after another field is set, include that trigger field and
+  a value from known_entities in inputs. Otherwise inputs: {}.
+  cascade_trigger: the trigger field name, or null if the dropdown loads independently.
+  test_mode: "cascade"
+  field: F<n> field_name
+
+appointment_field_flows
+  Tests the permission-gated "Create New Appointment" option inside the appointment dropdown.
+
+  ── STEP 1 — find the option and its permission ──────────────────────────────
+  Read CreateReportForm.js and look for logic that conditionally adds an extra option to the
+  appointment dropdown (hint: look for a computed boolean and how it affects the options array
+  built before setting appointment state). Find the permission check that controls whether this
+  option is included and the exact label text of that option.
+  Note: this option only appears after a ticket is selected, because the permission is
+  evaluated against the selected ticket's department.
+
+  ── STEP 2 — generate two cascade scenarios ──────────────────────────────────
+  Classify agents from known_entities by whether their dept_role_id (for the ticket's dept)
+  resolves to a role_definitions entry where that appointment permission key is true or false.
+
+    Scenario A — agent WITH the permission sees the option:
+      Find an agent who has the appointment create permission.
+      Pick any ticket from known_entities.tickets[] for that agent's allowed department.
+      category           : appointment_field_flows
+      test_mode          : "cascade"
+      permission_agent   : <agent name with permission>
+      field              : appointment_id
+      cascade_trigger    : ticket_id
+      inputs             : { ticket_id: <ticket_number> }
+      assertion          : "'<option label found in Step 1>' option is visible in the appointment dropdown"
+      expected_outcome   : "pass"
+
+    Scenario B — agent WITHOUT the permission does not see the option:
+      Find an agent who does NOT have the appointment create permission.
+      Before generating this scenario, check whether that agent also has service_report.create
+      permission in at least one department (using the same role_definitions lookup as Step 1).
+
+      If the agent HAS service_report.create permission in at least one department:
+        They can open the form — use the cascade approach:
+        category           : appointment_field_flows
+        test_mode          : "cascade"
+        permission_agent   : <agent name without appointment permission>
+        field              : appointment_id
+        cascade_trigger    : ticket_id
+        inputs             : { ticket_id: <ticket_number from an allowed department> }
+        assertion          : "'<option label found in Step 1>' option is absent from the appointment dropdown"
+        expected_outcome   : "pass"
+
+      If the agent does NOT have service_report.create permission in any department:
+        They cannot open the form at all — use a permission check instead:
+        category           : appointment_field_flows
+        test_mode          : "permission"
+        permission_agent   : <agent name>
+        permission_element : <the service report form-open button text found in role_permission_access Step 1b>
+        field              : null
+        inputs             : {}
+        assertion          : "service report form-open button is absent"
+        description        : "Agent without service report create permission cannot open the form and therefore cannot see the appointment option."
+        expected_outcome   : "pass"
+
+complex_state_dependencies
+  Tests side-effect behaviors that go beyond standard dropdown cascades.
+
+  Pattern 1 — String Auto-Generation:
+    Read CreateReportForm.js and look for logic that automatically populates a text field
+    by concatenating selected entity values (e.g. customer name, ticket number, timestamp).
+    test_mode: "ui_test"
+    inputs: { <trigger field discovered>: <value from known_entities> }
+    assertion: Write an assertion explicitly stating the auto-generation rule you found in source.
+
+  Pattern 2 — Boolean API Filtering:
+    Read CreateReportForm.js and look for a boolean toggle (checkbox or switch) that changes
+    a parameter passed to a downstream API call, altering which options appear in a dependent
+    dropdown. Find what the parameter controls and which dropdown is affected.
+    test_mode: "cascade"
+    inputs: { <primary trigger field>: <value>, <boolean toggle field>: true }
+    assertion: Write an assertion stating how the downstream dropdown is filtered when the
+               toggle is on, based on what you found in the source.
+
+  Pattern 3 — Checklist Auto-Selection:
+    Read CreateReportForm.js and look for logic that auto-selects report_form_id when exactly
+    one eligible form is returned by the form options fetch. Look for a condition that checks
+    whether the options array has only one entry and, if so, automatically sets the field value.
+    If this logic does not exist in the source, SKIP this pattern entirely.
+    If it exists, find a ticket in known_entities.tickets[] whose attributes (service_type and
+    the boolean toggle state from Pattern 2) would yield exactly one eligible form — verify by
+    cross-referencing known_entities.report_forms[].mappings[].
+    If no qualifying ticket exists in known_entities, SKIP this pattern entirely.
+    test_mode: "cascade"
+    inputs: { ticket_id: <ticket that yields exactly one form>, <boolean toggle>: <true|false> }
+    assertion: "report_form_id is automatically selected with '<form name>' when exactly one
+               eligible form matches the current ticket and toggle state."
+    expected_outcome: "pass"

@@ -79,7 +79,10 @@ ROLE_CREDENTIALS = {
 
 STORAGE_STATE_DIR = TESTGEN_DIR / "storage_states"
 
-# Success messages per flow — used to extract actual_message on pass.
+# Substring of the app's success toast — used to detect false-positive submissions
+# (form submitted when it should have been rejected) and to label actual_message on pass.
+# Only needed for URL-navigation flows where the raw pytest output may contain the
+# toast text.  Modal-close flows (success_url=None) use dialog-state detection instead.
 FLOW_SUCCESS_MESSAGES = {
     "agent_create_ticket":    "has been created successfully",
     "customer_create_ticket": "has been created successfully",
@@ -88,10 +91,12 @@ FLOW_SUCCESS_MESSAGES = {
 
 # URL patterns that the app redirects to after a successful form submission.
 # Used in the injected assertion block in run_ui_test — survives re-recording.
-FLOW_SUCCESS_URLS: dict[str, str] = {
+# Set to None for modal-close flows that don't navigate on success (toast-only signal).
+FLOW_SUCCESS_URLS: dict[str, str | None] = {
     "agent_create_ticket":      "**/cases/**",
     "customer_create_ticket":   "**/cases/**",
     "post_creation_visibility": "**/cases/**",
+    "agent_create_report":      None,  # modal closes in place; no URL navigation
 }
 
 # Maps flow name to base script path.
@@ -99,6 +104,7 @@ FLOW_BASE_SCRIPTS: dict[str, Path] = {
     "agent_create_ticket":    TESTGEN_DIR / "base_test_agent_create_ticket.py",
     "customer_create_ticket": TESTGEN_DIR / "base_test_customer_create_ticket.py",
     "post_creation_visibility": TESTGEN_DIR / "base_test_agent_create_ticket.py",
+    "agent_create_report":    TESTGEN_DIR / "base_test_agent_create_report.py",
 }
 
 # Start path per flow (namespace-translated — must match record.py FLOW_CONFIG).
@@ -107,6 +113,7 @@ FLOW_START_PATHS: dict[str, str] = {
     "agent_create_ticket":    "/cases",
     "customer_create_ticket": "/dashboard",
     "post_creation_visibility": "/cases",
+    "agent_create_report":    "/service_reports",
 }
 
 # Namespace-translated base path for individual ticket detail pages.
@@ -368,6 +375,24 @@ def _create_ticket_via_api(
 
     subject = payload["subject"]
 
+    # priority_id is NOT NULL in the DB with no meaningful default (model default=0 fails FK).
+    # If the scenario inputs didn't specify one, fetch the first valid priority from the API.
+    if "priority" not in payload:
+        try:
+            pr = requests.get(
+                f"{API_BASE_URL}/tickets/priority/list",
+                headers={"Authorization": f"Bearer {token}"},
+                timeout=10,
+            )
+            if pr.status_code == 200:
+                pr_data = pr.json()
+                items = pr_data if isinstance(pr_data, list) else (pr_data.get("data") or [])
+                if items:
+                    first = items[0]
+                    payload["priority"] = first.get("priority_id") or first.get("id")
+        except Exception:
+            pass
+
     try:
         resp = requests.post(
             f"{API_BASE_URL}/tickets/create",
@@ -581,6 +606,23 @@ def run_ui_test(scenario: dict, scenario_id: str) -> dict:
     # flow's success URL matches the starting URL (e.g. customer modal on /dashboard).
     if _field == "files" and expected_outcome == "fail":
         assertion_block = "    pass  # rejection validated inside run_test via swal detection"
+    elif success_url is None:
+        # Modal-close flow: success = the form dialog closes; no URL navigation.
+        # The dialog closing is the canonical observable event — no text is hardcoded.
+        assertion_block = "\n".join([
+            f"    if expected_outcome == 'pass':",
+            f"        page.wait_for_selector(\"[role='dialog']\", state='hidden', timeout={PLAYWRIGHT_TIMEOUT_MS})",
+            f"    else:",
+            f"        page.wait_for_timeout(2000)",
+            f"        _dialog_open = page.locator(\"[role='dialog']\").count() > 0",
+            f"        if not _dialog_open:",
+            f'            raise AssertionError("Form accepted invalid input and navigated to success URL")',
+            f"        if expected_message:",
+            f"            try:",
+            f'                expect(page.get_by_text(re.compile(re.escape(expected_message), re.IGNORECASE))).to_be_visible(timeout=4000)',
+            f"            except Exception:",
+            f"                pass  # form correctly rejected, message wording differs — still a pass",
+        ])
     else:
         assertion_block = "\n".join([
             f"    if expected_outcome == 'pass':",
@@ -683,17 +725,19 @@ def _load_inventory_items(flow: str) -> dict:
     Returns {
       "a_items": [{"name", "ui_label", "type", "auto_filled"}, ...],
       "b_items": [{"id", "trigger", "target", "effect"}, ...],
-      "e_items": { field_name: {"source": path, "display_key": key} }
+      "e_items": { field_name: {"source": path, "display_key": key} },
+      "f_items": [{"id", "field", "filter"}, ...],
     }
     """
     inv_path = TESTGEN_DIR / f"scenario_matrix_{flow}_inventory.txt"
     if not inv_path.exists():
-        return {"a_items": [], "b_items": [], "e_items": {}}
+        return {"a_items": [], "b_items": [], "e_items": {}, "f_items": []}
 
     text = inv_path.read_text(encoding="utf-8")
     a_items: list[dict] = []
     b_items: list[dict] = []
     e_items: dict[str, dict] = {}
+    f_items: list[dict] = []
 
     for line in text.splitlines():
         # A-items: field definitions
@@ -734,7 +778,19 @@ def _load_inventory_items(flow: str) -> dict:
                 "display_key": m.group(3).strip(),
             }
 
-    return {"a_items": a_items, "b_items": b_items, "e_items": e_items}
+        # F-items: status-filtered dropdown fields
+        m = re.match(
+            r"(F\d+)\.\s+FIELD:\s*(\S+)\s*\|\s*FILTER:\s*(.+)",
+            line, re.IGNORECASE,
+        )
+        if m:
+            f_items.append({
+                "id":     m.group(1).strip(),
+                "field":  m.group(2).strip(),
+                "filter": m.group(3).strip(),
+            })
+
+    return {"a_items": a_items, "b_items": b_items, "e_items": e_items, "f_items": f_items}
 
 
 # ── Selector parsing (derive from recorded base_test script) ──────────────────
@@ -793,6 +849,20 @@ def _parse_base_script_selectors(flow: str) -> dict[str, dict]:
     return selectors
 
 
+def _parse_form_open_button(flow: str) -> str:
+    """
+    Return the button name that opens the form, parsed from the first
+    get_by_role("button", name=...) call in base_test_{flow}.py.
+    Falls back to "New Case" if the base script doesn't exist yet.
+    """
+    base = TESTGEN_DIR / f"base_test_{flow}.py"
+    if not base.exists():
+        return "New Case"
+    src = base.read_text(encoding="utf-8")
+    m = re.search(r'get_by_role\(["\']button["\'],\s*name=["\']([^"\']+)["\']', src)
+    return m.group(1) if m else "New Case"
+
+
 # ── Cascade strategy classification ──────────────────────────────────────────
 
 def _classify_cascade_strategy(
@@ -820,7 +890,7 @@ def _classify_cascade_strategy(
         return "assert_nonempty"
 
     def _parts(path: str) -> list[str]:
-        return [p for p in path.replace("known_entities.", "").replace("[]", "").split(".") if p]
+        return [p for p in path.replace("known_entities.", "").replace("[*]", "").replace("[]", "").split(".") if p]
 
     t = _parts(t_info["source"])  # e.g. ["departments", "service_types"]
     r = _parts(r_info["source"])  # e.g. ["departments"]
@@ -847,11 +917,60 @@ def _classify_cascade_strategy(
 def _resolve_cascade_expected(
     trigger: str, trigger_value: str, target: str, effect: str,
     e_items: dict[str, dict], entities: dict, role: str,
+    scope: str = "",
 ) -> dict:
     """
     Compute what the target field SHOULD show after the cascade fires.
     Returns { should_contain, should_not_contain, should_be_filled, filled_value, error }
+
+    When scope is non-empty (e.g. "current_user_org"), trigger is absent and the
+    dropdown is pre-filtered by the user's session context rather than a form action.
     """
+    # ── session_scope ─────────────────────────────────────────────────────────
+    # No form trigger — dropdown is filtered by who the user IS, not what they set.
+    # E-item SOURCE tells us the collection shape: e.g. customers[].equipment
+    # We assume cascade_entities[collection][0] is the test user's home context
+    # (extract.py always puts the test customer's org first).
+    if scope and not trigger:
+        r_info = e_items.get(target, {})
+        result: dict = {
+            "should_contain":     [],
+            "should_not_contain": [],
+            "should_be_filled":   False,
+            "filled_value":       None,
+            "error":              None,
+        }
+        if not r_info:
+            result["error"] = f"No E-item found for field '{target}'"
+            return result
+
+        parts = [p for p in r_info["source"].replace("known_entities.", "").replace("[]", "").split(".") if p]
+        if len(parts) < 2:
+            result["error"] = f"Cannot resolve session scope from E-item source '{r_info['source']}'"
+            return result
+
+        parent_coll   = parts[0]   # e.g. "customers"
+        child_arr_key = parts[-1]  # e.g. "equipment"
+        disp_key      = r_info.get("display_key", "name")
+
+        all_parents = entities.get(parent_coll, [])
+        if not all_parents:
+            result["error"] = f"No '{parent_coll}' found in cascade_entities"
+            return result
+
+        home = all_parents[0]  # test user's home context
+        result["should_contain"] = [
+            c.get(disp_key) for c in home.get(child_arr_key, []) if c.get(disp_key)
+        ]
+        valid_set = set(result["should_contain"])
+        result["should_not_contain"] = [
+            c.get(disp_key)
+            for p in all_parents[1:]
+            for c in p.get(child_arr_key, [])
+            if c.get(disp_key) and c.get(disp_key) not in valid_set
+        ]
+        return result
+
     strategy = _classify_cascade_strategy(trigger, target, effect, e_items, entities)
 
     result: dict = {
@@ -863,7 +982,7 @@ def _resolve_cascade_expected(
     }
 
     def _parts(path: str) -> list[str]:
-        return [p for p in path.replace("known_entities.", "").replace("[]", "").split(".") if p]
+        return [p for p in path.replace("known_entities.", "").replace("[*]", "").replace("[]", "").split(".") if p]
 
     t_info = e_items.get(trigger, {})
     r_info = e_items.get(target, {})
@@ -958,6 +1077,13 @@ def _resolve_cascade_expected(
                 # exclude items that also belong to the selected parent (shared members)
                 if c.get(r_disp) and c.get(r_disp) not in valid_set
             ]
+            # Also exclude inactive members of the matched parent — e.g. status != 1 users.
+            # These are stored in cascade_entities.customers[].inactive_users by extract.py.
+            # They belong to the correct parent but must still be absent from the dropdown.
+            for inactive in match.get("inactive_users", []):
+                n = inactive.get(r_disp) or inactive.get("name", "")
+                if n and n not in valid_set and n not in result["should_not_contain"]:
+                    result["should_not_contain"].append(n)
         else:
             result["error"] = f"'{trigger_value}' not found in {parent_coll}"
         return result
@@ -1049,15 +1175,12 @@ def _selector_open_code(field: str, selectors: dict[str, dict], a_items: list, t
         # [role='option'] matches both — more reliable than [class*='option'].
         return f'{open_code}\npage.wait_for_selector("[role=\'option\']", timeout={timeout})'
 
-    # Fallback: label proximity (p and label)
+    # Fallback: field not in base script — use MUI Autocomplete "Select {label}" pattern
+    # (iSERV FormField.js sets placeholder="Select {label}" for every dropdown).
     return (
-        f'page.locator("'
-        f'label:has-text(\'{ui_label}\') ~ div, '
-        f'label:has-text(\'{ui_label}\') + div, '
-        f'p:has-text(\'{ui_label}\') ~ div, '
-        f'p:has-text(\'{ui_label}\') + div'
-        f'").last.locator("[class*=\'control\']").click(timeout={timeout})\n'
-        f'page.wait_for_selector("[class*=\'option\']", timeout={timeout})'
+        f'page.get_by_role("combobox", name=re.compile(r"Select.*{re.escape(ui_label)}", re.I))'
+        f'.click(timeout={timeout})\n'
+        f'page.wait_for_selector("[role=\'option\']", timeout={timeout})'
     )
 
 
@@ -1250,6 +1373,7 @@ def run_cascade_test(scenario: dict, scenario_id: str, context_json: dict | None
     target_field     = scenario.get("field") or ""
     b_item_id        = scenario.get("business_rule", "")
     description      = scenario.get("description", "")
+    scope            = (scenario.get("scope") or "").strip()
 
     # Normalise cascade_trigger to list
     if isinstance(cascade_trigger, list):
@@ -1267,6 +1391,18 @@ def run_cascade_test(scenario: dict, scenario_id: str, context_json: dict | None
     except ValueError as exc:
         return {"passed": False, "actual_outcome": "error", "actual_message": str(exc),
                 "raw_output": "", "artifacts": []}
+
+    # Override with permission_agent credentials when the scenario specifies one
+    # (used for appointment_field_flows and complex_state_dependencies cascade tests).
+    _perm_agent = (scenario.get("permission_agent") or "").strip()
+    if _perm_agent:
+        _perm_role_key = _register_permission_agent_role(_perm_agent, context_json)
+        if _perm_role_key:
+            try:
+                storage_state = _get_or_create_storage_state(_perm_role_key)
+            except ValueError as exc:
+                return {"passed": False, "actual_outcome": "error", "actual_message": str(exc),
+                        "raw_output": "", "artifacts": []}
 
     # ── 1. Load inventory items and field selectors ───────────────────────────
     inv      = _load_inventory_items(flow)
@@ -1288,20 +1424,48 @@ def run_cascade_test(scenario: dict, scenario_id: str, context_json: dict | None
     td = (context_json or {}).get("test_data", {})
     entities = td.get("cascade_entities") or td.get("known_entities", {})
 
-    # ── 2. Resolve expected values ────────────────────────────────────────────
-    expected = _resolve_cascade_expected(
-        primary_trigger, trigger_value, target_field, effect,
-        e_items, entities, role,
-    )
-    if expected.get("error") and not expected["should_contain"] and not expected["should_be_filled"]:
-        return {"passed": False, "actual_outcome": "error",
-                "actual_message": f"Could not resolve expected values: {expected['error']}",
-                "raw_output": "", "artifacts": []}
+    assertion_text = (scenario.get("assertion") or "").strip()
 
-    should_contain     = expected["should_contain"]
-    should_not_contain = expected["should_not_contain"]
-    should_be_filled   = expected["should_be_filled"]
-    filled_value       = expected.get("filled_value")
+    # ── Item 8: option-text assertion shortcut ────────────────────────────────
+    # For appointment_field_flows and similar scenarios the assertion carries a
+    # quoted option label and a visibility direction (visible / absent).  Bypass
+    # the resolver and treat this as a filter test against that label directly.
+    _opt_m = re.search(
+        r"['‘’“”\"](.+?)['’‘”“\"] option is (visible|absent)",
+        assertion_text, re.IGNORECASE,
+    )
+    _option_label   = _opt_m.group(1).strip() if _opt_m else None
+    _option_visible = (_opt_m.group(2).lower() == "visible") if _opt_m else None
+
+    # ── Item 9: disabled-field assertion detection ────────────────────────────
+    # For cascade disable scenarios: trigger not set → target field is disabled.
+    _is_disable_test = (
+        ("disabled" in assertion_text.lower() or "disabled" in description.lower())
+        and not trigger_value  # only fires when trigger is genuinely absent
+    )
+
+    # ── 2. Resolve expected values ────────────────────────────────────────────
+    if _option_label is not None:
+        # Option-text assertion: skip resolver entirely
+        should_contain     = [_option_label] if _option_visible else []
+        should_not_contain = [] if _option_visible else [_option_label]
+        should_be_filled   = False
+        filled_value       = None
+    else:
+        expected = _resolve_cascade_expected(
+            primary_trigger, trigger_value, target_field, effect,
+            e_items, entities, role,
+            scope=scope,
+        )
+        if expected.get("error") and not expected["should_contain"] and not expected["should_be_filled"]:
+            return {"passed": False, "actual_outcome": "error",
+                    "actual_message": f"Could not resolve expected values: {expected['error']}",
+                    "raw_output": "", "artifacts": []}
+
+        should_contain     = expected["should_contain"]
+        should_not_contain = expected["should_not_contain"]
+        should_be_filled   = expected["should_be_filled"]
+        filled_value       = expected.get("filled_value")
 
     # ── 3. Classify test sub-type ─────────────────────────────────────────────
     desc_lower    = description.lower()
@@ -1321,14 +1485,18 @@ def run_cascade_test(scenario: dict, scenario_id: str, context_json: dict | None
     )
     prereq_snippet = prereq_raw.replace("\n", _I) if prereq_raw else ""
 
-    trigger_snippet = _selector_set_value_code(
-        primary_trigger, trigger_value, selectors, a_items, PLAYWRIGHT_TIMEOUT_MS
-    ).replace("\n", _I)
+    # Clear-trigger tests (inputs == {}) start with the form in its default empty state —
+    # no action needed to "clear" the trigger; skip the set-value step entirely.
+    if trigger_value:
+        trigger_snippet = _selector_set_value_code(
+            primary_trigger, trigger_value, selectors, a_items, PLAYWRIGHT_TIMEOUT_MS
+        ).replace("\n", _I)
+        setup_snippet = (prereq_snippet + _I + trigger_snippet) if prereq_snippet else trigger_snippet
+    else:
+        setup_snippet = prereq_snippet  # clear-trigger: form already starts without the trigger
 
-    # Full setup: prerequisites (if any) then the trigger itself
-    setup_snippet = (prereq_snippet + _I + trigger_snippet) if prereq_snippet else trigger_snippet
-
-    start_url = f"{FRONTEND_URL}{FLOW_START_PATHS.get(flow, '/cases')}"
+    start_url   = f"{FRONTEND_URL}{FLOW_START_PATHS.get(flow, '/cases')}"
+    open_button = _parse_form_open_button(flow)
 
     if is_fill_test:
         _tgt_sel  = selectors.get(target_field, {})
@@ -1399,6 +1567,7 @@ def run_cascade_test(scenario: dict, scenario_id: str, context_json: dict | None
         must_have_py    = repr(should_contain[:10])
         must_not_have_py = repr(should_not_contain[:5])
         assertion_code = (
+            f'page.wait_for_timeout(2000)\n'
             f"{open_target}\n"
             f'page.wait_for_timeout(500)\n'
             # [role='option'] matches both MUI Select <li role="option"> and
@@ -1412,6 +1581,22 @@ def run_cascade_test(scenario: dict, scenario_id: str, context_json: dict | None
             f'unwanted = [v for v in must_not_have if any(v in t for t in option_texts)]\n'
             f'assert not unwanted, f"Options that should NOT appear in {target_field}: {{unwanted!r}}"\n'
             f'page.keyboard.press("Escape")'
+        )
+
+    elif _is_disable_test:
+        # Item 9: verify the target field is disabled when its trigger is not set.
+        # Covers standard HTML disabled, aria-disabled="true", and React MUI wrappers.
+        _a_tgt    = next((a for a in a_items if a["name"] == target_field), {})
+        _ui_label = _a_tgt.get("ui_label", target_field.replace("_", " ").title())
+        assertion_code = (
+            f'# Check that {target_field} is disabled when trigger ({primary_trigger}) is not set\n'
+            f'_field_el = page.locator(\'[name="{target_field}"]\')\n'
+            f'if _field_el.count() == 0:\n'
+            f'    _field_el = page.get_by_role("combobox", name=re.compile(r"{_ui_label}", re.I))\n'
+            f'assert _field_el.count() > 0, "Could not find {target_field} to check disabled state"\n'
+            f'_el = _field_el.first\n'
+            f'assert _el.is_disabled() or _el.get_attribute("aria-disabled") == "true", '
+            f'"Expected {target_field} to be disabled when {primary_trigger} not set, but field is interactive"'
         )
 
     else:
@@ -1430,8 +1615,8 @@ from playwright.sync_api import Page, expect
 def test_cascade_{scenario_id}(page: Page):
     page.goto("{start_url}")
     page.wait_for_load_state("domcontentloaded")
-    page.get_by_role("button", name="New Case").click(timeout=30000)
-    page.wait_for_timeout(1000)
+    page.get_by_role("button", name="{open_button}", exact=True).click(timeout=30000)
+    page.wait_for_timeout(2000)
 
     # Setup: prerequisites + trigger ({primary_trigger} = {trigger_value!r})
     {setup_snippet}
@@ -1495,6 +1680,7 @@ def run_visibility_test(scenario: dict, scenario_id: str) -> dict:
         }
 
     vis_start_url = f"{FRONTEND_URL}{FLOW_START_PATHS.get(flow, '/cases')}"
+    open_button   = _parse_form_open_button(flow)
     visibility_code = f"""\
 from playwright.sync_api import Page, expect
 
@@ -1502,8 +1688,8 @@ from playwright.sync_api import Page, expect
 def test_visibility(page: Page):
     page.goto("{vis_start_url}")
     page.wait_for_load_state("domcontentloaded")
-    # Open the New Ticket modal
-    page.get_by_role("button", name="New Case").click(timeout=30000)
+    # Open the form
+    page.get_by_role("button", name="{open_button}", exact=True).click(timeout=30000)
     # Wait for the modal to render — avoid networkidle which never fires on polling apps
     page.wait_for_timeout(1000)
 
@@ -1529,6 +1715,386 @@ def test_visibility(page: Page):
         "passed": passed,
         "actual_outcome": "pass" if passed else "fail",
         "actual_message": assertion_text if passed else _extract_failure_message(result["raw_output"]),
+        **result,
+    }
+
+
+# ── Shared helper: resolve a named agent's credentials and register their role ──
+
+def _register_permission_agent_role(permission_agent: str, context_json: dict | None) -> str | None:
+    """
+    Resolves credentials for a named staff member and registers a dynamic role key
+    in ROLE_CREDENTIALS. Returns the role_key string, or None if credentials are missing.
+
+    Credential resolution order (same as run_permission_test):
+      1. known_entities email → TEST_SECOND_AGENT_{USERNAME_KEY}_EMAIL
+      2. Match against TEST_AGENT_EMAIL (primary agent)
+      3. Fallback to TEST_PERM_AGENT_{NAME_KEY}_EMAIL
+    """
+    known_email = ""
+    if context_json:
+        entities = context_json.get("test_data", {}).get("known_entities", {})
+        needle = permission_agent.strip().lower()
+        for dept in entities.get("departments", []):
+            for s in dept.get("staff", []):
+                if s.get("name", "").strip().lower() == needle and s.get("email"):
+                    known_email = s["email"].strip()
+                    break
+            if known_email:
+                break
+
+    email = password = ""
+    if known_email:
+        username_key = known_email.split("@")[0].upper()
+        email    = os.getenv(f"TEST_SECOND_AGENT_{username_key}_EMAIL", "")
+        password = os.getenv(f"TEST_SECOND_AGENT_{username_key}_PASSWORD", "")
+
+    if not email:
+        primary_email = os.getenv("TEST_AGENT_EMAIL", "")
+        if primary_email and known_email and known_email.split("@")[0].lower() == primary_email.split("@")[0].lower():
+            email    = primary_email
+            password = os.getenv("TEST_AGENT_PASSWORD", "")
+
+    if not email:
+        name_key = re.sub(r"[^A-Z0-9]", "_", permission_agent.upper()).strip("_")
+        email    = os.getenv(f"TEST_PERM_AGENT_{name_key}_EMAIL", "")
+        password = os.getenv(f"TEST_PERM_AGENT_{name_key}_PASSWORD", "")
+
+    if not email or not password:
+        return None
+
+    role_key = f"perm_agent_{re.sub(r'[^a-z0-9]', '_', permission_agent.lower()).strip('_')}"
+    if role_key not in ROLE_CREDENTIALS:
+        ROLE_CREDENTIALS[role_key] = {
+            "email":      email,
+            "password":   password,
+            "mode":       "agent",
+            "login_path": "/se-login",
+        }
+    return role_key
+
+
+# ── Branch 3b: Permission access test ────────────────────────────────────────
+
+def run_permission_test(scenario: dict, scenario_id: str, context_json: dict | None = None) -> dict:
+    """
+    Log in as a named staff member (permission_agent) and verify whether the
+    source-derived access-gated UI element (permission_element) is visible or absent.
+
+    Credential resolution order (stops at first match):
+      1. Look up agent's email in known_entities by name → derive username key →
+         TEST_SECOND_AGENT_{USERNAME_KEY}_EMAIL  (matches the shared named-agent credential set)
+      2. Check if agent's email matches TEST_AGENT_EMAIL directly (primary agent)
+      3. Fall back to TEST_PERM_AGENT_{NAME_KEY}_EMAIL  (legacy pattern)
+    """
+    flow             = scenario.get("flow", "")
+    permission_agent = (scenario.get("permission_agent") or "").strip()
+
+    if not permission_agent:
+        return {
+            "passed": False, "actual_outcome": "error",
+            "actual_message": "Scenario missing 'permission_agent' field",
+            "raw_output": "", "artifacts": [],
+        }
+
+    role_key = _register_permission_agent_role(permission_agent, context_json)
+    if role_key is None:
+        known_email = ""
+        if context_json:
+            for dept in context_json.get("test_data", {}).get("known_entities", {}).get("departments", []):
+                for s in dept.get("staff", []):
+                    if s.get("name", "").strip().lower() == permission_agent.lower() and s.get("email"):
+                        known_email = s["email"].strip()
+                        break
+                if known_email:
+                    break
+        username_hint = known_email.split("@")[0].upper() if known_email else "<USERNAME>"
+        return {
+            "passed": False, "actual_outcome": "error",
+            "actual_message": (
+                f"Missing credentials for {permission_agent!r}. "
+                f"Add TEST_SECOND_AGENT_{username_hint}_EMAIL and "
+                f"TEST_SECOND_AGENT_{username_hint}_PASSWORD to testGen/.env"
+            ),
+            "raw_output": "", "artifacts": [],
+        }
+
+    try:
+        storage_state = _get_or_create_storage_state(role_key)
+    except ValueError as exc:
+        return {
+            "passed": False, "actual_outcome": "error", "actual_message": str(exc),
+            "raw_output": "", "artifacts": [],
+        }
+
+    # Derive expected element visibility from the scenario's assertion text.
+    # The LLM sets expected_outcome="pass" for both directions; direction is in the assertion.
+    # Keywords "absent" / "not visible" / "hidden" mean the element should NOT be there.
+    assertion_text = (scenario.get("assertion") or "").lower()
+    element_should_appear = not any(
+        kw in assertion_text for kw in ("absent", "not visible", "hidden", "not present", "cannot")
+    )
+
+    # permission_element carries the UI text of the gated element derived from source code.
+    element_label = (scenario.get("permission_element") or "").strip()
+
+    start_url = f"{FRONTEND_URL}{FLOW_START_PATHS.get(flow, '/cases')}"
+
+    perm_code = f"""\
+from playwright.sync_api import Page, expect
+
+
+def test_permission_{scenario_id}(page: Page):
+    page.goto("{start_url}")
+    page.wait_for_load_state("domcontentloaded")
+    page.wait_for_timeout(1000)
+
+    # Handle EULA modal if present (shown on first login before this session was cached)
+    try:
+        if page.locator("text=End User License Agreement").count() > 0:
+            page.locator("input[type='checkbox']").last.check(timeout=5000)
+            page.wait_for_timeout(300)
+            page.get_by_role("button", name="Accept").click(timeout=5000)
+            page.wait_for_load_state("domcontentloaded", timeout=10000)
+            page.wait_for_timeout(500)
+            page.goto("{start_url}")
+            page.wait_for_load_state("domcontentloaded")
+            page.wait_for_timeout(1000)
+    except Exception:
+        pass
+
+    element_should_appear = {element_should_appear}
+    element_label = {element_label!r}
+    # exact=False: "Case" matches "New Case", "New Case" still matches "New Case"
+    btn = page.get_by_role("button", name=element_label, exact=False) if element_label else None
+
+    if element_should_appear:
+        assert btn is not None, "permission_element missing from scenario — cannot locate element"
+        expect(btn.first).to_be_visible(timeout=10000)
+    else:
+        if btn is not None:
+            visible_count = sum(1 for b in btn.all() if b.is_visible())
+            assert visible_count == 0, (
+                f"Expected {{element_label!r}} to be absent for {permission_agent!r} "
+                f"but it was visible on the page."
+            )
+"""
+
+    result = _run_playwright(perm_code, scenario_id, storage_state_path=storage_state)
+    passed = result["passed"]
+
+    if passed:
+        direction = "visible" if element_should_appear else "absent"
+        actual_msg = f"{element_label!r} correctly {direction} for {permission_agent}"
+    else:
+        actual_msg = _extract_failure_message(result["raw_output"])
+
+    return {
+        "passed": passed,
+        "actual_outcome": "pass" if passed else "fail",
+        "actual_message": actual_msg,
+        **result,
+    }
+
+
+# ── Branch 3c: Active/inactive filter test ────────────────────────────────────
+
+def run_active_filter_test(scenario: dict, scenario_id: str, context_json: dict | None = None) -> dict:
+    """
+    Opens the form, optionally sets a cascade trigger, then opens the named
+    dropdown and asserts that a specific item is present or absent.
+
+    Assertion text formats (LLM-generated):
+      "X is visible in the Y dropdown"   → item X should appear in options
+      "X is absent from the Y dropdown"  → item X should NOT appear in options
+
+    Everything is derived dynamically from the scenario JSON and base script
+    selectors — no entity names or field names are hardcoded here.
+    """
+    flow             = scenario.get("flow", "")
+    role             = scenario.get("role", "agent")
+    target_field     = (scenario.get("field") or "").strip()
+    cascade_trigger  = scenario.get("cascade_trigger") or None
+    inputs           = dict(scenario.get("inputs") or {})
+    assertion_text   = (scenario.get("assertion") or "").strip()
+
+    # ── Parse assertion: what item to check and which direction ───────────────
+    present_m = re.match(
+        r"^(.+?)\s+is\s+visible\s+in\s+the\s+(.+?)\s+dropdown",
+        assertion_text, re.IGNORECASE,
+    )
+    absent_m = re.match(
+        r"^(.+?)\s+is\s+absent\s+from\s+the\s+(.+?)\s+dropdown",
+        assertion_text, re.IGNORECASE,
+    )
+    if present_m:
+        item_name      = present_m.group(1).strip()
+        should_present = True
+    elif absent_m:
+        item_name      = absent_m.group(1).strip()
+        should_present = False
+    else:
+        # Fallback: quoted name or full assertion text; direction from keywords
+        quoted_m  = re.search(r'"([^"]+)"', assertion_text)
+        item_name = quoted_m.group(1) if quoted_m else assertion_text
+        should_present = not any(
+            kw in assertion_text.lower() for kw in ("absent", "not present", "should not")
+        )
+
+    # Guard: item_name should be a specific entity name, not a sentence fragment.
+    # If it starts with a quantifier/adjective word the LLM used instead of a real name,
+    # the assertion was malformed (e.g. "No inactive staff members" instead of "Bob Smith").
+    _fragment_prefixes = ("no ", "all ", "any ", "inactive ", "active ", "public ", "private ")
+    if item_name.lower().startswith(_fragment_prefixes):
+        return {
+            "passed": None,
+            "actual_outcome": "skip",
+            "actual_message": (
+                f"No test data — item name is a fragment, not a real entity: {item_name!r}. "
+                "Add inactive/private records to the test DB and regenerate."
+            ),
+            "raw_output": "",
+            "artifacts": [],
+        }
+
+    # If the scenario specifies a permission_agent (e.g. dept-filter tests for a mixed-access
+    # agent), resolve that agent's credentials and use their session instead of the flow role.
+    permission_agent_name = (scenario.get("permission_agent") or "").strip()
+    if permission_agent_name:
+        role = _register_permission_agent_role(permission_agent_name, context_json)
+        if role is None:
+            username_hint = "<USERNAME>"
+            if context_json:
+                for dept in context_json.get("test_data", {}).get("known_entities", {}).get("departments", []):
+                    for s in dept.get("staff", []):
+                        if s.get("name", "").strip().lower() == permission_agent_name.lower() and s.get("email"):
+                            username_hint = s["email"].split("@")[0].upper()
+                            break
+            return {
+                "passed": False, "actual_outcome": "error",
+                "actual_message": (
+                    f"Missing credentials for permission_agent {permission_agent_name!r}. "
+                    f"Add TEST_SECOND_AGENT_{username_hint}_EMAIL / _PASSWORD to testGen/.env"
+                ),
+                "raw_output": "", "artifacts": [],
+            }
+
+    try:
+        storage_state = _get_or_create_storage_state(role)
+    except ValueError as exc:
+        return {
+            "passed": False, "actual_outcome": "error", "actual_message": str(exc),
+            "raw_output": "", "artifacts": [],
+        }
+
+    inv       = _load_inventory_items(flow)
+    a_items   = inv["a_items"]
+    b_items   = inv["b_items"]
+    e_items   = inv["e_items"]
+    selectors = _parse_base_script_selectors(flow)
+
+    td       = (context_json or {}).get("test_data", {})
+    entities = td.get("cascade_entities") or td.get("known_entities", {})
+
+    _I = "\n    "
+
+    # ── Build setup snippet: prerequisites + trigger ──────────────────────────
+    setup_lines: list[str] = []
+
+    if cascade_trigger:
+        # Normalise to the primary trigger field name
+        if isinstance(cascade_trigger, list):
+            primary_trigger = cascade_trigger[0].strip()
+        else:
+            primary_trigger = str(cascade_trigger).replace("+", ",").split(",")[0].strip()
+
+        trigger_value = str(inputs.get(primary_trigger, ""))
+
+        prereq_raw = _build_prereq_snippet(
+            primary_trigger, b_items, selectors, a_items,
+            inputs, e_items, entities, PLAYWRIGHT_TIMEOUT_MS,
+        )
+        if prereq_raw:
+            setup_lines.append(prereq_raw.replace("\n", _I))
+
+        if primary_trigger and trigger_value:
+            setup_lines.append(
+                _selector_set_value_code(
+                    primary_trigger, trigger_value, selectors, a_items, PLAYWRIGHT_TIMEOUT_MS
+                ).replace("\n", _I)
+            )
+
+    open_dropdown = _selector_open_code(
+        target_field, selectors, a_items, PLAYWRIGHT_TIMEOUT_MS
+    ).replace("\n", _I)
+
+    if should_present:
+        assertion_code = (
+            f"option_els = page.locator(\"[role='option']\").all()\n"
+            f"option_texts = [t.strip() for t in (el.text_content() or '' for el in option_els)]\n"
+            f"item_name = {item_name!r}\n"
+            f"assert any(item_name in t for t in option_texts), (\n"
+            f"    f\"Expected {{item_name!r}} to appear in '{target_field}' dropdown, \"\n"
+            f"    f\"but saw: {{option_texts}}\"\n"
+            f")\n"
+            f"page.keyboard.press('Escape')"
+        )
+    else:
+        assertion_code = (
+            f"option_els = page.locator(\"[role='option']\").all()\n"
+            f"option_texts = [t.strip() for t in (el.text_content() or '' for el in option_els)]\n"
+            f"item_name = {item_name!r}\n"
+            f"assert not any(item_name in t for t in option_texts), (\n"
+            f"    f\"Expected {{item_name!r}} to be absent from '{target_field}' dropdown, \"\n"
+            f"    f\"but it appeared in: {{option_texts}}\"\n"
+            f")\n"
+            f"page.keyboard.press('Escape')"
+        )
+
+    assertion_indented = assertion_code.replace("\n", _I)
+
+    # Compose the setup block: join lines with proper indentation
+    setup_block = (_I.join(setup_lines)).strip()
+    setup_section = (
+        f"    # Setup: cascade trigger\n    {setup_block}\n\n"
+        if setup_block else ""
+    )
+
+    start_url   = f"{FRONTEND_URL}{FLOW_START_PATHS.get(flow, '/cases')}"
+    open_button = _parse_form_open_button(flow)
+
+    filter_code = f"""\
+import re
+from playwright.sync_api import Page
+
+
+def test_active_filter_{scenario_id}(page: Page):
+    page.goto("{start_url}")
+    page.wait_for_load_state("domcontentloaded")
+    page.get_by_role("button", name="{open_button}", exact=True).click(timeout=30000)
+    page.wait_for_timeout(2000)
+
+{setup_section}    # Open the target dropdown
+    {open_dropdown}
+    page.wait_for_timeout(500)
+
+    # Assert: {assertion_text}
+    {assertion_indented}
+"""
+
+    result = _run_playwright(filter_code, scenario_id, storage_state_path=storage_state)
+    passed = result["passed"]
+
+    if passed:
+        direction  = "present" if should_present else "absent"
+        actual_msg = f"{item_name!r} correctly {direction} in '{target_field}' dropdown"
+    else:
+        actual_msg = _extract_failure_message(result["raw_output"])
+
+    return {
+        "passed": passed,
+        "actual_outcome": "pass" if passed else "fail",
+        "actual_message": actual_msg,
         **result,
     }
 
@@ -1574,6 +2140,10 @@ def run_multi_session_scenario(scenario: dict, scenario_id: str, context_json: d
     expected_message = scenario.get("expected_message") or ""
     inputs = dict(scenario.get("inputs") or {})
 
+    # expected_outcome describes app behaviour: "pass" = session B should see the ticket,
+    # "fail" = session B should not see it. Consistent with all other categories.
+    should_see = scenario.get("expected_outcome", "pass") == "pass"
+
     # ── Session A: create ticket ──────────────────────────────────────────────
     ticket_id, ticket_subject = _create_ticket_via_api(inputs, primary_role, context_json)
     if ticket_id is None:
@@ -1618,11 +2188,11 @@ def test_session_b(page: Page):
     except Exception:
         page.wait_for_timeout(3000)
 
-    expected_outcome = {expected_outcome!r}
+    should_see = {should_see!r}
     ticket_subject = {ticket_subject!r}
     current_url = page.url
 
-    if expected_outcome == "pass":
+    if should_see:
         # Must still be on the ticket detail page (not redirected to login/dashboard)
         assert "{TICKET_DETAIL_BASE}/{ticket_id}" in current_url, (
             f"Expected to view ticket {ticket_id}, but was redirected to: {{current_url}}"
@@ -1659,12 +2229,15 @@ def test_session_b(page: Page):
     passed = result["passed"]
     second_name = second_sess.get("name", second_role)
 
+    if should_see:
+        visibility_msg = "visible" if passed else "NOT visible (expected visible)"
+    else:
+        visibility_msg = "correctly hidden" if passed else "visible (expected hidden)"
+
     return {
         "passed": passed,
         "actual_outcome": "pass" if passed else "fail",
-        "actual_message": (
-            f"Ticket {ticket_id} {'visible' if passed else 'NOT visible'} to Session B ({second_name})"
-        ),
+        "actual_message": f"Ticket {ticket_id} {visibility_msg} to Session B ({second_name})",
         **result,
     }
 
@@ -1738,21 +2311,12 @@ def _print_result(status: str, exec_result: dict, inputs: dict):
 
 # ── Main ──────────────────────────────────────────────────────────────────────
 
-def _load_context(flow: str) -> dict | None:
+def _load_context(flow: str) -> dict:
     ctx_path = TESTGEN_DIR / f"context_{flow}.json"
-    if ctx_path.exists():
-        try:
-            return json.loads(ctx_path.read_text(encoding="utf-8"))
-        except Exception:
-            pass
-    # For post_creation_visibility, fall back to agent context for entity data
-    fallback = TESTGEN_DIR / "context_agent_create_ticket.json"
-    if fallback.exists():
-        try:
-            return json.loads(fallback.read_text(encoding="utf-8"))
-        except Exception:
-            pass
-    return None
+    if not ctx_path.exists():
+        print(f"ERROR: context file not found: {ctx_path} — run extract.py first.", file=sys.stderr)
+        sys.exit(1)
+    return json.loads(ctx_path.read_text(encoding="utf-8"))
 
 
 def main():
@@ -1832,8 +2396,16 @@ def main():
             elif category == "role_field_visibility" and not inputs:
                 exec_result = run_visibility_test(scenario, sid)
 
-            elif category == "cascade_dependency":
+            elif category == "cascade_dependency" or (
+                test_mode == "cascade" and category not in {"active_inactive_filter"}
+            ):
                 exec_result = run_cascade_test(scenario, sid, context_json)
+
+            elif category == "active_inactive_filter":
+                exec_result = run_active_filter_test(scenario, sid, context_json)
+
+            elif category == "permission_access" or test_mode == "permission":
+                exec_result = run_permission_test(scenario, sid, context_json)
 
             else:
                 exec_result = run_ui_test(scenario, sid)

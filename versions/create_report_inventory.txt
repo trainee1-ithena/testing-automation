@@ -1,0 +1,90 @@
+════════════════════════════════════════════════════════════
+FORM-SPECIFIC INVENTORY RULES — CREATE REPORT
+════════════════════════════════════════════════════════════
+The following rules supplement the standard Inventory rules above.
+
+INVENTORY A — REPORT TYPE FIELD (STATIC ENUM)
+════════════════════════════════════════════════════════════
+The report_type field is populated from a static list defined in the component source, not
+from a database or API call. Find that list in the source and read the label expression for
+each option. Each label is built by concatenating a static string prefix with a dynamic
+namespace call — use only the static prefix part as the value (the test runner does partial
+matching, so the prefix is sufficient to identify the option uniquely).
+
+When writing the E-item, use SOURCE: static_enum and list the static prefix for each option.
+
+IMPORTANT: Scenarios must use the static prefix string as the input value.
+Never use the internal value property (e.g. "TM"/"FFM"), and never guess or invent a label.
+
+SINVENTORY B — ADDITIONAL SCAN REQUIREMENTS FOR THIS FORM
+════════════════════════════════════════════════════════════
+After writing your initial B-items, make one dedicated pass:
+
+For EVERY field in Inventory A, check whether its JSX renders a `disabled` prop.
+If you find one, classify it:
+  - disabled=true when trigger is EMPTY, enabled when trigger has a value → EFFECT: disable
+  - disabled=true when trigger HAS a value (and a useEffect writes this field's value
+    from the trigger entity's data) → EFFECT: lock
+Write a B-item for each one found.
+
+A trigger field may produce MORE THAN ONE effect on the same target — each effect
+is a separate B-item. After writing your initial B-items, re-examine every field
+that already has a B-item and check whether any more triggers exist, and do NOT SKIP.
+
+
+INVENTORY C — PERMISSION GATE OVERRIDE FOR THIS FORM
+════════════════════════════════════════════════════════════
+OVERRIDE: Do NOT write any C-items of TYPE permission_gate for this form.
+
+All permission-gate testing for this form is handled separately via role_permission_access
+scenarios that search the source directly. Adding permission_gate C-items here causes the
+scenario generator to produce the wrong tests.
+
+Only write C-items of TYPE role_exclusion (fields completely hidden from a role via JSX
+conditional rendering). Leave all permission_gate entries out entirely.
+
+INVENTORY F — MULTI-DIMENSION FIELDS (CREATE REPORT SPECIFIC)
+════════════════════════════════════════════════════════════
+The report_form_id and appointment_id fields have multi-dimensional filters. Apply these
+rules EXACTLY to avoid writing F-items for the wrong dimension.
+
+── report_form_id ────────────────────────────────────────────
+Do NOT write an E-item for report_form_id. Its filtering involves multiple dimensions
+simultaneously and cannot be expressed as a simple parent→child nested path. Its cascade
+behaviour is tested via complex_state_dependencies scenarios instead.
+
+This field is filtered along THREE dimensions simultaneously:
+  1. Active/inactive status of the form schema record
+  2. Service type match between the ticket and the form's eligible service types
+  3. Visibility scope (internal-only vs customer-visible) based on a boolean toggle
+
+RULE: Only write ONE F-item for dimension 1 (active/inactive). Look in the controller
+that serves form options and find the exact active/inactive filter expression.
+  F<n>. FIELD: report_form_id | FILTER: <exact active/inactive condition from source>
+
+Do NOT write separate F-items for dimensions 2 and 3. Those are multi-trigger cascade
+dependencies (the ticket field + the boolean toggle -> report_form_id) and belong in
+Inventory B. Writing them as F-items would generate the wrong scenario type.
+
+── appointment_id ────────────────────────────────────────────
+This field has TWO static filters applied regardless of any other form field.
+Look at how appointments are fetched for this form and find:
+  1. The appointment status condition (only certain status values are shown)
+  2. The exclusion condition for appointments that already have an existing report
+
+Write EXACTLY TWO F-items for this field — one per filter found in source.
+Do NOT combine them into a single F-item. Each filter is a separate testable condition.
+
+NOTE: known_entities.tickets[*].appointments[] only contains appointments that already
+pass both filters. There are no excluded appointment examples in known_entities.
+SKIP all "absent" scenarios for appointment_id — the active_inactive_filter generator
+requires a named excluded item, and none exists here.
+
+── ticket_id ─────────────────────────────────────────────────
+Look at how tickets are fetched for this form and find the filter that excludes
+tickets in a particular status (e.g. closed or resolved tickets).
+
+Write ONE F-item with the exact filter condition from source.
+
+known_entities.inactive_tickets[] contains exactly one ticket excluded by this filter.
+Use its ticket_number as the named item for the "absent" scenario.

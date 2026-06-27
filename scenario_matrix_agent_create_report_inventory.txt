@@ -1,0 +1,31 @@
+A1. report_type | ui_label: Service Report Type | type: select | required: yes | constraints: none | auto_filled: yes
+A2. internal_only | ui_label: Internal Only | type: checkbox | required: no | constraints: none | auto_filled: no
+A3. name | ui_label: Service Report Name | type: text | required: yes | constraints: maxLength 256 | auto_filled: yes
+A4. reportDate | ui_label: Service Report Date | type: date | required: yes | constraints: none | auto_filled: yes
+A5. ticket_id | ui_label: Case | type: autocomplete | required: yes | constraints: none | auto_filled: no
+A6. org_id | ui_label: Organization | type: autocomplete | required: yes | constraints: none | auto_filled: yes
+A7. user_id | ui_label: Customer User | type: groupedByCustomer-UserDropdown | required: yes | constraints: none | auto_filled: yes
+A8. appointment_id | ui_label: Appointment | type: autocomplete | required: no | constraints: none | auto_filled: no
+A9. description | ui_label: Description | type: textarea | required: no | constraints: none | auto_filled: no
+
+B3. ticket_id -> appointment_id | EFFECT: reset | GUARD: ticket_id is cleared | REVERSAL: none
+B5. org_id -> ticket_id | EFFECT: filter | GUARD: org_id is set | REVERSAL: none
+B6. user_id -> ticket_id | EFFECT: filter | GUARD: user_id is set | REVERSAL: none
+
+C1. FIELD: report_form_id | CONDITION: {isAgent && reportFormOptions.length > 0} | SHOWN TO: agent | HIDDEN FROM: non-agent | TYPE: role_exclusion
+
+D1. agent CAN see the record | WHEN: they are the assigned staff (staff_id=assigned_staff_id)
+D2. agent CAN see the record | WHEN: they are the accountable staff (staff_id=accountable_staff_id)
+D3. agent CAN see the record | WHEN: they are the creator (staff_id=created_by_staff_id)
+D4. agent CAN see the record | WHEN: they are a collaborator (staff_id in ticket_collaborators)
+D5. agent CAN see the record | WHEN: they have department access (dept_id in userDepartments)
+
+E1. FIELD: report_type | SOURCE: static_enum | DISPLAY LABEL: Fixed Fee & Materials, Time & Material
+E2. FIELD: ticket_id | SOURCE: known_entities.tickets | DISPLAY LABEL: ticket_number - ticket_subject
+E3. FIELD: org_id | SOURCE: known_entities.customers | DISPLAY LABEL: name
+E4. FIELD: user_id | SOURCE: known_entities.customers[*].users | DISPLAY LABEL: name | CONSTRAINT: org_id and user_id must share the same organization
+E5. FIELD: appointment_id | SOURCE: known_entities.tickets[*].appointments | DISPLAY LABEL: title: start_datetime - end_datetime
+
+F1. FIELD: ticket_id | FILTER: exclude_closed_status: true
+F2. FIELD: appointment_id | FILTER: state === "scheduled" && !service_report
+F3. FIELD: appointment_id | FILTER: !appt?.service_report

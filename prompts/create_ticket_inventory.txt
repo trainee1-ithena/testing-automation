@@ -1,0 +1,54 @@
+════════════════════════════════════════════════════════════
+FORM-SPECIFIC INVENTORY RULES — CREATE TICKET
+════════════════════════════════════════════════════════════
+The following rules supplement the standard Inventory F rules above.
+
+INVENTORY F — PUBLIC VS PRIVATE (SECOND PASS)
+════════════════════════════════════════════════════════════
+After the standard active/inactive pass, do a SEPARATE second pass over every
+select/multiselect field in Inventory A. For each field, open its controller and
+look for a role-based branch that applies a public/private filter for one caller
+type but not another. The typical pattern:
+
+  const where = isUser ? { ispublic: true } : undefined;
+  // or: if (isUser) { where.ispublic = 1; }
+
+If you find this pattern on any field:
+
+  OVERRIDE: Do NOT apply the standard rule "do not list fields where all records
+  are returned unfiltered." For this pass, the existence of the conditional branch
+  is what matters — not whether the primary role's path has a filter.
+
+  REQUIRED: The branch MUST be explicit and based on a role-check variable
+  (e.g. isUser, isStaff, req.user). If the API returns the same records for ALL
+  roles with no conditional logic at all (e.g. a plain findAll() with no branching),
+  that is NOT a public/private split — do NOT write an F-item for it.
+
+  Write EXACTLY ONE F-item per field — for the PRIMARY ROLE's code path only:
+    - If the primary role hits the restricted branch (e.g. isUser=true → ispublic: true):
+        FILTER: <the actual condition, e.g. ispublic: true>
+        Do NOT also write a role_unrestricted item for the same field.
+    - If the primary role hits the unrestricted branch (e.g. isUser=false → no filter):
+        FILTER: role_unrestricted
+        Do NOT also write an ispublic item for the same field.
+
+  ONE field = ONE public/private F-item. If you have written both ispublic and
+  role_unrestricted for the same field, you have written both sides — delete one.
+  Each flow's inventory only gets the F-item that matches what the primary role
+  actually receives from the API.
+
+A field may already have an F-item from the active/inactive pass. Write the
+public/private F-item as an ADDITIONAL entry — one field can have multiple F-items.
+
+Only list fields present in Inventory A.
+
+INVENTORY C — PERMISSION GATE OVERRIDE FOR THIS FORM
+════════════════════════════════════════════════════════════
+OVERRIDE: Do NOT write any C-items of TYPE permission_gate for this form.
+
+All permission-gate testing for this form is handled separately via role_permission_access
+scenarios that search the source directly. Adding permission_gate C-items here causes the
+scenario generator to produce the wrong tests.
+
+Only write C-items of TYPE role_exclusion (fields completely hidden from a role via JSX
+conditional rendering). Leave all permission_gate entries out entirely.
