@@ -1,0 +1,116 @@
+{
+  "queries": [
+    {
+      "key": "active_tickets",
+      "sql": "SELECT t.ticket_id, t.ticket_number, t.ticket_subject, t.dept_id, t.assigned_staff_id, t.accountable_staff_id, t.created_by_staff_id, t.user_id, t.status_id FROM {prefix}ticket t WHERE t.status_id != 3 ORDER BY t.ticket_id",
+      "known_limit": 5,
+      "cascade_limit": null,
+      "inactive_of": null,
+      "deduplicate_by": null,
+      "params": []
+    },
+    {
+      "key": "inactive_tickets",
+      "sql": "SELECT t.ticket_id, t.ticket_number, t.ticket_subject, t.dept_id, t.assigned_staff_id, t.accountable_staff_id, t.created_by_staff_id, t.user_id, t.status_id FROM {prefix}ticket t WHERE t.status_id = 3 ORDER BY t.ticket_id",
+      "known_limit": 2,
+      "cascade_limit": null,
+      "inactive_of": "active_tickets",
+      "deduplicate_by": null,
+      "params": []
+    },
+    {
+      "key": "active_service_reports",
+      "sql": "SELECT sr.report_id, sr.ticket_id, sr.appointment_id, sr.report_number, sr.report_name, sr.report_status, sr.report_type, sr.report_date, sr.created_by, sr.closed_by, sr.closed_at FROM {prefix}service_report_header sr WHERE sr.report_status != 'closed' ORDER BY sr.report_id",
+      "known_limit": 5,
+      "cascade_limit": null,
+      "inactive_of": null,
+      "deduplicate_by": null,
+      "params": []
+    },
+    {
+      "key": "inactive_service_reports",
+      "sql": "SELECT sr.report_id, sr.ticket_id, sr.appointment_id, sr.report_number, sr.report_name, sr.report_status, sr.report_type, sr.report_date, sr.created_by, sr.closed_by, sr.closed_at FROM {prefix}service_report_header sr WHERE sr.report_status = 'closed' ORDER BY sr.report_id",
+      "known_limit": 2,
+      "cascade_limit": null,
+      "inactive_of": "active_service_reports",
+      "deduplicate_by": null,
+      "params": []
+    },
+    {
+      "key": "staff_with_roles",
+      "sql": "SELECT s.staff_id, s.name, sa.email, sda.dept_id, r.name AS role_name, r.permissions FROM {prefix}staff s JOIN {prefix}staff_account sa ON sa.staff_id = s.staff_id JOIN {prefix}staff_dept_access sda ON sda.staff_id = s.staff_id JOIN {prefix}roles r ON r.id = sda.role_id",
+      "known_limit": 5,
+      "cascade_limit": null,
+      "inactive_of": null,
+      "deduplicate_by": {
+        "unique_key": "staff_id",
+        "collect_as": "dept_roles",
+        "collect_fields": [
+          "dept_id",
+          "role_name",
+          "permissions"
+        ]
+      },
+      "params": []
+    },
+    {
+      "key": "active_appointments",
+      "sql": "SELECT a.id, a.title, a.start_datetime, a.end_datetime, a.status, a.ticket_id, a.customer_id, a.user_id, a.department_id FROM {prefix}appointment a WHERE a.status != 3 ORDER BY a.id",
+      "known_limit": 5,
+      "cascade_limit": null,
+      "inactive_of": null,
+      "deduplicate_by": null,
+      "params": []
+    },
+    {
+      "key": "inactive_appointments",
+      "sql": "SELECT a.id, a.title, a.start_datetime, a.end_datetime, a.status, a.ticket_id, a.customer_id, a.user_id, a.department_id FROM {prefix}appointment a WHERE a.status = 3 ORDER BY a.id",
+      "known_limit": 2,
+      "cascade_limit": null,
+      "inactive_of": "active_appointments",
+      "deduplicate_by": null,
+      "params": []
+    },
+    {
+      "key": "active_customers",
+      "sql": "SELECT o.id, o.name, o.status FROM {prefix}organization o WHERE o.status = 1 ORDER BY o.id",
+      "known_limit": 5,
+      "cascade_limit": null,
+      "inactive_of": null,
+      "deduplicate_by": null,
+      "params": []
+    },
+    {
+      "key": "inactive_customers",
+      "sql": "SELECT o.id, o.name, o.status FROM {prefix}organization o WHERE o.status = 0 ORDER BY o.id",
+      "known_limit": 2,
+      "cascade_limit": null,
+      "inactive_of": "active_customers",
+      "deduplicate_by": null,
+      "params": []
+    }
+  ],
+  "nesting": [
+    {
+      "child_key": "active_service_reports",
+      "into": "active_tickets",
+      "join_field": "ticket_id",
+      "nest_as": "service_reports",
+      "parent_pk": "ticket_id"
+    },
+    {
+      "child_key": "active_appointments",
+      "into": "active_tickets",
+      "join_field": "ticket_id",
+      "nest_as": "appointments",
+      "parent_pk": "ticket_id"
+    }
+  ],
+  "namespace_map_query": "SELECT `key`, `value` FROM {prefix}options WHERE namespace = 'naming_convention'",
+  "label_templates": {
+    "ticket_id": {
+      "value_field": "ticket_id",
+      "source_key": "active_tickets"
+    }
+  }
+}

@@ -1,0 +1,59 @@
+{
+  "url": "http://localhost:3000/service_reports",
+  "root_aria_hidden": "true",
+  "drawers": [
+    {
+      "visible": false,
+      "aria_hidden": "true"
+    }
+  ],
+  "modals_visible": 0,
+  "open_option_lists": 1,
+  "shepherd_nodes": 0,
+  "comboboxes": [
+    {
+      "text": "Time & Material Service Report",
+      "placeholder": null,
+      "visible": true,
+      "in_aria_hidden": true
+    },
+    {
+      "text": "",
+      "placeholder": "Select Case",
+      "visible": true,
+      "in_aria_hidden": true
+    },
+    {
+      "text": "",
+      "placeholder": "Select Organization",
+      "visible": true,
+      "in_aria_hidden": true
+    },
+    {
+      "text": "",
+      "placeholder": "Select Customer User",
+      "visible": true,
+      "in_aria_hidden": true
+    },
+    {
+      "text": "",
+      "placeholder": "Select Assignee(s)",
+      "visible": true,
+      "in_aria_hidden": true
+    },
+    {
+      "text": "",
+      "placeholder": "Select Appointment",
+      "visible": true,
+      "in_aria_hidden": true
+    }
+  ],
+  "buttons_service_report": [
+    {
+      "text": "Service Report",
+      "visible": true,
+      "disabled": false,
+      "in_aria_hidden": true
+    }
+  ]
+}

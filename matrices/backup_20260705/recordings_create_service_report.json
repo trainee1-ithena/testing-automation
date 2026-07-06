@@ -1,0 +1,99 @@
+[
+  {
+    "flow_type": "create_service_report_from_service_reports",
+    "role": "any_authorized_role",
+    "description": "Happy path recording for 'default' entry point.",
+    "start_url": "/service_reports",
+    "steps": [
+      "Navigate to the form",
+      "Fill all visible fields with any valid values",
+      "Submit the form"
+    ],
+    "scenario_ids": [
+      "case001",
+      "case002",
+      "case003",
+      "case004",
+      "case005",
+      "case006",
+      "case007",
+      "case008",
+      "case009",
+      "case010",
+      "case011",
+      "case012",
+      "case013",
+      "case014",
+      "case015",
+      "case016",
+      "case017",
+      "case018",
+      "case019",
+      "case020",
+      "case021",
+      "case032",
+      "case033",
+      "case034",
+      "case035",
+      "case036",
+      "case037",
+      "case038",
+      "case039",
+      "case040",
+      "case041",
+      "case042",
+      "case043",
+      "case044",
+      "case055",
+      "case056",
+      "case057",
+      "case058"
+    ]
+  },
+  {
+    "flow_type": "create_service_report_from_from_within_a_ticket_service_reports_tab",
+    "role": "Service Manager",
+    "description": "Happy path recording for 'From Within a Ticket (Service Reports Tab)' entry point.",
+    "start_url": "/cases",
+    "steps": [
+      "Navigate to the form",
+      "Fill all visible fields with any valid values",
+      "Submit the form"
+    ],
+    "scenario_ids": [
+      "case022",
+      "case023",
+      "case024",
+      "case025",
+      "case026",
+      "case045",
+      "case046",
+      "case047",
+      "case048",
+      "case049"
+    ]
+  },
+  {
+    "flow_type": "create_service_report_from_from_the_appointment_creation_form",
+    "role": "Service Manager",
+    "description": "Happy path recording for 'From the Appointment Creation Form' entry point.",
+    "start_url": "/appointments",
+    "steps": [
+      "Navigate to the form",
+      "Fill all visible fields with any valid values",
+      "Submit the form"
+    ],
+    "scenario_ids": [
+      "case027",
+      "case028",
+      "case029",
+      "case030",
+      "case031",
+      "case050",
+      "case051",
+      "case052",
+      "case053",
+      "case054"
+    ]
+  }
+]

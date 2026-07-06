@@ -1,0 +1,442 @@
+[
+  {
+    "scenario_id": "SC-001",
+    "category": "happy_path",
+    "entry_point": "from_list_page",
+    "persona": "Service Manager",
+    "title": "Create External SR from List Page",
+    "description": "Test the creation of a Service Report from the Service Reports List Page by a Service Manager.",
+    "preconditions": [
+      "Service Manager has SR create permission for the department."
+    ],
+    "steps_summary": [
+      "Navigate to the Service Reports module.",
+      "Click the Create button.",
+      "Select SR Type: Time & Material.",
+      "Leave Internal Only toggle off.",
+      "Enter SR Name and confirm today's date.",
+      "Search for and select a Ticket.",
+      "Select one or more Assignees.",
+      "Optionally select a linked Appointment.",
+      "Click Save."
+    ],
+    "expected_result": "SR is created in To Do status with (External) chip visible.",
+    "prd_references": [
+      "12.1",
+      "13.1"
+    ],
+    "source": "prd"
+  },
+  {
+    "scenario_id": "SC-002",
+    "category": "happy_path",
+    "entry_point": "from_within_ticket",
+    "persona": "Service Engineer",
+    "title": "Create Internal SR from Within Ticket",
+    "description": "Test the creation of an Internal Service Report from within a Ticket by a Service Engineer.",
+    "preconditions": [
+      "Service Engineer has SR create permission for the department.",
+      "Ticket is in a non-terminal status."
+    ],
+    "steps_summary": [
+      "Open a Ticket in In Progress status.",
+      "Navigate to the Service Reports tab.",
+      "Click Create New Service Report.",
+      "Select SR Type: Fixed Fee.",
+      "Toggle Internal Only ON.",
+      "Enter SR Name and Date.",
+      "Select themselves as Assignee.",
+      "Click Save."
+    ],
+    "expected_result": "SR is created in To Do status with (Internal) chip. CU cannot see this SR.",
+    "prd_references": [
+      "12.1",
+      "13.2"
+    ],
+    "source": "prd"
+  },
+  {
+    "scenario_id": "SC-003",
+    "category": "happy_path",
+    "entry_point": "from_appointment_form",
+    "persona": "Service Manager",
+    "title": "Create SR Alongside Appointment",
+    "description": "Test creating a Service Report alongside an Appointment for an existing Ticket by a Service Manager.",
+    "preconditions": [
+      "Service Manager has SR create permission for the department.",
+      "Existing Ticket is in a non-terminal status."
+    ],
+    "steps_summary": [
+      "Open the Appointments module.",
+      "Click New Appointment.",
+      "Select an existing non-terminal Ticket.",
+      "Fill in appointment details.",
+      "Check Create New Service Report.",
+      "Select SR Type: Time & Material and Visibility: External.",
+      "Click Submit."
+    ],
+    "expected_result": "Both the appointment and the SR are created. The SR is linked to the appointment in To Do status.",
+    "prd_references": [
+      "12.1",
+      "13.3"
+    ],
+    "source": "prd"
+  },
+  {
+    "scenario_id": "SC-004",
+    "category": "field_validation",
+    "entry_point": "not_applicable",
+    "persona": "Service Manager",
+    "title": "Validate Required SR Type",
+    "description": "Ensure that the Service Report Type field is required and shows an error if not selected.",
+    "preconditions": [],
+    "steps_summary": [
+      "Open the Create Service Report form.",
+      "Leave the SR Type field blank.",
+      "Attempt to submit the form."
+    ],
+    "expected_result": "Validation error is displayed for the SR Type field.",
+    "prd_references": [
+      "5.1",
+      "12.3"
+    ],
+    "source": "prd"
+  },
+  {
+    "scenario_id": "SC-005",
+    "category": "field_validation",
+    "entry_point": "not_applicable",
+    "persona": "Service Manager",
+    "title": "Validate Required SR Name",
+    "description": "Ensure that the Service Report Name field is required and shows an error if not entered.",
+    "preconditions": [],
+    "steps_summary": [
+      "Open the Create Service Report form.",
+      "Leave the SR Name field blank.",
+      "Attempt to submit the form."
+    ],
+    "expected_result": "Validation error is displayed for the SR Name field.",
+    "prd_references": [
+      "5.1",
+      "12.3"
+    ],
+    "source": "prd"
+  },
+  {
+    "scenario_id": "SC-006",
+    "category": "field_validation",
+    "entry_point": "not_applicable",
+    "persona": "Service Manager",
+    "title": "Validate Required SR Date",
+    "description": "Ensure that the Service Report Date field is required and shows an error if not selected.",
+    "preconditions": [],
+    "steps_summary": [
+      "Open the Create Service Report form.",
+      "Clear the SR Date field.",
+      "Attempt to submit the form."
+    ],
+    "expected_result": "Validation error is displayed for the SR Date field.",
+    "prd_references": [
+      "5.1",
+      "12.3"
+    ],
+    "source": "prd"
+  },
+  {
+    "scenario_id": "SC-007",
+    "category": "field_validation",
+    "entry_point": "from_list_page",
+    "persona": "Service Manager",
+    "title": "Validate Required Ticket Selection",
+    "description": "Ensure that the Ticket field is required and shows an error if not selected when creating from the list page.",
+    "preconditions": [],
+    "steps_summary": [
+      "Open the Create Service Report form from the list page.",
+      "Leave the Ticket field blank.",
+      "Attempt to submit the form."
+    ],
+    "expected_result": "Validation error is displayed for the Ticket field.",
+    "prd_references": [
+      "5.1",
+      "12.3"
+    ],
+    "source": "prd"
+  },
+  {
+    "scenario_id": "SC-008",
+    "category": "field_validation",
+    "entry_point": "not_applicable",
+    "persona": "Service Manager",
+    "title": "Validate Required Assignee Selection",
+    "description": "Ensure that at least one Assignee is required and shows an error if not selected.",
+    "preconditions": [],
+    "steps_summary": [
+      "Open the Create Service Report form.",
+      "Leave the Assignee field blank.",
+      "Attempt to submit the form."
+    ],
+    "expected_result": "Validation error is displayed for the Assignee field.",
+    "prd_references": [
+      "5.1",
+      "12.3"
+    ],
+    "source": "prd"
+  },
+  {
+    "scenario_id": "SC-009",
+    "category": "field_interaction",
+    "entry_point": "not_applicable",
+    "persona": "Service Manager",
+    "title": "Ticket Selection Auto-populates Organization",
+    "description": "Verify that selecting a Ticket auto-populates the Organization field.",
+    "preconditions": [],
+    "steps_summary": [
+      "Open the Create Service Report form.",
+      "Select a Ticket.",
+      "Observe the Organization field."
+    ],
+    "expected_result": "Organization field is auto-populated based on the selected Ticket.",
+    "prd_references": [
+      "4.7",
+      "11"
+    ],
+    "source": "prd"
+  },
+  {
+    "scenario_id": "SC-010",
+    "category": "field_interaction",
+    "entry_point": "not_applicable",
+    "persona": "Service Manager",
+    "title": "Ticket Selection Auto-populates Organization User",
+    "description": "Verify that selecting a Ticket auto-populates the Organization User field.",
+    "preconditions": [],
+    "steps_summary": [
+      "Open the Create Service Report form.",
+      "Select a Ticket.",
+      "Observe the Organization User field."
+    ],
+    "expected_result": "Organization User field is auto-populated based on the selected Ticket.",
+    "prd_references": [
+      "4.8",
+      "11"
+    ],
+    "source": "prd"
+  },
+  {
+    "scenario_id": "SC-011",
+    "category": "field_interaction",
+    "entry_point": "not_applicable",
+    "persona": "Service Manager",
+    "title": "Internal Only Toggle Affects Workflow Path",
+    "description": "Verify that toggling Internal Only affects the SR's workflow path.",
+    "preconditions": [],
+    "steps_summary": [
+      "Open the Create Service Report form.",
+      "Toggle Internal Only ON.",
+      "Submit the form.",
+      "Observe the SR's workflow path."
+    ],
+    "expected_result": "SR follows the internal_only workflow path.",
+    "prd_references": [
+      "4.2",
+      "7.2"
+    ],
+    "source": "prd"
+  },
+  {
+    "scenario_id": "SC-012",
+    "category": "field_interaction",
+    "entry_point": "not_applicable",
+    "persona": "Service Manager",
+    "title": "Custom Form Auto-Attachment Based on Ticket and Flow",
+    "description": "Verify that a custom form is auto-attached based on the Ticket's service type and selected report_flow.",
+    "preconditions": [
+      "Custom form is configured for the Ticket's service type and flow."
+    ],
+    "steps_summary": [
+      "Open the Create Service Report form.",
+      "Select a Ticket with a configured service type.",
+      "Select a report_flow.",
+      "Submit the form.",
+      "Observe the attached custom form."
+    ],
+    "expected_result": "Custom form is auto-attached based on the service type and flow.",
+    "prd_references": [
+      "4.3",
+      "8.1"
+    ],
+    "source": "prd"
+  },
+  {
+    "scenario_id": "SC-013",
+    "category": "business_rule",
+    "entry_point": "not_applicable",
+    "persona": "Customer User",
+    "title": "Customer User Cannot Create SR",
+    "description": "Ensure that a Customer User cannot create a Service Report.",
+    "preconditions": [],
+    "steps_summary": [
+      "Log in as a Customer User.",
+      "Attempt to access the Create Service Report action."
+    ],
+    "expected_result": "Customer User cannot see or access the Create Service Report action.",
+    "prd_references": [
+      "BR-01",
+      "12.1"
+    ],
+    "source": "prd"
+  },
+  {
+    "scenario_id": "SC-014",
+    "category": "business_rule",
+    "entry_point": "not_applicable",
+    "persona": "Service Manager",
+    "title": "SR Creation Against Non-Terminal Ticket",
+    "description": "Ensure that an SR can only be created against a non-terminal ticket.",
+    "preconditions": [],
+    "steps_summary": [
+      "Open the Create Service Report form.",
+      "Attempt to select a terminal ticket (Closed, Resolved, Archived, Deleted)."
+    ],
+    "expected_result": "Terminal tickets do not appear in the Ticket dropdown.",
+    "prd_references": [
+      "BR-02",
+      "12.9"
+    ],
+    "source": "prd"
+  },
+  {
+    "scenario_id": "SC-015",
+    "category": "business_rule",
+    "entry_point": "not_applicable",
+    "persona": "Service Manager",
+    "title": "SR Number Generation and Format",
+    "description": "Verify that the SR number is generated according to the configured format and is unique.",
+    "preconditions": [
+      "SR number format is configured in admin settings."
+    ],
+    "steps_summary": [
+      "Open the Create Service Report form.",
+      "Fill in all required fields.",
+      "Submit the form.",
+      "Observe the generated SR number."
+    ],
+    "expected_result": "SR number is generated according to the configured format and is unique.",
+    "prd_references": [
+      "6.1",
+      "6.2",
+      "BR-12"
+    ],
+    "source": "prd"
+  },
+  {
+    "scenario_id": "SC-016",
+    "category": "edge_case",
+    "entry_point": "not_applicable",
+    "persona": "Service Manager",
+    "title": "Whitespace Only SR Name",
+    "description": "Ensure that an SR Name consisting only of whitespace is treated as invalid.",
+    "preconditions": [],
+    "steps_summary": [
+      "Open the Create Service Report form.",
+      "Enter whitespace only in the SR Name field.",
+      "Attempt to submit the form."
+    ],
+    "expected_result": "Validation error is displayed for the SR Name field.",
+    "prd_references": [
+      "EC-02"
+    ],
+    "source": "prd"
+  },
+  {
+    "scenario_id": "SC-017",
+    "category": "edge_case",
+    "entry_point": "not_applicable",
+    "persona": "Service Manager",
+    "title": "Duplicate SR Numbers on Simultaneous Creation",
+    "description": "Ensure that simultaneous SR creations result in unique SR numbers.",
+    "preconditions": [],
+    "steps_summary": [
+      "Two users open the Create Service Report form simultaneously.",
+      "Both fill in all required fields.",
+      "Both submit the form at the same time."
+    ],
+    "expected_result": "Each SR is assigned a unique, incremented SR number.",
+    "prd_references": [
+      "EC-05"
+    ],
+    "source": "prd"
+  },
+  {
+    "scenario_id": "SC-018",
+    "category": "edge_case",
+    "entry_point": "not_applicable",
+    "persona": "Customer User",
+    "title": "Direct URL Access by Customer User",
+    "description": "Ensure that a Customer User cannot access the Create SR form via direct URL.",
+    "preconditions": [],
+    "steps_summary": [
+      "Log in as a Customer User.",
+      "Attempt to navigate directly to the Create SR URL."
+    ],
+    "expected_result": "Customer User receives a 'Not Authorized' error or is redirected.",
+    "prd_references": [
+      "EC-10"
+    ],
+    "source": "prd"
+  },
+  {
+    "scenario_id": "SC-019",
+    "category": "post_submission_state",
+    "entry_point": "not_applicable",
+    "persona": "Service Manager",
+    "title": "Verify Post-Creation State of SR",
+    "description": "Ensure that the SR is in the correct state after creation.",
+    "preconditions": [],
+    "steps_summary": [
+      "Create a new Service Report.",
+      "Navigate to the SR detail view.",
+      "Verify the SR status, number, and linked entities."
+    ],
+    "expected_result": "SR is in To Do status with correct number and linked entities.",
+    "prd_references": [
+      "9",
+      "12.8"
+    ],
+    "source": "prd"
+  },
+  {
+    "scenario_id": "SC-020",
+    "category": "industry_best_practice",
+    "entry_point": "not_applicable",
+    "persona": "Service Manager",
+    "title": "SQL Injection in SR Name",
+    "description": "Ensure that the system is protected against SQL injection attempts in the SR Name field.",
+    "preconditions": [],
+    "steps_summary": [
+      "Open the Create Service Report form.",
+      "Enter a SQL injection string in the SR Name field.",
+      "Attempt to submit the form."
+    ],
+    "expected_result": "System prevents SQL injection and displays a validation error.",
+    "prd_references": [],
+    "source": "industry_best_practice"
+  },
+  {
+    "scenario_id": "SC-021",
+    "category": "industry_best_practice",
+    "entry_point": "not_applicable",
+    "persona": "Service Manager",
+    "title": "Exceeding Max Length in SR Name",
+    "description": "Ensure that the SR Name field handles input exceeding typical maximum length gracefully.",
+    "preconditions": [],
+    "steps_summary": [
+      "Open the Create Service Report form.",
+      "Enter a long string exceeding 500 characters in the SR Name field.",
+      "Attempt to submit the form."
+    ],
+    "expected_result": "System handles the input gracefully and displays a validation error if necessary.",
+    "prd_references": [],
+    "source": "industry_best_practice"
+  }
+]

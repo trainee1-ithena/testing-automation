@@ -1,0 +1,67 @@
+{
+  "files": {
+    "frontend": {
+      "form": [
+        { "path": "iserv_portal/src/Components/CreateReportForm/CreateReportForm.js", "read_mode": "full" },
+        { "path": "iserv_portal/src/Components/CreateAppointmentForm/CreateAppointmentForm.js", "read_mode": "full" }
+      ],
+      "list_page": [
+        { "path": "iserv_portal/src/Components/ServiceReports/ServiceReports.js",         "read_mode": "full" },
+        { "path": "iserv_portal/src/Components/TicketServiceReports/TicketServiceReports.js", "read_mode": "slice", "slice_target": "customButtons" }
+      ],
+      "auth": [
+        { "path": "iserv_portal/src/Context/AuthContext.js",     "read_mode": "auto" },
+        { "path": "iserv_portal/src/Data/DefaultPermissions.js", "read_mode": "full" }
+      ],
+      "utilities": [
+        { "path": "iserv_portal/src/Utilities/ticketAccessUtils.js",     "read_mode": "full" },
+        { "path": "iserv_portal/src/Utilities/customFormValidation.js",  "read_mode": "full" }
+      ],
+      "services": [
+        { "path": "iserv_portal/src/Services/reportsService.js",      "read_mode": "full" },
+        { "path": "iserv_portal/src/Services/appointmentService.js",  "read_mode": "full" },
+        { "path": "iserv_portal/src/Services/ticketsService.js",      "read_mode": "full" },
+        { "path": "iserv_portal/src/Services/customerService.js",     "read_mode": "full" },
+        { "path": "iserv_portal/src/Services/agentService.js",        "read_mode": "full" },
+        { "path": "iserv_portal/src/Services/billingProfileService.js","read_mode": "full" },
+        { "path": "iserv_portal/src/Services/itemsService.js",        "read_mode": "full" }
+      ]
+    },
+    "backend": {
+      "routes": [
+        { "path": "iserv_server/src/routes/service_report.route.js", "read_mode": "full" }
+      ],
+      "controllers": [
+        { "path": "iserv_server/src/controllers/service_report.controller.js", "read_mode": "slice", "slice_target": "createReportHelper" },
+        { "path": "iserv_server/src/controllers/service_report.controller.js", "read_mode": "slice", "slice_target": "getServiceReportFormOptions" }
+      ],
+      "utilities": [
+        { "path": "iserv_server/src/utilities/service_reportUtils.js", "read_mode": "auto" },
+        { "path": "iserv_server/src/utilities/ticketAccessUtil.js",    "read_mode": "full" }
+      ]
+    },
+    "models": [
+      { "path": "iserv_server/src/models/service_report_header.model.js",             "read_mode": "full" },
+      { "path": "iserv_server/src/models/service_report_meta.model.js",               "read_mode": "full" },
+      { "path": "iserv_server/src/models/service_report_collaborators.model.js",      "read_mode": "full" },
+      { "path": "iserv_server/src/models/service_report_lines.model.js",              "read_mode": "full" },
+      { "path": "iserv_server/src/models/service_report_form_service_types.model.js", "read_mode": "full" },
+      { "path": "iserv_server/src/models/form_schema.model.js",                       "read_mode": "full" },
+      { "path": "iserv_server/src/models/appointment.model.js",                       "read_mode": "full" },
+      { "path": "iserv_server/src/models/appointment_staff.model.js",                 "read_mode": "full" },
+      { "path": "iserv_server/src/models/organization.model.js",                      "read_mode": "full" },
+      { "path": "iserv_server/src/models/user.model.js",                              "read_mode": "full" },
+      { "path": "iserv_server/src/models/user_account.model.js",                      "read_mode": "full" },
+      { "path": "iserv_server/src/models/ticket.model.js",                            "read_mode": "full" },
+      { "path": "iserv_server/src/models/department.model.js",                        "read_mode": "full" },
+      { "path": "iserv_server/src/models/staff.model.js",                             "read_mode": "full" },
+      { "path": "iserv_server/src/models/staff_account.model.js",                     "read_mode": "full" },
+      { "path": "iserv_server/src/models/staff_dept_access.model.js",                 "read_mode": "full" },
+      { "path": "iserv_server/src/models/roles.model.js",                             "read_mode": "full" },
+      { "path": "iserv_server/src/models/service_type.model.js",                      "read_mode": "full" },
+      { "path": "iserv_server/src/models/service_type_departments.model.js",           "read_mode": "full" },
+      { "path": "iserv_server/src/models/appointment_status.model.js",                "read_mode": "full" },
+      { "path": "iserv_server/src/models/options.model.js",                           "read_mode": "full" }
+    ]
+  }
+}
