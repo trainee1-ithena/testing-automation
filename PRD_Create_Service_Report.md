@@ -102,7 +102,7 @@ The table below shows which fields are auto-populated in their specific entry po
 |---|---|---|
 | **Entry Point A** — From SR List | `org_id`, `customer_id` | Always auto-populated downstream of Ticket selection; the user selects the Ticket but never directly enters Organization or Organization User |
 | **Entry Point B** — From Ticket | `ticket_id`, `org_id`, `customer_id` | Ticket is pre-selected and locked to the source ticket; Organization and Organization User inherit from that locked Ticket |
-| **Entry Point C** — From Appointment | `org_id`, `customer_id`, `appointment_id` | Derived once a Case is picked, or inherited once the appointment is saved — never entered directly. case (Case), title (Title), notes (Description), and staff_assigned (Assignee) are required, blank, user-filled fields on the appointment form itself — not locked. The user also selects service_report = "Create New Service Report" to reveal the SR sub-fields, then fills job_type ("Job Type") and report_flow ("Visibility"), which are pre-filled with defaults but remain user-editable. |
+| **Entry Point C** — From Appointment | `org_id`, `customer_id`, `appointment_id` | Derived once a Case is picked, or inherited once the appointment is saved — never entered directly. ticket (Case), title (Title), notes (Description), and staff_assigned (Assignee) are required, blank, user-filled fields on the appointment form itself — not locked. The user also selects service_report = "Create New Service Report" to reveal the SR sub-fields, then fills job_type ("Job Type") and report_flow ("Visibility"), which are pre-filled with defaults but remain user-editable. |
 
 ---
 

@@ -2,15 +2,15 @@ import re
 import time
 from playwright.sync_api import Page, expect
 
-FIELD_ORDER = ["title", "description", "case", "service_report", "job_type", "report_flow", "assignee"]
+FIELD_ORDER = ["title", "notes", "ticket", "service_report", "time_material", "external", "staff_assigned"]
 FIELD_TYPES = {
     "title": "textbox",
-    "description": "textbox",
-    "case": "react_select",
+    "notes": "textbox",
+    "ticket": "react_select",
     "service_report": "react_select",
-    "job_type": "react_select",
-    "report_flow": "react_select",
-    "assignee": "react_select"
+    "time_material": "react_select",
+    "external": "react_select",
+    "staff_assigned": "react_select"
 }
 
 
@@ -403,17 +403,17 @@ def set_field(page: Page, field: str, value):
     """Generic field setter — dispatches on FIELD_TYPES."""
     if field == "title":
         page.get_by_role("textbox", name="Please specify the title for").fill(str(value))
-    elif field == "description":
+    elif field == "notes":
         page.locator(".jodit-wysiwyg").fill(str(value))
-    elif field == "case":
+    elif field == "ticket":
         _select_option(page, page.get_by_role("combobox", name="Select Case"), value)
     elif field == "service_report":
         _select_option(page, page.get_by_role("combobox", name="Select Service Report", exact=True), value)
-    elif field == "job_type":
+    elif field == "time_material":
         _select_option(page, page.get_by_role("combobox", name="Time & Material"), value)
-    elif field == "report_flow":
+    elif field == "external":
         _select_option(page, page.get_by_role("combobox", name="External (Customer Visible)"), value)
-    elif field == "assignee":
+    elif field == "staff_assigned":
         _open_dropdown(page, page.get_by_role("combobox", name="Select Assignee"))
         page.get_by_role("listbox").get_by_text(str(value), exact=False).first.click()
     else:
@@ -424,17 +424,17 @@ def read_field(page: Page, field: str):
     """Generic field getter — reads the field's current displayed value."""
     if field == "title":
         return page.get_by_role("textbox", name="Please specify the title for").input_value()
-    elif field == "description":
+    elif field == "notes":
         return page.locator(".jodit-wysiwyg").input_value()
-    elif field == "case":
+    elif field == "ticket":
         return (page.get_by_role("combobox", name="Select Case")).text_content() or ""
     elif field == "service_report":
         return (page.get_by_role("combobox", name="Select Service Report", exact=True)).text_content() or ""
-    elif field == "job_type":
+    elif field == "time_material":
         return (page.get_by_role("combobox", name="Time & Material")).text_content() or ""
-    elif field == "report_flow":
+    elif field == "external":
         return (page.get_by_role("combobox", name="External (Customer Visible)")).text_content() or ""
-    elif field == "assignee":
+    elif field == "staff_assigned":
         return (page.get_by_role("combobox", name="Select Assignee")).text_content() or ""
     else:
         raise ValueError(f"Unknown field: {field}")
@@ -444,17 +444,17 @@ def open_field(page: Page, field: str):
     """Open a dropdown without selecting a value (for option-list inspection)."""
     if field == "title":
         raise ValueError("Field 'title' has no dropdown to open (type=textbox)")
-    elif field == "description":
-        raise ValueError("Field 'description' has no dropdown to open (type=textbox)")
-    elif field == "case":
+    elif field == "notes":
+        raise ValueError("Field 'notes' has no dropdown to open (type=textbox)")
+    elif field == "ticket":
         _open_dropdown(page, page.get_by_role("combobox", name="Select Case"))
     elif field == "service_report":
         _open_dropdown(page, page.get_by_role("combobox", name="Select Service Report", exact=True))
-    elif field == "job_type":
+    elif field == "time_material":
         _open_dropdown(page, page.get_by_role("combobox", name="Time & Material"))
-    elif field == "report_flow":
+    elif field == "external":
         _open_dropdown(page, page.get_by_role("combobox", name="External (Customer Visible)"))
-    elif field == "assignee":
+    elif field == "staff_assigned":
         _open_dropdown(page, page.get_by_role("combobox", name="Select Assignee"))
     else:
         raise ValueError(f"Unknown field: {field}")
@@ -464,17 +464,17 @@ def is_field_present(page: Page, field: str) -> bool:
     """DOM existence check — used for role-based field visibility tests."""
     if field == "title":
         return page.get_by_role("textbox", name="Please specify the title for").count() > 0
-    elif field == "description":
+    elif field == "notes":
         return page.locator(".jodit-wysiwyg").count() > 0
-    elif field == "case":
+    elif field == "ticket":
         return (page.get_by_role("combobox", name="Select Case")).count() > 0
     elif field == "service_report":
         return (page.get_by_role("combobox", name="Select Service Report", exact=True)).count() > 0
-    elif field == "job_type":
+    elif field == "time_material":
         return (page.get_by_role("combobox", name="Time & Material")).count() > 0
-    elif field == "report_flow":
+    elif field == "external":
         return (page.get_by_role("combobox", name="External (Customer Visible)")).count() > 0
-    elif field == "assignee":
+    elif field == "staff_assigned":
         return (page.get_by_role("combobox", name="Select Assignee")).count() > 0
     else:
         raise ValueError(f"Unknown field: {field}")
@@ -484,7 +484,7 @@ def run_test(page: Page, inputs: dict, expected_outcome: str, expected_message: 
     """
     Execute one create_service_report/create_service_report_from_from_the_appointment_creation_form scenario.
 
-    inputs keys : title, description, case, service_report, job_type, report_flow, assignee
+    inputs keys : title, notes, ticket, service_report, time_material, external, staff_assigned
     expected_outcome : "pass" | "fail"
     expected_message : exact visible text expected on failure, or None
 

@@ -27,7 +27,10 @@ BASE_DIR      = Path(__file__).parent
 SKELETONS_DIR = BASE_DIR / "skeletons"
 TOKEN_LOG     = BASE_DIR / "token_usage.csv"
 
-MAX_TOKENS = int(os.getenv("OPENAI_MAX_TOKENS", "16000"))
+# generate1 runs on gpt-4o (16,384 completion-token ceiling) and its skeleton output fits well
+# under 16k. The shared OPENAI_MAX_TOKENS env var is tuned for generate2 on gpt-4.1 (32k), so
+# clamp here — otherwise a 32k request is rejected by gpt-4o ("max_tokens is too large").
+MAX_TOKENS = min(int(os.getenv("OPENAI_MAX_TOKENS", "16000")), 16000)
 
 MODEL_COST_RATES = {
     "gpt-4o":       {"prompt": 0.0025,  "completion": 0.01},

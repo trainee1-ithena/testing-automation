@@ -22,6 +22,7 @@ Usage:
 
 import argparse
 import csv
+import hashlib
 import json
 import os
 import sys
@@ -47,6 +48,12 @@ MANIFESTS_DIR = BASE_DIR / "manifests"
 
 # 32000 = gpt-4.1's max output. 16000 truncated a 20-skeleton batch's JSON mid-string.
 MAX_TOKENS = int(os.getenv("OPENAI_MAX_TOKENS", "32000"))
+
+
+class TruncatedResponse(Exception):
+    """Model hit max_tokens mid-JSON — almost always a repetition loop on one
+    skeleton in the batch, not a legitimately oversized response. Caught by the
+    populate loop, which splits the batch and retries instead of aborting."""
 
 MODEL_COST_RATES = {
     "gpt-4o":       {"prompt": 0.0025,  "completion": 0.01},
@@ -224,6 +231,11 @@ invent IDs, ticket numbers, names, or any other values.
 - For boundary scenarios: fill the constrained field exactly at / one past the limit and all
   other required user-set fields with real values. If that field is auto-derived/system-generated
   (never user-typed, e.g. an auto-assigned number), skip — it can't be exercised through the form.
+- For "exceeding maximum length" / over-length input scenarios: emit a real string of at most
+  ~300 characters — a value modestly past the documented limit exercises the length check just
+  as well as a huge one. NEVER emit an unbounded or thousands-of-characters string, and NEVER a
+  placeholder token (e.g. "<over-max-length value>"); a genuine ~300-character string is both
+  safe (no runaway) and sufficient.
 
 ### expected_result
 Replace the abstract skeleton version with a specific, testable one:
@@ -422,9 +434,8 @@ def call_llm(system_prompt: str, user_message: str, model: str, flow: str, label
     # would fail with a cryptic "Unterminated string". Surface the real cause + the fix.
     finish = response.choices[0].finish_reason
     if finish == "length":
-        raise RuntimeError(
-            f"[{label}] response truncated at max_tokens ({MAX_TOKENS}). Lower GENERATE2_BATCH_SIZE "
-            f"(currently {BATCH_SIZE}) or raise OPENAI_MAX_TOKENS so the batch's JSON output fits."
+        raise TruncatedResponse(
+            f"[{label}] response truncated at max_tokens ({MAX_TOKENS})."
         )
     return json.loads(response.choices[0].message.content)
 
@@ -473,6 +484,38 @@ def populate_batch(batch: list[dict], context: dict, model: str, flow: str, batc
 
     result = call_llm(POPULATE_PROMPT, user_msg, model, flow, f"batch {batch_num}")
     return result.get("populated", [])
+
+
+def populate_batch_resilient(batch: list[dict], context: dict, model: str, flow: str, batch_num) -> list[dict]:
+    """populate_batch with split-retry.
+
+    A max_tokens truncation is a repetition loop triggered by one skeleton in the
+    batch plus sampling luck — halving the batch drops that skeleton's context and
+    breaks the cycle. Recurse down to a single case; a lone case that *still* runs
+    away is flagged skip (with a note) so one bad scenario can never abort the run.
+    """
+    try:
+        return populate_batch(batch, context, model, flow, batch_num)
+    except TruncatedResponse:
+        if len(batch) == 1:
+            cid = batch[0].get("case", batch[0].get("scenario_id", "?"))
+            print(f"  [batch {batch_num}] case {cid} looped past max_tokens on its own — "
+                  f"flagging skip so the run finishes; re-run generate2 to retry it.")
+            return [{
+                "case": cid,
+                "inputs": {},
+                "expected_result": "",
+                "expected_outcome": "",
+                "skip": True,
+                "skip_reason": "populate output looped past max_tokens (isolated single-case runaway)",
+                "note": "auto-flagged by split-retry — re-run generate2 to retry this case",
+            }]
+        mid = len(batch) // 2
+        print(f"  [batch {batch_num}] truncated — splitting {len(batch)} → "
+              f"{mid}+{len(batch) - mid} and retrying")
+        left  = populate_batch_resilient(batch[:mid], context, model, flow, f"{batch_num}a")
+        right = populate_batch_resilient(batch[mid:], context, model, flow, f"{batch_num}b")
+        return left + right
 
 
 def analyze_code(context: dict, covered_ids: list[str], next_id: int, model: str, flow: str) -> dict:
@@ -665,13 +708,44 @@ def main():
 
     # ── Part 1: populate skeletons in batches ─────────────────────────────────
     print(f"\nPopulating scenarios in batches of {BATCH_SIZE}...")
+
+    # Checkpoint: persist populated deltas after every batch so a crash mid-run
+    # (network, an unrecoverable runaway, Ctrl-C) doesn't discard already-paid
+    # work — re-running resumes for free. Fingerprinted by the skeletons file so
+    # a checkpoint from a *different* skeleton set is never silently reused.
+    ckpt_path = MATRICES_DIR / f".populate_ckpt_{args.flow}.json"
+    skel_sig  = hashlib.sha1(skeletons_path.read_bytes()).hexdigest()
     delta_map: dict[str, dict] = {}
+    if ckpt_path.exists():
+        try:
+            saved = json.loads(ckpt_path.read_text(encoding="utf-8"))
+            if saved.get("_skeletons_sig") == skel_sig:
+                delta_map = saved.get("deltas", {})
+                if delta_map:
+                    print(f"  resuming from checkpoint: {len(delta_map)} case(s) already populated")
+            else:
+                print("  checkpoint is from a different skeletons file — ignoring it")
+        except (json.JSONDecodeError, OSError):
+            delta_map = {}
+
+    def _save_ckpt():
+        ckpt_path.write_text(
+            json.dumps({"_skeletons_sig": skel_sig, "deltas": delta_map}, indent=2),
+            encoding="utf-8",
+        )
+
     batches = [skeletons[i:i + BATCH_SIZE] for i in range(0, len(skeletons), BATCH_SIZE)]
     for i, batch in enumerate(batches, 1):
-        deltas = populate_batch(batch, context, args.model, args.flow, i)
+        pending = [sc for sc in batch
+                   if sc.get("case", sc.get("scenario_id", "")) not in delta_map]
+        if not pending:
+            print(f"  [batch {i}] already in checkpoint — skipping")
+            continue
+        deltas = populate_batch_resilient(pending, context, args.model, args.flow, i)
         for d in deltas:
             if isinstance(d, dict) and "case" in d:
                 delta_map[d["case"]] = d
+        _save_ckpt()
 
     matrix = [merge_delta(sc, delta_map.get(sc.get("case", sc.get("scenario_id", "")), {})) for sc in skeletons]
     print(f"Populated {len(matrix)} scenarios from {len(batches)} batch(es)")
@@ -690,7 +764,7 @@ def main():
         ca_delta_map: dict[str, dict] = {}
         ca_batches = [new_scenarios[i:i + BATCH_SIZE] for i in range(0, len(new_scenarios), BATCH_SIZE)]
         for i, batch in enumerate(ca_batches, 1):
-            deltas = populate_batch(batch, context, args.model, args.flow, f"code-analysis {i}")
+            deltas = populate_batch_resilient(batch, context, args.model, args.flow, f"code-analysis {i}")
             for d in deltas:
                 if isinstance(d, dict) and "case" in d:
                     ca_delta_map[d["case"]] = d
@@ -719,6 +793,10 @@ def main():
     matrix_path = MATRICES_DIR / f"scenario_matrix_{args.flow}.json"
     matrix_path.write_text(json.dumps(matrix, indent=2), encoding="utf-8")
     print(f"\n{len(matrix)} total scenarios → matrices/{matrix_path.name}")
+
+    # Populate finished and the matrix is on disk — drop the checkpoint so an
+    # intentional future re-run starts clean instead of resuming stale deltas.
+    ckpt_path.unlink(missing_ok=True)
 
     # ── Write recordings needed ────────────────────────────────────────────────
     rec_path = MATRICES_DIR / f"recordings_needed_{args.flow}.md"

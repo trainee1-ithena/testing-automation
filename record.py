@@ -701,6 +701,11 @@ _TOKEN_SYNONYMS: dict[str, set[str]] = {
     "assignee":    {"assigned", "staff"},
     "assigned":    {"assignee"},
     "staff":       {"assignee"},
+    # A form's primary text field is labelled "Name" on the SR-list/ticket forms
+    # but "Please specify the title…" on the appointment host-form, so the same
+    # logical field records as `name` in one flow and `title` in another.
+    "title":       {"name"},
+    "name":        {"title"},
 }
 
 

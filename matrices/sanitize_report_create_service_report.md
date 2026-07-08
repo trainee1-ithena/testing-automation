@@ -6,107 +6,53 @@ None.
 
 ## Auto-corrected
 
-- case001: filled missing field 'name' = 'Valid Report Name' (value used elsewhere for entry_point 'all_entry_points')
-- case001: filled missing field 'ticket_id' = '0626400003 - skddjafklsjklfjslajsaf' (value used elsewhere for entry_point 'all_entry_points')
-- case002: filled missing field 'report_type' = 'Time & Material Service Report' (value used elsewhere for entry_point 'all_entry_points')
-- case002: filled missing field 'ticket_id' = '0626400003 - skddjafklsjklfjslajsaf' (value used elsewhere for entry_point 'all_entry_points')
-- case003: filled missing field 'name' = 'Valid Report Name' (value used elsewhere for entry_point 'all_entry_points')
-- case003: filled missing field 'report_type' = 'Time & Material Service Report' (value used elsewhere for entry_point 'all_entry_points')
-- case003: filled missing field 'ticket_id' = '0626400003 - skddjafklsjklfjslajsaf' (value used elsewhere for entry_point 'all_entry_points')
-- case004: filled missing field 'name' = 'Valid Report Name' (value used elsewhere for entry_point 'all_entry_points')
-- case004: filled missing field 'report_type' = 'Time & Material Service Report' (value used elsewhere for entry_point 'all_entry_points')
-- case005: filled missing field 'name' = 'Valid Report Name' (value used elsewhere for entry_point 'all_entry_points')
-- case005: filled missing field 'report_type' = 'Time & Material Service Report' (value used elsewhere for entry_point 'all_entry_points')
-- case005: filled missing field 'ticket_id' = '0626400003 - skddjafklsjklfjslajsaf' (value used elsewhere for entry_point 'all_entry_points')
-- case007: filled missing field 'name' = 'Valid Report Name' (value used elsewhere for entry_point 'all_entry_points')
-- case007: filled missing field 'report_type' = 'Time & Material Service Report' (value used elsewhere for entry_point 'all_entry_points')
-- case007: filled missing field 'ticket_id' = '0626400003 - skddjafklsjklfjslajsaf' (value used elsewhere for entry_point 'all_entry_points')
-- case017: filled missing field 'report_type' = 'Time & Material Service Report' (value used elsewhere for entry_point 'all_entry_points')
-- case017: filled missing field 'ticket_id' = '0626400003 - skddjafklsjklfjslajsaf' (value used elsewhere for entry_point 'all_entry_points')
-- case018: filled missing field 'report_type' = 'Time & Material Service Report' (value used elsewhere for entry_point 'all_entry_points')
-- case018: filled missing field 'ticket_id' = '0626400003 - skddjafklsjklfjslajsaf' (value used elsewhere for entry_point 'all_entry_points')
-- case019: filled missing field 'report_type' = 'Time & Material Service Report' (value used elsewhere for entry_point 'all_entry_points')
-- case019: filled missing field 'ticket_id' = '0626400003 - skddjafklsjklfjslajsaf' (value used elsewhere for entry_point 'all_entry_points')
-- case020: filled missing field 'name' = 'Valid Report Name' (value used elsewhere for entry_point 'all_entry_points')
-- case020: filled missing field 'report_type' = 'Time & Material Service Report' (value used elsewhere for entry_point 'all_entry_points')
-- case020: filled missing field 'ticket_id' = '0626400003 - skddjafklsjklfjslajsaf' (value used elsewhere for entry_point 'all_entry_points')
-- case021: filled missing field 'name' = 'Valid Report Name' (value used elsewhere for entry_point 'all_entry_points')
-- case021: filled missing field 'report_type' = 'Time & Material Service Report' (value used elsewhere for entry_point 'all_entry_points')
-- case021: filled missing field 'ticket_id' = '0626400003 - skddjafklsjklfjslajsaf' (value used elsewhere for entry_point 'all_entry_points')
-- case022: filled missing field 'name' = 'Valid Report Name' (value used elsewhere for entry_point 'all_entry_points')
-- case022: filled missing field 'report_type' = 'Time & Material Service Report' (value used elsewhere for entry_point 'all_entry_points')
-- case022: filled missing field 'ticket_id' = '0626400003 - skddjafklsjklfjslajsaf' (value used elsewhere for entry_point 'all_entry_points')
-- case023: filled missing field 'name' = 'Valid Report Name' (value used elsewhere for entry_point 'all_entry_points')
-- case023: filled missing field 'report_type' = 'Time & Material Service Report' (value used elsewhere for entry_point 'all_entry_points')
-- case023: filled missing field 'ticket_id' = '0626400003 - skddjafklsjklfjslajsaf' (value used elsewhere for entry_point 'all_entry_points')
-- case048: filled missing field 'name' = 'Valid Report Name' (value used elsewhere for entry_point 'From the Service Reports List Page')
-- case048: filled missing field 'report_type' = 'Time & Material Service Report' (value used elsewhere for entry_point 'From the Service Reports List Page')
-- case048: filled missing field 'ticket_id' = '0626400003 - skddjafklsjklfjslajsaf' (value used elsewhere for entry_point 'From the Service Reports List Page')
-- case053: filled missing field 'name' = 'Valid Report Name' (value used elsewhere for entry_point 'From the Service Reports List Page')
-- case053: filled missing field 'report_type' = 'Time & Material Service Report' (value used elsewhere for entry_point 'From the Service Reports List Page')
-- case053: filled missing field 'ticket_id' = '0626400003 - skddjafklsjklfjslajsaf' (value used elsewhere for entry_point 'From the Service Reports List Page')
-- case035: filled missing field 'name' = 'Valid Report Name' (value used elsewhere for entry_point 'From Within a Ticket (Service Reports Tab)')
-- case035: filled missing field 'report_type' = 'Time & Material Service Report' (value used elsewhere for entry_point 'From Within a Ticket (Service Reports Tab)')
-- case058: filled missing field 'name' = 'Valid Report Name' (value used elsewhere for entry_point 'From Within a Ticket (Service Reports Tab)')
-- case058: filled missing field 'report_type' = 'Time & Material Service Report' (value used elsewhere for entry_point 'From Within a Ticket (Service Reports Tab)')
-- case037: filled missing field 'name' = 'Valid Report Name' (value used elsewhere for entry_point 'From the Appointment Creation Form')
-- case037: filled missing field 'report_type' = 'Time & Material Service Report' (value used elsewhere for entry_point 'From the Appointment Creation Form')
-- case037: filled missing field 'ticket_id' = '0626400003 - skddjafklsjklfjslajsaf' (value used elsewhere for entry_point 'From the Appointment Creation Form')
-- case039: filled missing field 'name' = 'Valid Report Name' (value used elsewhere for entry_point 'From the Appointment Creation Form')
-- case039: filled missing field 'report_type' = 'Time & Material Service Report' (value used elsewhere for entry_point 'From the Appointment Creation Form')
-- case039: filled missing field 'ticket_id' = '0626400003 - skddjafklsjklfjslajsaf' (value used elsewhere for entry_point 'From the Appointment Creation Form')
-- case040: filled missing field 'name' = 'Valid Report Name' (value used elsewhere for entry_point 'From the Appointment Creation Form')
-- case040: filled missing field 'report_type' = 'Time & Material Service Report' (value used elsewhere for entry_point 'From the Appointment Creation Form')
-- case040: filled missing field 'ticket_id' = '0626400003 - skddjafklsjklfjslajsaf' (value used elsewhere for entry_point 'From the Appointment Creation Form')
-- case041: filled missing field 'name' = 'Valid Report Name' (value used elsewhere for entry_point 'From the Appointment Creation Form')
-- case041: filled missing field 'report_type' = 'Time & Material Service Report' (value used elsewhere for entry_point 'From the Appointment Creation Form')
-- case041: filled missing field 'ticket_id' = '0626400003 - skddjafklsjklfjslajsaf' (value used elsewhere for entry_point 'From the Appointment Creation Form')
-- case060: filled missing field 'name' = 'Valid Report Name' (value used elsewhere for entry_point 'From the Appointment Creation Form')
-- case060: filled missing field 'report_type' = 'Time & Material Service Report' (value used elsewhere for entry_point 'From the Appointment Creation Form')
-- case060: filled missing field 'ticket_id' = '0626400003 - skddjafklsjklfjslajsaf' (value used elsewhere for entry_point 'From the Appointment Creation Form')
-- case062: filled missing field 'name' = 'Valid Report Name' (value used elsewhere for entry_point 'From the Appointment Creation Form')
-- case062: filled missing field 'report_type' = 'Time & Material Service Report' (value used elsewhere for entry_point 'From the Appointment Creation Form')
-- case062: filled missing field 'ticket_id' = '0626400003 - skddjafklsjklfjslajsaf' (value used elsewhere for entry_point 'From the Appointment Creation Form')
-- case063: filled missing field 'job_type' = 'Time & Material' (value used elsewhere for entry_point 'From the Appointment Creation Form')
-- case063: filled missing field 'name' = 'Valid Report Name' (value used elsewhere for entry_point 'From the Appointment Creation Form')
-- case063: filled missing field 'report_flow' = 'External (Customer Visible)' (value used elsewhere for entry_point 'From the Appointment Creation Form')
-- case063: filled missing field 'report_type' = 'Time & Material Service Report' (value used elsewhere for entry_point 'From the Appointment Creation Form')
-- case063: filled missing field 'ticket_id' = '0626400003 - skddjafklsjklfjslajsaf' (value used elsewhere for entry_point 'From the Appointment Creation Form')
-- case064: filled missing field 'name' = 'Valid Report Name' (value used elsewhere for entry_point 'From the Appointment Creation Form')
-- case064: filled missing field 'report_type' = 'Time & Material Service Report' (value used elsewhere for entry_point 'From the Appointment Creation Form')
-- case064: filled missing field 'ticket_id' = '0626400003 - skddjafklsjklfjslajsaf' (value used elsewhere for entry_point 'From the Appointment Creation Form')
-- case037: injected 'service_report' = 'Create New Service Report' — this entry point's scenarios require creating a new SR alongside the appointment, which needs the 'Create New Service Report' option checked even though the field is optional on the form in general
-- case038: injected 'service_report' = 'Create New Service Report' — this entry point's scenarios require creating a new SR alongside the appointment, which needs the 'Create New Service Report' option checked even though the field is optional on the form in general
-- case039: injected 'service_report' = 'Create New Service Report' — this entry point's scenarios require creating a new SR alongside the appointment, which needs the 'Create New Service Report' option checked even though the field is optional on the form in general
-- case040: injected 'service_report' = 'Create New Service Report' — this entry point's scenarios require creating a new SR alongside the appointment, which needs the 'Create New Service Report' option checked even though the field is optional on the form in general
-- case041: injected 'service_report' = 'Create New Service Report' — this entry point's scenarios require creating a new SR alongside the appointment, which needs the 'Create New Service Report' option checked even though the field is optional on the form in general
-- case060: injected 'service_report' = 'Create New Service Report' — this entry point's scenarios require creating a new SR alongside the appointment, which needs the 'Create New Service Report' option checked even though the field is optional on the form in general
-- case062: injected 'service_report' = 'Create New Service Report' — this entry point's scenarios require creating a new SR alongside the appointment, which needs the 'Create New Service Report' option checked even though the field is optional on the form in general
-- case063: injected 'service_report' = 'Create New Service Report' — this entry point's scenarios require creating a new SR alongside the appointment, which needs the 'Create New Service Report' option checked even though the field is optional on the form in general
-- case064: injected 'service_report' = 'Create New Service Report' — this entry point's scenarios require creating a new SR alongside the appointment, which needs the 'Create New Service Report' option checked even though the field is optional on the form in general
-- case007: expected_outcome '' -> 'fail' (from expected_result prose)
-- case014: expected_outcome 'pass' -> 'fail' (from expected_result prose)
-- case020: expected_outcome 'pass' -> 'fail' (from expected_result prose)
-- case035: expected_outcome 'pass' -> 'fail' (from expected_result prose)
-- case040: expected_outcome 'pass' -> 'fail' (from expected_result prose)
-- case043: expected_outcome 'pass' -> 'fail' (from expected_result prose)
-- case052: expected_outcome 'pass' -> 'fail' (from expected_result prose)
-- case057: expected_outcome 'pass' -> 'fail' (from expected_result prose)
-- case029: skipped — needs a terminal/inactive record, none in known_entities
-- case032: skipped — needs a terminal/inactive record, none in known_entities
-- case033: skipped — needs a terminal/inactive record, none in known_entities
-- case035: skipped — needs a terminal/inactive record, none in known_entities
-- case037: skipped — needs a terminal/inactive record, none in known_entities
-- case038: skipped — needs a terminal/inactive record, none in known_entities
-- case039: skipped — needs a terminal/inactive record, none in known_entities
-- case040: skipped — needs a terminal/inactive record, none in known_entities
-- case046: skipped — needs a terminal/inactive record, none in known_entities
-- case053: skipped — needs a terminal/inactive record, none in known_entities
-- case058: skipped — needs a terminal/inactive record, none in known_entities
-- case063: skipped — needs a terminal/inactive record, none in known_entities
+None.
 
 ## Needs manual review
 
-- case003: inputs key 'reportDate' has no matching name="..." attribute anywhere in the frontend source — verify manually
-- case006: boundary limit 18 found in title/description but 3 candidate text fields in inputs (['ticket_id', 'report_type', 'name']) — cannot tell which one to size, skipped
-- case007: boundary limit 18 found in title/description but 3 candidate text fields in inputs (['name', 'report_type', 'ticket_id']) — cannot tell which one to size, skipped
+- case043: inputs key 'create_reports' has no matching name="..." attribute anywhere in the frontend source — verify manually
+- case043: inputs key 'end_date' has no matching name="..." attribute anywhere in the frontend source — verify manually
+- case043: inputs key 'notes' has no matching name="..." attribute anywhere in the frontend source — verify manually
+- case043: inputs key 'start_date' has no matching name="..." attribute anywhere in the frontend source — verify manually
+- case043: inputs key 'service_report' has no matching name="..." attribute anywhere in the frontend source — verify manually
+- case044: inputs key 'service_report' has no matching name="..." attribute anywhere in the frontend source — verify manually
+- case045: inputs key 'create_reports' has no matching name="..." attribute anywhere in the frontend source — verify manually
+- case045: inputs key 'end_date' has no matching name="..." attribute anywhere in the frontend source — verify manually
+- case045: inputs key 'notes' has no matching name="..." attribute anywhere in the frontend source — verify manually
+- case045: inputs key 'start_date' has no matching name="..." attribute anywhere in the frontend source — verify manually
+- case045: inputs key 'service_report' has no matching name="..." attribute anywhere in the frontend source — verify manually
+- case046: inputs key 'end_date' has no matching name="..." attribute anywhere in the frontend source — verify manually
+- case046: inputs key 'notes' has no matching name="..." attribute anywhere in the frontend source — verify manually
+- case046: inputs key 'start_date' has no matching name="..." attribute anywhere in the frontend source — verify manually
+- case046: inputs key 'service_report' has no matching name="..." attribute anywhere in the frontend source — verify manually
+- case047: inputs key 'create_reports' has no matching name="..." attribute anywhere in the frontend source — verify manually
+- case047: inputs key 'end_date' has no matching name="..." attribute anywhere in the frontend source — verify manually
+- case047: inputs key 'notes' has no matching name="..." attribute anywhere in the frontend source — verify manually
+- case047: inputs key 'start_date' has no matching name="..." attribute anywhere in the frontend source — verify manually
+- case047: inputs key 'service_report' has no matching name="..." attribute anywhere in the frontend source — verify manually
+- case065: inputs key 'notes' has no matching name="..." attribute anywhere in the frontend source — verify manually
+- case065: inputs key 'start_date' has no matching name="..." attribute anywhere in the frontend source — verify manually
+- case065: inputs key 'end_date' has no matching name="..." attribute anywhere in the frontend source — verify manually
+- case065: inputs key 'create_reports' has no matching name="..." attribute anywhere in the frontend source — verify manually
+- case065: inputs key 'service_report' has no matching name="..." attribute anywhere in the frontend source — verify manually
+- case066: inputs key 'notes' has no matching name="..." attribute anywhere in the frontend source — verify manually
+- case066: inputs key 'start_date' has no matching name="..." attribute anywhere in the frontend source — verify manually
+- case066: inputs key 'end_date' has no matching name="..." attribute anywhere in the frontend source — verify manually
+- case066: inputs key 'create_reports' has no matching name="..." attribute anywhere in the frontend source — verify manually
+- case066: inputs key 'service_report' has no matching name="..." attribute anywhere in the frontend source — verify manually
+- case067: inputs key 'notes' has no matching name="..." attribute anywhere in the frontend source — verify manually
+- case067: inputs key 'start_date' has no matching name="..." attribute anywhere in the frontend source — verify manually
+- case067: inputs key 'end_date' has no matching name="..." attribute anywhere in the frontend source — verify manually
+- case067: inputs key 'create_reports' has no matching name="..." attribute anywhere in the frontend source — verify manually
+- case067: inputs key 'service_report' has no matching name="..." attribute anywhere in the frontend source — verify manually
+- case068: inputs key 'notes' has no matching name="..." attribute anywhere in the frontend source — verify manually
+- case068: inputs key 'start_date' has no matching name="..." attribute anywhere in the frontend source — verify manually
+- case068: inputs key 'end_date' has no matching name="..." attribute anywhere in the frontend source — verify manually
+- case068: inputs key 'create_reports' has no matching name="..." attribute anywhere in the frontend source — verify manually
+- case068: inputs key 'service_report' has no matching name="..." attribute anywhere in the frontend source — verify manually
+- case069: inputs key 'end_date' has no matching name="..." attribute anywhere in the frontend source — verify manually
+- case069: inputs key 'notes' has no matching name="..." attribute anywhere in the frontend source — verify manually
+- case069: inputs key 'start_date' has no matching name="..." attribute anywhere in the frontend source — verify manually
+- case069: inputs key 'service_report' has no matching name="..." attribute anywhere in the frontend source — verify manually
+- case009: boundary limit 18 found in title/description but 3 candidate text fields in inputs (['name', 'report_type', 'ticket_id']) — cannot tell which one to size, skipped
+- case010: boundary limit 18 found in title/description but 3 candidate text fields in inputs (['name', 'report_type', 'ticket_id']) — cannot tell which one to size, skipped

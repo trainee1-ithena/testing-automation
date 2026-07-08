@@ -41,12 +41,12 @@
       "case029",
       "case030",
       "case031",
-      "case042",
-      "case043",
-      "case044",
-      "case045",
-      "case046",
-      "case047",
+      "case032",
+      "case033",
+      "case034",
+      "case035",
+      "case036",
+      "case037",
       "case048",
       "case049",
       "case050",
@@ -54,14 +54,19 @@
       "case052",
       "case053",
       "case054",
-      "case065",
-      "case066",
-      "case067",
-      "case068",
-      "case069",
+      "case055",
+      "case056",
+      "case057",
+      "case058",
+      "case059",
       "case070",
       "case071",
-      "case072"
+      "case072",
+      "case073",
+      "case074",
+      "case075",
+      "case076",
+      "case077"
     ]
   },
   {
@@ -75,16 +80,16 @@
       "Submit the form"
     ],
     "scenario_ids": [
-      "case032",
-      "case033",
-      "case034",
-      "case035",
-      "case036",
-      "case055",
-      "case056",
-      "case057",
-      "case058",
-      "case059"
+      "case038",
+      "case039",
+      "case040",
+      "case041",
+      "case042",
+      "case060",
+      "case061",
+      "case062",
+      "case063",
+      "case064"
     ]
   },
   {
@@ -98,16 +103,16 @@
       "Submit the form"
     ],
     "scenario_ids": [
-      "case037",
-      "case038",
-      "case039",
-      "case040",
-      "case041",
-      "case060",
-      "case061",
-      "case062",
-      "case063",
-      "case064"
+      "case043",
+      "case044",
+      "case045",
+      "case046",
+      "case047",
+      "case065",
+      "case066",
+      "case067",
+      "case068",
+      "case069"
     ]
   }
 ]

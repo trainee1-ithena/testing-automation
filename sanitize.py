@@ -288,6 +288,71 @@ def fix_boundary_inputs(matrix: list[dict], max_lengths: dict[str, int] | None =
     return changes, flags
 
 
+_OVER_MAX_MARKER = "<over-max-length value>"
+_LENGTH_TEST_RE  = re.compile(
+    r"max(?:imum)?\s+length|exceed|too\s+long|over[\s-]?length|character\s+limit", re.I
+)
+
+
+def clean_over_max_marker(matrix: list[dict], max_lengths: dict[str, int] | None) -> tuple[list[str], list[str]]:
+    """Replace the literal placeholder '<over-max-length value>'. generate2 emitted it for
+    over-length scenarios and the missing-field vote then spread it onto unrelated names.
+    Resolution is signal-based, not hardcoded: the marker sits on the field a case wants to
+    push over its limit, so in a genuine length-test case that field becomes a real
+    over-length string; anywhere else the marker is spurious and is replaced with a normal
+    value borrowed from the same field elsewhere in the matrix."""
+    changes: list[str] = []
+    max_lengths = max_lengths or {}
+
+    # Most common real value per field, to borrow for the non-length (spread) cases.
+    field_values: dict[str, Counter] = defaultdict(Counter)
+    for c in matrix:
+        ins = c.get("inputs")
+        if isinstance(ins, dict):
+            for f, v in ins.items():
+                if isinstance(v, str) and v.strip() and v != _OVER_MAX_MARKER:
+                    field_values[f][v] += 1
+
+    for c in matrix:
+        ins = c.get("inputs")
+        if not isinstance(ins, dict):
+            continue
+        text = f"{c.get('title','')} {c.get('description','')}"
+        is_len_case = (c.get("category") in ("boundary", "industry_best_practice")
+                       and bool(_LENGTH_TEST_RE.search(text)))
+        for f in list(ins.keys()):
+            if ins.get(f) != _OVER_MAX_MARKER:
+                continue
+            if is_len_case:
+                target_len = max_lengths.get(f, 300) + 1
+                ins[f] = _fill_to_length(target_len)
+                changes.append(f"{c.get('case','?')}: inputs['{f}'] marker -> real {target_len}-char over-length string")
+            else:
+                borrow = field_values.get(f)
+                value = borrow.most_common(1)[0][0] if borrow else "Valid Report Name"
+                ins[f] = value
+                changes.append(f"{c.get('case','?')}: inputs['{f}'] marker -> {value!r} (spurious marker replaced with a valid value)")
+    return changes, []
+
+
+def skip_untestable_boundary_cases(matrix: list[dict], canonical_keys: set[str]) -> tuple[list[str], list[str]]:
+    """A boundary case whose constrained field is not a user-editable form field (no matching
+    name= in source) can't be exercised — e.g. a system-generated identifier's length/format
+    rule. Skip it rather than let it run as a happy-path create mislabelled as a boundary test."""
+    changes: list[str] = []
+    if not canonical_keys:
+        return changes, []
+    for c in matrix:
+        if c.get("skip") or c.get("category") != "boundary":
+            continue
+        if _field_named_in_title(c, canonical_keys) is None:
+            c["skip"] = True
+            c["skip_reason"] = ("boundary target is not a user-editable form field (e.g. a "
+                                "system-generated value) — cannot be exercised through the form")
+            changes.append(f"{c.get('case','?')}: skipped — boundary target names no fillable form field ({c.get('title','')!r})")
+    return changes, []
+
+
 # ── Missing required-field completion ────────────────────────────────────────
 
 # Categories that intentionally carry no (or only trigger) inputs — never force-fill them.
@@ -417,22 +482,24 @@ def complete_missing_fields(
         if not fillable:
             continue
 
-        # Vote pool: this group's cases plus universal baseline (avoids missing required
-        # fields that only appear in all_entry_points cases like reportDate)
+        # VALUE pool: this group's cases plus universal baseline (a real value used anywhere
+        # for a field is a fine value to reuse). Only a REAL value is a vote — a blank ("" / [])
+        # is a field left empty on purpose, and counting it poisons the pool so siblings get
+        # back-filled with "" instead of a real value.
         vote_pool = fillable if entry_point == "all_entry_points" else fillable + universal_fillable
-
-        all_keys: set[str] = set()
         value_votes: dict[str, Counter] = defaultdict(Counter)
         for c in vote_pool:
             for k, v in (c.get("inputs") or {}).items():
-                if k not in required_fields:
-                    continue  # optional field — never force-filled onto other cases
-                all_keys.add(k)
-                # Only a REAL value is a vote. A blank ("" / []) is a field left empty on
-                # purpose (the case testing it) — counting it poisons the pool so every
-                # sibling gets back-filled with "" instead of a real value.
-                if isinstance(v, str) and v.strip():
+                if k in required_fields and isinstance(v, str) and v.strip():
                     value_votes[k][v] += 1
+
+        # WHICH fields to inject = required fields the GROUP'S OWN cases use — NOT the universal
+        # baseline. A host-form entry point (e.g. the appointment form) must not be force-filled
+        # with the DEFAULT form's fields (name/report_type/ticket_id), which live only in the
+        # all_entry_points cases; injecting them is exactly what re-polluted the appointment flow.
+        all_keys: set[str] = {
+            k for c in fillable for k in (c.get("inputs") or {}) if k in required_fields
+        }
 
         for c in fillable:
             ins = c.setdefault("inputs", {})
@@ -681,6 +748,18 @@ def reconcile_values(
             for case_id, label, ins, value in occs:
                 if value in labels:
                     continue
+                # The LLM sometimes writes an option's stored code instead of its
+                # visible label (report_flow "customer_visibility" vs "External
+                # (Customer Visible)"). valid_labels is {code: label}, so a direct
+                # hit there is the exact, unambiguous fix — do it before fuzzier
+                # matching so the code form can never slip through as a label.
+                if value in valid_labels:
+                    ins[field] = valid_labels[value]
+                    changes.append(
+                        f"{case_id}: {label}['{field}'] {value!r} -> {valid_labels[value]!r} "
+                        f"(mapped the option's stored code to its visible label)"
+                    )
+                    continue
                 # substring containment first: safe here because the option set is small
                 # and closed (sourced directly from code), so an unambiguous single match
                 # (e.g. "Fixed Fee" inside only one of two real labels) is trustworthy in
@@ -910,6 +989,75 @@ def apply_cross_dept_tickets(matrix: list[dict], known_entities: dict, cascade_e
     return changes, flags
 
 
+# ── User-scoped ticket dropdowns ────────────────────────────────────────────────
+
+# Cases whose whole point is which tickets a login may or may not reach — the ticket
+# choice is the test subject there, so it must never be "corrected" to a visible one.
+_TICKET_ACCESS_SUBJECT_RE = re.compile(
+    r"not\s+have\s+access|without\s+access|\bno\s+access|do(?:es)?\s+not\s+have|"
+    r"not\s+in\s+(?:the\s+)?(?:ticket'?s?\s+)?depart|collaborat|"
+    r"assigned/accountable/creator",
+    re.I,
+)
+
+
+def _ticket_label(t: dict) -> str:
+    return f"{t.get('ticket_number','')} - {t.get('ticket_subject','')}".strip()
+
+
+def _ticket_participants(t: dict) -> set[str]:
+    """Staff ids directly tied to the ticket — whoever a 'my tickets' query returns it for."""
+    return {str(t.get(k)) for k in ("assigned_staff_id", "accountable_staff_id", "created_by_staff_id")}
+
+
+def constrain_selectable_tickets(matrix: list[dict], known_entities: dict, cascade_entities: dict) -> tuple[list[str], list[str]]:
+    """When a form fills its ticket dropdown from `fetchTicketsByLoggedInUser`, the list only
+    contains tickets the acting login participates in (assigned/accountable/creator). A value
+    the login doesn't participate in simply isn't in the list, so the select times out.
+
+    For pass-scenarios that must actually pick a ticket and proceed, rewrite the ticket to the
+    first one the login does participate in. Fully data-driven off the persona→login→staff
+    mapping + ticket staff columns; nothing hardcoded. Left untouched: negative scenarios
+    (expected_outcome fail), cross-department cases (owned by apply_cross_dept_tickets), and
+    cases whose prose makes the ticket's (in)accessibility the thing under test."""
+    changes, flags = [], []
+    staff_rows = known_entities.get("staff_with_roles") or cascade_entities.get("staff_with_roles") or []
+    tickets = cascade_entities.get("active_tickets") or known_entities.get("active_tickets") or []
+    if not tickets or not staff_rows:
+        return changes, flags
+    for c in matrix:
+        if c.get("skip") or c.get("expected_outcome") == "fail":
+            continue
+        prose = f"{c.get('title','')} {c.get('description','')} {c.get('expected_result','')}"
+        if _CROSS_DEPT_RE.search(prose) or _TICKET_ACCESS_SUBJECT_RE.search(prose):
+            continue
+        ins = c.get("inputs") or {}
+        tkey = next((k for k in ("ticket", "ticket_id")
+                     if isinstance(ins.get(k), str) and ins[k].strip()), None)
+        if not tkey or tkey in (c.get("locked_fields") or []):
+            continue
+        email = _persona_login_email(c.get("persona", ""))
+        if not email:
+            continue
+        _, staff_id = _staff_departments(email, staff_rows)
+        if staff_id is None:
+            continue
+        cur = ins[tkey]
+        cur_row = next((t for t in tickets if _ticket_label(t) == cur), None)
+        if cur_row is not None and staff_id in _ticket_participants(cur_row):
+            continue  # already one of the login's tickets — in the dropdown
+        pick = next((t for t in tickets if staff_id in _ticket_participants(t)), None)
+        if pick is None:
+            flags.append(f"{c.get('case','?')}: login '{email}' participates in no ticket in known data — ticket left as-is")
+            continue
+        ins[tkey] = _ticket_label(pick)
+        changes.append(
+            f"{c.get('case','?')}: {tkey} -> {_ticket_label(pick)!r} "
+            f"(ticket dropdown is scoped to '{email}'s own tickets; prior value wasn't one)"
+        )
+    return changes, flags
+
+
 # ── Report ────────────────────────────────────────────────────────────────────
 
 def write_report_md(path: Path, violations: dict[str, list[str]], changes: list[str], flags: list[str]) -> None:
@@ -980,18 +1128,21 @@ def main():
 
     max_lengths = extract_field_max_lengths(frontend)
     boundary_changes, boundary_flags = fix_boundary_inputs(matrix, max_lengths)
+    marker_changes, marker_flags     = clean_over_max_marker(matrix, max_lengths)
+    untestable_changes, untestable_flags = skip_untestable_boundary_cases(matrix, canonical_keys)
 
     # Data-availability skips + cross-dept ticket selection. (expected_outcome is left as the
     # LLM produced it — see note above; no sanitize override.)
     skip_changes, skip_flags         = skip_absent_state_cases(matrix, known_entities)
     xdept_changes, xdept_flags       = apply_cross_dept_tickets(matrix, known_entities, cascade_entities)
+    tkt_changes, tkt_flags           = constrain_selectable_tickets(matrix, known_entities, cascade_entities)
 
     all_changes = (lock_changes + key_changes + name_changes + missing_changes
-                   + sr_sel_changes + boundary_changes
-                   + skip_changes + xdept_changes)
+                   + sr_sel_changes + boundary_changes + marker_changes + untestable_changes
+                   + skip_changes + xdept_changes + tkt_changes)
     all_flags   = (lock_flags + key_flags + name_flags + missing_flags
-                   + sr_sel_flags + boundary_flags
-                   + skip_flags + xdept_flags)
+                   + sr_sel_flags + boundary_flags + marker_flags + untestable_flags
+                   + skip_flags + xdept_flags + tkt_flags)
 
     if all_changes:
         matrix_path.write_text(json.dumps(matrix, indent=2), encoding="utf-8")

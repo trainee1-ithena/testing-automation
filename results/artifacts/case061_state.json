@@ -1,0 +1,82 @@
+{
+  "url": "http://localhost:3000/appointments",
+  "root_aria_hidden": "true",
+  "drawers": [
+    {
+      "visible": false,
+      "aria_hidden": null
+    }
+  ],
+  "modals_visible": 0,
+  "open_option_lists": 0,
+  "shepherd_nodes": 0,
+  "comboboxes": [
+    {
+      "text": "System Default",
+      "placeholder": null,
+      "visible": true,
+      "in_aria_hidden": true
+    },
+    {
+      "text": "System Default",
+      "placeholder": null,
+      "visible": true,
+      "in_aria_hidden": true
+    },
+    {
+      "text": "",
+      "placeholder": "Organization",
+      "visible": true,
+      "in_aria_hidden": true
+    },
+    {
+      "text": "",
+      "placeholder": "Customer User",
+      "visible": true,
+      "in_aria_hidden": true
+    },
+    {
+      "text": "",
+      "placeholder": "Staff",
+      "visible": true,
+      "in_aria_hidden": true
+    },
+    {
+      "text": "",
+      "placeholder": "Department",
+      "visible": true,
+      "in_aria_hidden": true
+    },
+    {
+      "text": "",
+      "placeholder": "Status",
+      "visible": true,
+      "in_aria_hidden": true
+    },
+    {
+      "text": "",
+      "placeholder": null,
+      "visible": true,
+      "in_aria_hidden": true
+    },
+    {
+      "text": "Normal",
+      "placeholder": null,
+      "visible": true,
+      "in_aria_hidden": true
+    },
+    {
+      "text": "",
+      "placeholder": "Select Time Zone",
+      "visible": true,
+      "in_aria_hidden": false
+    },
+    {
+      "text": "",
+      "placeholder": "Select Case",
+      "visible": true,
+      "in_aria_hidden": false
+    }
+  ],
+  "buttons_service_report": []
+}

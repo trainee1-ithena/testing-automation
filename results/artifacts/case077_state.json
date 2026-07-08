@@ -12,7 +12,7 @@
   "shepherd_nodes": 0,
   "comboboxes": [
     {
-      "text": "Fixed Fee & Materials Service Report",
+      "text": "Time & Material Service Report",
       "placeholder": null,
       "visible": true,
       "in_aria_hidden": false
