@@ -758,6 +758,48 @@ def _first_option_for(page, module, field: str):
         return None
 
 
+# Field types whose value is chosen from a dropdown the app itself populates (and may
+# scope/filter per logged-in user). For these, a pre-chosen value can be un-selectable at
+# runtime even though it's valid data — see _resolve_dropdown_value.
+_DROPDOWN_TYPES = {"react_select", "select", "autocomplete", "multiselect"}
+
+
+def _live_options(page, module, field: str) -> list[str]:
+    """Open the field's dropdown, return ALL offered option texts, close it."""
+    try:
+        module.open_field(page, field)
+        page.locator("[role='option']").first.wait_for(state="visible", timeout=10000)
+        texts = [(t or "").strip() for t in page.locator("[role='option']").all_text_contents()]
+        page.keyboard.press("Escape")
+        return [t for t in texts if t]
+    except Exception:
+        try:
+            page.keyboard.press("Escape")
+        except Exception:
+            pass
+        return []
+
+
+def _resolve_dropdown_value(page, module, field: str, value, field_types: dict):
+    """Prefer the stored value only if the live (possibly user-scoped/filtered) dropdown
+    actually offers it; otherwise fall back to the first real option.
+
+    A value that isn't in the live list would otherwise loop until the selection deadline and
+    fail. Applied ONLY where the specific value is not the point of the test (field_interaction
+    / happy_path) — for cross-dept / permission / closed-ticket cases the specific value carries
+    the test's meaning and this must NOT run, or a 'wrong but selectable' pick becomes a false pass.
+    """
+    if value in (None, "", []) or field_types.get(field) not in _DROPDOWN_TYPES:
+        return value
+    opts = _live_options(page, module, field)
+    if not opts:
+        return value  # couldn't read options — leave the stored value untouched
+    v = str(value)
+    if any(v == o or v in o or o in v for o in opts):
+        return value  # stored value is genuinely selectable — respect it
+    return opts[0]     # not offered → use a real option so selection can't time out
+
+
 def _clear_field(page, module, field: str):
     """Generic clear for a MUI/react-select: a Clear button if present, else focus + select-all + delete."""
     try:
@@ -819,6 +861,11 @@ def _run_field_interaction_check(
                              or _first_option_for(page, module, trigger))
             if trigger_value is None:
                 return "ambiguous", f"could not obtain a value to set trigger '{trigger}'", ""
+        else:
+            # The trigger of a cascade test just needs SOME real, selectable option — the
+            # specific value is irrelevant here. If the stored value isn't in the live
+            # (user-scoped) dropdown, fall back to one that is, instead of timing out (11/12).
+            trigger_value = _resolve_dropdown_value(page, module, trigger, trigger_value, field_types)
 
         before = _snapshot_form_values(page)
         module.set_field(page, trigger, trigger_value)

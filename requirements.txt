@@ -1,0 +1,19 @@
+# approach3 — LLM-driven test-generation pipeline
+# Python 3.13
+#
+# Install:
+#   python -m venv venv
+#   venv\Scripts\activate            (Windows)  |  source venv/bin/activate  (macOS/Linux)
+#   pip install -r requirements.txt
+#   playwright install chromium      # one-time: downloads the browser Playwright drives
+#
+# Everything else the scripts use (argparse, csv, json, pathlib, datetime,
+# hashlib, difflib, importlib, subprocess, tempfile, urllib, collections,
+# decimal, traceback) is part of the Python standard library.
+
+openai==2.44.0          # extract.py query plan, generate1/generate2 LLM calls
+python-dotenv==1.2.2    # loads approach3/.env
+PyMySQL==1.2.0          # extract.py live DB queries
+cryptography==49.0.0    # extract.py AES-256-CBC decrypt of the DB password
+playwright==1.61.0      # record.py (codegen) + execute.py (test runs)
+openpyxl==3.1.5         # report.py Excel workbook

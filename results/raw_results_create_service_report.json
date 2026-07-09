@@ -19,7 +19,7 @@
     "passed": false,
     "raw_output": "",
     "artifacts": [],
-    "duration_ms": 44191
+    "duration_ms": 92408
   },
   {
     "case": "case002",
@@ -41,7 +41,7 @@
     "passed": true,
     "raw_output": "",
     "artifacts": [],
-    "duration_ms": 45338
+    "duration_ms": 85388
   },
   {
     "case": "case003",
@@ -63,7 +63,7 @@
     "passed": false,
     "raw_output": "",
     "artifacts": [],
-    "duration_ms": 48846
+    "duration_ms": 80180
   },
   {
     "case": "case004",
@@ -85,7 +85,7 @@
     "passed": false,
     "raw_output": "",
     "artifacts": [],
-    "duration_ms": 43080
+    "duration_ms": 76446
   },
   {
     "case": "case005",
@@ -107,7 +107,7 @@
     "passed": true,
     "raw_output": "",
     "artifacts": [],
-    "duration_ms": 34875
+    "duration_ms": 54826
   },
   {
     "case": "case006",
@@ -129,7 +129,7 @@
     "passed": false,
     "raw_output": "",
     "artifacts": [],
-    "duration_ms": 43355
+    "duration_ms": 91663
   },
   {
     "case": "case007",
@@ -151,7 +151,7 @@
     "passed": false,
     "raw_output": "",
     "artifacts": [],
-    "duration_ms": 31737
+    "duration_ms": 60928
   },
   {
     "case": "case008",
@@ -173,7 +173,7 @@
     "passed": true,
     "raw_output": "",
     "artifacts": [],
-    "duration_ms": 30223
+    "duration_ms": 61286
   },
   {
     "case": "case009",
@@ -232,12 +232,12 @@
     },
     "expected_outcome": "pass",
     "expected_message": "The Organization field is automatically populated with the organization linked to the selected Ticket.",
-    "actual_outcome": "error",
-    "actual_message": "  - waiting for locator(\"[role='option']\").first to be visible",
-    "passed": false,
-    "raw_output": "Traceback (most recent call last):\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\execute.py\", line 824, in _run_field_interaction_check\n    module.set_field(page, trigger, trigger_value)\n    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\base_tests\\base_test_create_service_report_from_service_reports.py\", line 412, in set_field\n    _select_option(page, page.get_by_role(\"combobox\", name=\"Select Case\"), value)\n    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\base_tests\\base_test_create_service_report_from_service_reports.py\", line 355, in _select_option\n    options.first.wait_for(state=\"visible\", timeout=5000)\n    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\venv\\Lib\\site-packages\\playwright\\sync_api\\_generated.py\", line 20298, in wait_for\n    self._sync(\n    ~~~~~~~~~~^\n        self._impl_obj.wait_for(timeout=to_milliseconds(timeout), state=state)\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    )\n    ^\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\venv\\Lib\\site-packages\\playwright\\_impl\\_sync_base.py\", line 115, in _sync\n    return task.result()\n           ~~~~~~~~~~~^^\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\venv\\Lib\\site-packages\\playwright\\_impl\\_locator.py\", line 741, in wait_for\n    await self._frame.wait_for_selector(\n        self._selector, strict=True, timeout=timeout, state=state\n    )\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\venv\\Lib\\site-packages\\playwright\\_impl\\_frame.py\", line 394, in wait_for_selector\n    await self._channel.send(\n        \"waitForSelector\", self._timeout, locals_to_params(locals())\n    )\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\venv\\Lib\\site-packages\\playwright\\_impl\\_connection.py\", line 69, in send\n    return await self._connection.wrap_api_call(\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    ...<3 lines>...\n    )\n    ^\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\venv\\Lib\\site-packages\\playwright\\_impl\\_connection.py\", line 563, in wrap_api_call\n    raise rewrite_error(error, f\"{parsed_st['apiName']}: {error}\") from None\nplaywright._impl._errors.TimeoutError: Locator.wait_for: Timeout 5000ms exceeded.\nCall log:\n  - waiting for locator(\"[role='option']\").first to be visible\n\n",
+    "actual_outcome": "control accessible",
+    "actual_message": "auto-populated Select Organization='Acme Corp'",
+    "passed": true,
+    "raw_output": "",
     "artifacts": [],
-    "duration_ms": 88776
+    "duration_ms": 57694
   },
   {
     "case": "case012",
@@ -252,12 +252,12 @@
     },
     "expected_outcome": "pass",
     "expected_message": "The Organization User field is automatically populated with the user linked to the selected Ticket.",
-    "actual_outcome": "error",
-    "actual_message": "  - waiting for locator(\"[role='option']\").first to be visible",
-    "passed": false,
-    "raw_output": "Traceback (most recent call last):\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\execute.py\", line 824, in _run_field_interaction_check\n    module.set_field(page, trigger, trigger_value)\n    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\base_tests\\base_test_create_service_report_from_service_reports.py\", line 412, in set_field\n    _select_option(page, page.get_by_role(\"combobox\", name=\"Select Case\"), value)\n    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\base_tests\\base_test_create_service_report_from_service_reports.py\", line 355, in _select_option\n    options.first.wait_for(state=\"visible\", timeout=5000)\n    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\venv\\Lib\\site-packages\\playwright\\sync_api\\_generated.py\", line 20298, in wait_for\n    self._sync(\n    ~~~~~~~~~~^\n        self._impl_obj.wait_for(timeout=to_milliseconds(timeout), state=state)\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    )\n    ^\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\venv\\Lib\\site-packages\\playwright\\_impl\\_sync_base.py\", line 115, in _sync\n    return task.result()\n           ~~~~~~~~~~~^^\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\venv\\Lib\\site-packages\\playwright\\_impl\\_locator.py\", line 741, in wait_for\n    await self._frame.wait_for_selector(\n        self._selector, strict=True, timeout=timeout, state=state\n    )\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\venv\\Lib\\site-packages\\playwright\\_impl\\_frame.py\", line 394, in wait_for_selector\n    await self._channel.send(\n        \"waitForSelector\", self._timeout, locals_to_params(locals())\n    )\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\venv\\Lib\\site-packages\\playwright\\_impl\\_connection.py\", line 69, in send\n    return await self._connection.wrap_api_call(\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    ...<3 lines>...\n    )\n    ^\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\venv\\Lib\\site-packages\\playwright\\_impl\\_connection.py\", line 563, in wrap_api_call\n    raise rewrite_error(error, f\"{parsed_st['apiName']}: {error}\") from None\nplaywright._impl._errors.TimeoutError: Locator.wait_for: Timeout 5000ms exceeded.\nCall log:\n  - waiting for locator(\"[role='option']\").first to be visible\n\n",
+    "actual_outcome": "control accessible",
+    "actual_message": "auto-populated Select Organization='Acme Corp', Select Customer User='Alice Smith - alice.smith@abc.com'",
+    "passed": true,
+    "raw_output": "",
     "artifacts": [],
-    "duration_ms": 90923
+    "duration_ms": 58159
   },
   {
     "case": "case013",
@@ -273,11 +273,11 @@
     "expected_outcome": "pass",
     "expected_message": "The Appointment dropdown only shows appointments linked to the selected Ticket (0626400003 - skddjafklsjklfjslajsaf). No appointments from other tickets are visible.",
     "actual_outcome": "control accessible",
-    "actual_message": "auto-populated name='Service Report For Case #0626400003 - 05:41 PM', Select Organization='Beta LLC', Select Customer User='Bob Johnson - shwetaa@example.com'",
+    "actual_message": "auto-populated name='Service Report For Case #0626400003 - 10:48 AM', Select Organization='Beta LLC', Select Customer User='Bob Johnson - shwetaa@example.com'",
     "passed": true,
     "raw_output": "",
     "artifacts": [],
-    "duration_ms": 49102
+    "duration_ms": 57496
   },
   {
     "case": "case014",
@@ -293,11 +293,11 @@
     "expected_outcome": "pass",
     "expected_message": "The Custom Form field updates to show only forms eligible for the selected Ticket's service type and report flow. Ineligible forms are hidden or disabled.",
     "actual_outcome": "control accessible",
-    "actual_message": "auto-populated name='Service Report For Case #0626400003 - 05:42 PM', Select Organization='Beta LLC', Select Customer User='Bob Johnson - shwetaa@example.com'",
+    "actual_message": "auto-populated name='Service Report For Case #0626400003 - 10:49 AM', Select Organization='Beta LLC', Select Customer User='Bob Johnson - shwetaa@example.com'",
     "passed": true,
     "raw_output": "",
     "artifacts": [],
-    "duration_ms": 55975
+    "duration_ms": 58460
   },
   {
     "case": "case015",
@@ -315,7 +315,7 @@
     "passed": true,
     "raw_output": "",
     "artifacts": [],
-    "duration_ms": 44341
+    "duration_ms": 17917
   },
   {
     "case": "case016",
@@ -333,7 +333,7 @@
     "passed": true,
     "raw_output": "",
     "artifacts": [],
-    "duration_ms": 21583
+    "duration_ms": 68598
   },
   {
     "case": "case017",
@@ -351,7 +351,7 @@
     "passed": true,
     "raw_output": "",
     "artifacts": [],
-    "duration_ms": 68934
+    "duration_ms": 60956
   },
   {
     "case": "case018",
@@ -369,7 +369,7 @@
     "passed": true,
     "raw_output": "",
     "artifacts": [],
-    "duration_ms": 19677
+    "duration_ms": 53430
   },
   {
     "case": "case019",
@@ -387,7 +387,7 @@
     "passed": true,
     "raw_output": "",
     "artifacts": [],
-    "duration_ms": 85314
+    "duration_ms": 14407
   },
   {
     "case": "case020",
@@ -405,7 +405,7 @@
     "passed": true,
     "raw_output": "",
     "artifacts": [],
-    "duration_ms": 22736
+    "duration_ms": 42882
   },
   {
     "case": "case021",
@@ -423,7 +423,7 @@
     "passed": true,
     "raw_output": "",
     "artifacts": [],
-    "duration_ms": 36538
+    "duration_ms": 54987
   },
   {
     "case": "case022",
@@ -441,7 +441,7 @@
     "passed": true,
     "raw_output": "",
     "artifacts": [],
-    "duration_ms": 28769
+    "duration_ms": 57505
   },
   {
     "case": "case023",
@@ -463,7 +463,7 @@
     "passed": false,
     "raw_output": "",
     "artifacts": [],
-    "duration_ms": 75278
+    "duration_ms": 71565
   },
   {
     "case": "case024",
@@ -485,7 +485,7 @@
     "passed": false,
     "raw_output": "",
     "artifacts": [],
-    "duration_ms": 78433
+    "duration_ms": 68754
   },
   {
     "case": "case025",
@@ -507,7 +507,7 @@
     "passed": true,
     "raw_output": "",
     "artifacts": [],
-    "duration_ms": 67948
+    "duration_ms": 56050
   },
   {
     "case": "case026",
@@ -529,7 +529,7 @@
     "passed": true,
     "raw_output": "",
     "artifacts": [],
-    "duration_ms": 67968
+    "duration_ms": 71218
   },
   {
     "case": "case027",
@@ -551,7 +551,7 @@
     "passed": true,
     "raw_output": "",
     "artifacts": [],
-    "duration_ms": 89621
+    "duration_ms": 79387
   },
   {
     "case": "case028",
@@ -640,7 +640,7 @@
     "passed": true,
     "raw_output": "",
     "artifacts": [],
-    "duration_ms": 85087
+    "duration_ms": 72940
   },
   {
     "case": "case032",
@@ -663,7 +663,7 @@
     "passed": true,
     "raw_output": "",
     "artifacts": [],
-    "duration_ms": 70487
+    "duration_ms": 71905
   },
   {
     "case": "case033",
@@ -681,7 +681,7 @@
     "passed": true,
     "raw_output": "",
     "artifacts": [],
-    "duration_ms": 13229
+    "duration_ms": 15415
   },
   {
     "case": "case034",
@@ -699,7 +699,7 @@
     "passed": true,
     "raw_output": "",
     "artifacts": [],
-    "duration_ms": 9727
+    "duration_ms": 6785
   },
   {
     "case": "case035",
@@ -721,7 +721,7 @@
     "passed": true,
     "raw_output": "",
     "artifacts": [],
-    "duration_ms": 71785
+    "duration_ms": 72675
   },
   {
     "case": "case036",
@@ -766,7 +766,7 @@
     "passed": true,
     "raw_output": "",
     "artifacts": [],
-    "duration_ms": 76467
+    "duration_ms": 72170
   },
   {
     "case": "case038",
@@ -788,7 +788,7 @@
     "passed": true,
     "raw_output": "",
     "artifacts": [],
-    "duration_ms": 67496
+    "duration_ms": 52351
   },
   {
     "case": "case039",
@@ -806,7 +806,7 @@
     "passed": true,
     "raw_output": "",
     "artifacts": [],
-    "duration_ms": 37602
+    "duration_ms": 29997
   },
   {
     "case": "case040",
@@ -824,11 +824,11 @@
     "expected_outcome": "pass",
     "expected_message": "Service report is created successfully with Ticket, Organization, and Organization User fields pre-selected and locked.",
     "actual_outcome": "submitted",
-    "actual_message": "No in-progress service reports found for this case",
+    "actual_message": "The report has been created successfully",
     "passed": true,
     "raw_output": "",
     "artifacts": [],
-    "duration_ms": 59876
+    "duration_ms": 61675
   },
   {
     "case": "case041",
@@ -849,7 +849,7 @@
     "passed": true,
     "raw_output": "",
     "artifacts": [],
-    "duration_ms": 57526
+    "duration_ms": 52824
   },
   {
     "case": "case042",
@@ -871,7 +871,7 @@
     "passed": true,
     "raw_output": "",
     "artifacts": [],
-    "duration_ms": 58564
+    "duration_ms": 61604
   },
   {
     "case": "case043",
@@ -905,11 +905,11 @@
     "expected_outcome": "pass",
     "expected_message": "Service report is created and linked to the appointment in To Do status.",
     "actual_outcome": "submitted",
-    "actual_message": "Unable to create Appointment. Staff not available during requested time | Staff not available during requested time",
+    "actual_message": "The Appointment has been created successfully",
     "passed": true,
     "raw_output": "",
     "artifacts": [],
-    "duration_ms": 71010
+    "duration_ms": 29303
   },
   {
     "case": "case044",
@@ -930,7 +930,7 @@
     "passed": false,
     "raw_output": "",
     "artifacts": [],
-    "duration_ms": 27520
+    "duration_ms": 27786
   },
   {
     "case": "case045",
@@ -968,7 +968,7 @@
     "passed": true,
     "raw_output": "",
     "artifacts": [],
-    "duration_ms": 29786
+    "duration_ms": 67222
   },
   {
     "case": "case046",
@@ -1000,7 +1000,7 @@
     "passed": true,
     "raw_output": "",
     "artifacts": [],
-    "duration_ms": 30052
+    "duration_ms": 67090
   },
   {
     "case": "case047",
@@ -1038,7 +1038,7 @@
     "passed": true,
     "raw_output": "",
     "artifacts": [],
-    "duration_ms": 29964
+    "duration_ms": 67335
   },
   {
     "case": "case048",
@@ -1061,7 +1061,7 @@
     "passed": true,
     "raw_output": "",
     "artifacts": [],
-    "duration_ms": 69009
+    "duration_ms": 76075
   },
   {
     "case": "case049",
@@ -1084,7 +1084,7 @@
     "passed": true,
     "raw_output": "",
     "artifacts": [],
-    "duration_ms": 87037
+    "duration_ms": 98225
   },
   {
     "case": "case050",
@@ -1107,7 +1107,7 @@
     "passed": true,
     "raw_output": "",
     "artifacts": [],
-    "duration_ms": 71477
+    "duration_ms": 74364
   },
   {
     "case": "case051",
@@ -1125,7 +1125,7 @@
     "passed": true,
     "raw_output": "",
     "artifacts": [],
-    "duration_ms": 6646
+    "duration_ms": 6904
   },
   {
     "case": "case052",
@@ -1148,7 +1148,7 @@
     "passed": true,
     "raw_output": "",
     "artifacts": [],
-    "duration_ms": 83713
+    "duration_ms": 75060
   },
   {
     "case": "case053",
@@ -1192,7 +1192,7 @@
     "passed": true,
     "raw_output": "",
     "artifacts": [],
-    "duration_ms": 74863
+    "duration_ms": 74846
   },
   {
     "case": "case055",
@@ -1212,12 +1212,12 @@
     "actual_outcome": "timeout",
     "actual_message": "Locator.wait_for: Timeout 5000ms exceeded.\nCall log:\n  - waiting for locator(\"[role='option']\").first to be visible\n",
     "passed": false,
-    "raw_output": "Traceback (most recent call last):\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\execute.py\", line 980, in _run_playwright\n    mod.run_test(page, inputs, expected_outcome, \"\")\n    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\base_tests\\base_test_create_service_report_from_service_reports.py\", line 490, in run_test\n    set_field(page, field, value)\n    ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\base_tests\\base_test_create_service_report_from_service_reports.py\", line 412, in set_field\n    _select_option(page, page.get_by_role(\"combobox\", name=\"Select Case\"), value)\n    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\base_tests\\base_test_create_service_report_from_service_reports.py\", line 355, in _select_option\n    options.first.wait_for(state=\"visible\", timeout=5000)\n    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\venv\\Lib\\site-packages\\playwright\\sync_api\\_generated.py\", line 20298, in wait_for\n    self._sync(\n    ~~~~~~~~~~^\n        self._impl_obj.wait_for(timeout=to_milliseconds(timeout), state=state)\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    )\n    ^\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\venv\\Lib\\site-packages\\playwright\\_impl\\_sync_base.py\", line 115, in _sync\n    return task.result()\n           ~~~~~~~~~~~^^\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\venv\\Lib\\site-packages\\playwright\\_impl\\_locator.py\", line 741, in wait_for\n    await self._frame.wait_for_selector(\n        self._selector, strict=True, timeout=timeout, state=state\n    )\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\venv\\Lib\\site-packages\\playwright\\_impl\\_frame.py\", line 394, in wait_for_selector\n    await self._channel.send(\n        \"waitForSelector\", self._timeout, locals_to_params(locals())\n    )\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\venv\\Lib\\site-packages\\playwright\\_impl\\_connection.py\", line 69, in send\n    return await self._connection.wrap_api_call(\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    ...<3 lines>...\n    )\n    ^\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\venv\\Lib\\site-packages\\playwright\\_impl\\_connection.py\", line 563, in wrap_api_call\n    raise rewrite_error(error, f\"{parsed_st['apiName']}: {error}\") from None\nplaywright._impl._errors.TimeoutError: Locator.wait_for: Timeout 5000ms exceeded.\nCall log:\n  - waiting for locator(\"[role='option']\").first to be visible\n\n",
+    "raw_output": "Traceback (most recent call last):\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\execute.py\", line 1027, in _run_playwright\n    mod.run_test(page, inputs, expected_outcome, \"\")\n    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\base_tests\\base_test_create_service_report_from_service_reports.py\", line 490, in run_test\n    set_field(page, field, value)\n    ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\base_tests\\base_test_create_service_report_from_service_reports.py\", line 412, in set_field\n    _select_option(page, page.get_by_role(\"combobox\", name=\"Select Case\"), value)\n    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\base_tests\\base_test_create_service_report_from_service_reports.py\", line 355, in _select_option\n    options.first.wait_for(state=\"visible\", timeout=5000)\n    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\venv\\Lib\\site-packages\\playwright\\sync_api\\_generated.py\", line 20298, in wait_for\n    self._sync(\n    ~~~~~~~~~~^\n        self._impl_obj.wait_for(timeout=to_milliseconds(timeout), state=state)\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    )\n    ^\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\venv\\Lib\\site-packages\\playwright\\_impl\\_sync_base.py\", line 115, in _sync\n    return task.result()\n           ~~~~~~~~~~~^^\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\venv\\Lib\\site-packages\\playwright\\_impl\\_locator.py\", line 741, in wait_for\n    await self._frame.wait_for_selector(\n        self._selector, strict=True, timeout=timeout, state=state\n    )\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\venv\\Lib\\site-packages\\playwright\\_impl\\_frame.py\", line 394, in wait_for_selector\n    await self._channel.send(\n        \"waitForSelector\", self._timeout, locals_to_params(locals())\n    )\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\venv\\Lib\\site-packages\\playwright\\_impl\\_connection.py\", line 69, in send\n    return await self._connection.wrap_api_call(\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    ...<3 lines>...\n    )\n    ^\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\venv\\Lib\\site-packages\\playwright\\_impl\\_connection.py\", line 563, in wrap_api_call\n    raise rewrite_error(error, f\"{parsed_st['apiName']}: {error}\") from None\nplaywright._impl._errors.TimeoutError: Locator.wait_for: Timeout 5000ms exceeded.\nCall log:\n  - waiting for locator(\"[role='option']\").first to be visible\n\n",
     "artifacts": [
       "C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\results\\artifacts\\case055_fail.png",
       "C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\results\\artifacts\\case055_state.json"
     ],
-    "duration_ms": 124435
+    "duration_ms": 120664
   },
   {
     "case": "case056",
@@ -1237,12 +1237,12 @@
     "actual_outcome": "timeout",
     "actual_message": "Locator.wait_for: Timeout 5000ms exceeded.\nCall log:\n  - waiting for locator(\"[role='option']\").first to be visible\n",
     "passed": false,
-    "raw_output": "Traceback (most recent call last):\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\execute.py\", line 980, in _run_playwright\n    mod.run_test(page, inputs, expected_outcome, \"\")\n    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\base_tests\\base_test_create_service_report_from_service_reports.py\", line 490, in run_test\n    set_field(page, field, value)\n    ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\base_tests\\base_test_create_service_report_from_service_reports.py\", line 412, in set_field\n    _select_option(page, page.get_by_role(\"combobox\", name=\"Select Case\"), value)\n    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\base_tests\\base_test_create_service_report_from_service_reports.py\", line 355, in _select_option\n    options.first.wait_for(state=\"visible\", timeout=5000)\n    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\venv\\Lib\\site-packages\\playwright\\sync_api\\_generated.py\", line 20298, in wait_for\n    self._sync(\n    ~~~~~~~~~~^\n        self._impl_obj.wait_for(timeout=to_milliseconds(timeout), state=state)\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    )\n    ^\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\venv\\Lib\\site-packages\\playwright\\_impl\\_sync_base.py\", line 115, in _sync\n    return task.result()\n           ~~~~~~~~~~~^^\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\venv\\Lib\\site-packages\\playwright\\_impl\\_locator.py\", line 741, in wait_for\n    await self._frame.wait_for_selector(\n        self._selector, strict=True, timeout=timeout, state=state\n    )\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\venv\\Lib\\site-packages\\playwright\\_impl\\_frame.py\", line 394, in wait_for_selector\n    await self._channel.send(\n        \"waitForSelector\", self._timeout, locals_to_params(locals())\n    )\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\venv\\Lib\\site-packages\\playwright\\_impl\\_connection.py\", line 69, in send\n    return await self._connection.wrap_api_call(\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    ...<3 lines>...\n    )\n    ^\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\venv\\Lib\\site-packages\\playwright\\_impl\\_connection.py\", line 563, in wrap_api_call\n    raise rewrite_error(error, f\"{parsed_st['apiName']}: {error}\") from None\nplaywright._impl._errors.TimeoutError: Locator.wait_for: Timeout 5000ms exceeded.\nCall log:\n  - waiting for locator(\"[role='option']\").first to be visible\n\n",
+    "raw_output": "Traceback (most recent call last):\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\execute.py\", line 1027, in _run_playwright\n    mod.run_test(page, inputs, expected_outcome, \"\")\n    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\base_tests\\base_test_create_service_report_from_service_reports.py\", line 490, in run_test\n    set_field(page, field, value)\n    ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\base_tests\\base_test_create_service_report_from_service_reports.py\", line 412, in set_field\n    _select_option(page, page.get_by_role(\"combobox\", name=\"Select Case\"), value)\n    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\base_tests\\base_test_create_service_report_from_service_reports.py\", line 355, in _select_option\n    options.first.wait_for(state=\"visible\", timeout=5000)\n    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\venv\\Lib\\site-packages\\playwright\\sync_api\\_generated.py\", line 20298, in wait_for\n    self._sync(\n    ~~~~~~~~~~^\n        self._impl_obj.wait_for(timeout=to_milliseconds(timeout), state=state)\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    )\n    ^\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\venv\\Lib\\site-packages\\playwright\\_impl\\_sync_base.py\", line 115, in _sync\n    return task.result()\n           ~~~~~~~~~~~^^\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\venv\\Lib\\site-packages\\playwright\\_impl\\_locator.py\", line 741, in wait_for\n    await self._frame.wait_for_selector(\n        self._selector, strict=True, timeout=timeout, state=state\n    )\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\venv\\Lib\\site-packages\\playwright\\_impl\\_frame.py\", line 394, in wait_for_selector\n    await self._channel.send(\n        \"waitForSelector\", self._timeout, locals_to_params(locals())\n    )\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\venv\\Lib\\site-packages\\playwright\\_impl\\_connection.py\", line 69, in send\n    return await self._connection.wrap_api_call(\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    ...<3 lines>...\n    )\n    ^\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\venv\\Lib\\site-packages\\playwright\\_impl\\_connection.py\", line 563, in wrap_api_call\n    raise rewrite_error(error, f\"{parsed_st['apiName']}: {error}\") from None\nplaywright._impl._errors.TimeoutError: Locator.wait_for: Timeout 5000ms exceeded.\nCall log:\n  - waiting for locator(\"[role='option']\").first to be visible\n\n",
     "artifacts": [
       "C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\results\\artifacts\\case056_fail.png",
       "C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\results\\artifacts\\case056_state.json"
     ],
-    "duration_ms": 131313
+    "duration_ms": 124872
   },
   {
     "case": "case057",
@@ -1262,12 +1262,12 @@
     "actual_outcome": "timeout",
     "actual_message": "Locator.wait_for: Timeout 5000ms exceeded.\nCall log:\n  - waiting for locator(\"[role='option']\").first to be visible\n",
     "passed": false,
-    "raw_output": "Traceback (most recent call last):\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\execute.py\", line 980, in _run_playwright\n    mod.run_test(page, inputs, expected_outcome, \"\")\n    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\base_tests\\base_test_create_service_report_from_service_reports.py\", line 490, in run_test\n    set_field(page, field, value)\n    ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\base_tests\\base_test_create_service_report_from_service_reports.py\", line 412, in set_field\n    _select_option(page, page.get_by_role(\"combobox\", name=\"Select Case\"), value)\n    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\base_tests\\base_test_create_service_report_from_service_reports.py\", line 355, in _select_option\n    options.first.wait_for(state=\"visible\", timeout=5000)\n    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\venv\\Lib\\site-packages\\playwright\\sync_api\\_generated.py\", line 20298, in wait_for\n    self._sync(\n    ~~~~~~~~~~^\n        self._impl_obj.wait_for(timeout=to_milliseconds(timeout), state=state)\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    )\n    ^\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\venv\\Lib\\site-packages\\playwright\\_impl\\_sync_base.py\", line 115, in _sync\n    return task.result()\n           ~~~~~~~~~~~^^\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\venv\\Lib\\site-packages\\playwright\\_impl\\_locator.py\", line 741, in wait_for\n    await self._frame.wait_for_selector(\n        self._selector, strict=True, timeout=timeout, state=state\n    )\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\venv\\Lib\\site-packages\\playwright\\_impl\\_frame.py\", line 394, in wait_for_selector\n    await self._channel.send(\n        \"waitForSelector\", self._timeout, locals_to_params(locals())\n    )\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\venv\\Lib\\site-packages\\playwright\\_impl\\_connection.py\", line 69, in send\n    return await self._connection.wrap_api_call(\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    ...<3 lines>...\n    )\n    ^\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\venv\\Lib\\site-packages\\playwright\\_impl\\_connection.py\", line 563, in wrap_api_call\n    raise rewrite_error(error, f\"{parsed_st['apiName']}: {error}\") from None\nplaywright._impl._errors.TimeoutError: Locator.wait_for: Timeout 5000ms exceeded.\nCall log:\n  - waiting for locator(\"[role='option']\").first to be visible\n\n",
+    "raw_output": "Traceback (most recent call last):\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\execute.py\", line 1027, in _run_playwright\n    mod.run_test(page, inputs, expected_outcome, \"\")\n    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\base_tests\\base_test_create_service_report_from_service_reports.py\", line 490, in run_test\n    set_field(page, field, value)\n    ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\base_tests\\base_test_create_service_report_from_service_reports.py\", line 412, in set_field\n    _select_option(page, page.get_by_role(\"combobox\", name=\"Select Case\"), value)\n    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\base_tests\\base_test_create_service_report_from_service_reports.py\", line 355, in _select_option\n    options.first.wait_for(state=\"visible\", timeout=5000)\n    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\venv\\Lib\\site-packages\\playwright\\sync_api\\_generated.py\", line 20298, in wait_for\n    self._sync(\n    ~~~~~~~~~~^\n        self._impl_obj.wait_for(timeout=to_milliseconds(timeout), state=state)\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    )\n    ^\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\venv\\Lib\\site-packages\\playwright\\_impl\\_sync_base.py\", line 115, in _sync\n    return task.result()\n           ~~~~~~~~~~~^^\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\venv\\Lib\\site-packages\\playwright\\_impl\\_locator.py\", line 741, in wait_for\n    await self._frame.wait_for_selector(\n        self._selector, strict=True, timeout=timeout, state=state\n    )\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\venv\\Lib\\site-packages\\playwright\\_impl\\_frame.py\", line 394, in wait_for_selector\n    await self._channel.send(\n        \"waitForSelector\", self._timeout, locals_to_params(locals())\n    )\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\venv\\Lib\\site-packages\\playwright\\_impl\\_connection.py\", line 69, in send\n    return await self._connection.wrap_api_call(\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    ...<3 lines>...\n    )\n    ^\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\venv\\Lib\\site-packages\\playwright\\_impl\\_connection.py\", line 563, in wrap_api_call\n    raise rewrite_error(error, f\"{parsed_st['apiName']}: {error}\") from None\nplaywright._impl._errors.TimeoutError: Locator.wait_for: Timeout 5000ms exceeded.\nCall log:\n  - waiting for locator(\"[role='option']\").first to be visible\n\n",
     "artifacts": [
       "C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\results\\artifacts\\case057_fail.png",
       "C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\results\\artifacts\\case057_state.json"
     ],
-    "duration_ms": 136918
+    "duration_ms": 120265
   },
   {
     "case": "case058",
@@ -1287,12 +1287,12 @@
     "actual_outcome": "timeout",
     "actual_message": "Locator.wait_for: Timeout 5000ms exceeded.\nCall log:\n  - waiting for locator(\"[role='option']\").first to be visible\n",
     "passed": false,
-    "raw_output": "Traceback (most recent call last):\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\execute.py\", line 980, in _run_playwright\n    mod.run_test(page, inputs, expected_outcome, \"\")\n    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\base_tests\\base_test_create_service_report_from_service_reports.py\", line 490, in run_test\n    set_field(page, field, value)\n    ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\base_tests\\base_test_create_service_report_from_service_reports.py\", line 412, in set_field\n    _select_option(page, page.get_by_role(\"combobox\", name=\"Select Case\"), value)\n    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\base_tests\\base_test_create_service_report_from_service_reports.py\", line 355, in _select_option\n    options.first.wait_for(state=\"visible\", timeout=5000)\n    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\venv\\Lib\\site-packages\\playwright\\sync_api\\_generated.py\", line 20298, in wait_for\n    self._sync(\n    ~~~~~~~~~~^\n        self._impl_obj.wait_for(timeout=to_milliseconds(timeout), state=state)\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    )\n    ^\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\venv\\Lib\\site-packages\\playwright\\_impl\\_sync_base.py\", line 115, in _sync\n    return task.result()\n           ~~~~~~~~~~~^^\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\venv\\Lib\\site-packages\\playwright\\_impl\\_locator.py\", line 741, in wait_for\n    await self._frame.wait_for_selector(\n        self._selector, strict=True, timeout=timeout, state=state\n    )\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\venv\\Lib\\site-packages\\playwright\\_impl\\_frame.py\", line 394, in wait_for_selector\n    await self._channel.send(\n        \"waitForSelector\", self._timeout, locals_to_params(locals())\n    )\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\venv\\Lib\\site-packages\\playwright\\_impl\\_connection.py\", line 69, in send\n    return await self._connection.wrap_api_call(\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    ...<3 lines>...\n    )\n    ^\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\venv\\Lib\\site-packages\\playwright\\_impl\\_connection.py\", line 563, in wrap_api_call\n    raise rewrite_error(error, f\"{parsed_st['apiName']}: {error}\") from None\nplaywright._impl._errors.TimeoutError: Locator.wait_for: Timeout 5000ms exceeded.\nCall log:\n  - waiting for locator(\"[role='option']\").first to be visible\n\n",
+    "raw_output": "Traceback (most recent call last):\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\execute.py\", line 1027, in _run_playwright\n    mod.run_test(page, inputs, expected_outcome, \"\")\n    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\base_tests\\base_test_create_service_report_from_service_reports.py\", line 490, in run_test\n    set_field(page, field, value)\n    ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\base_tests\\base_test_create_service_report_from_service_reports.py\", line 412, in set_field\n    _select_option(page, page.get_by_role(\"combobox\", name=\"Select Case\"), value)\n    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\base_tests\\base_test_create_service_report_from_service_reports.py\", line 355, in _select_option\n    options.first.wait_for(state=\"visible\", timeout=5000)\n    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\venv\\Lib\\site-packages\\playwright\\sync_api\\_generated.py\", line 20298, in wait_for\n    self._sync(\n    ~~~~~~~~~~^\n        self._impl_obj.wait_for(timeout=to_milliseconds(timeout), state=state)\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    )\n    ^\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\venv\\Lib\\site-packages\\playwright\\_impl\\_sync_base.py\", line 115, in _sync\n    return task.result()\n           ~~~~~~~~~~~^^\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\venv\\Lib\\site-packages\\playwright\\_impl\\_locator.py\", line 741, in wait_for\n    await self._frame.wait_for_selector(\n        self._selector, strict=True, timeout=timeout, state=state\n    )\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\venv\\Lib\\site-packages\\playwright\\_impl\\_frame.py\", line 394, in wait_for_selector\n    await self._channel.send(\n        \"waitForSelector\", self._timeout, locals_to_params(locals())\n    )\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\venv\\Lib\\site-packages\\playwright\\_impl\\_connection.py\", line 69, in send\n    return await self._connection.wrap_api_call(\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    ...<3 lines>...\n    )\n    ^\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\venv\\Lib\\site-packages\\playwright\\_impl\\_connection.py\", line 563, in wrap_api_call\n    raise rewrite_error(error, f\"{parsed_st['apiName']}: {error}\") from None\nplaywright._impl._errors.TimeoutError: Locator.wait_for: Timeout 5000ms exceeded.\nCall log:\n  - waiting for locator(\"[role='option']\").first to be visible\n\n",
     "artifacts": [
       "C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\results\\artifacts\\case058_fail.png",
       "C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\results\\artifacts\\case058_state.json"
     ],
-    "duration_ms": 132381
+    "duration_ms": 119066
   },
   {
     "case": "case059",
@@ -1314,7 +1314,7 @@
     "passed": true,
     "raw_output": "",
     "artifacts": [],
-    "duration_ms": 73581
+    "duration_ms": 84601
   },
   {
     "case": "case060",
@@ -1331,11 +1331,11 @@
     "expected_outcome": "pass",
     "expected_message": "Service Report is created with pre-populated Ticket, Organization, and Organization User fields.",
     "actual_outcome": "submitted",
-    "actual_message": "The report has been created successfully",
+    "actual_message": "The report has been created successfully | The report has been created successfully",
     "passed": true,
     "raw_output": "",
     "artifacts": [],
-    "duration_ms": 60920
+    "duration_ms": 71005
   },
   {
     "case": "case061",
@@ -1356,7 +1356,7 @@
     "passed": true,
     "raw_output": "",
     "artifacts": [],
-    "duration_ms": 62453
+    "duration_ms": 55478
   },
   {
     "case": "case062",
@@ -1373,11 +1373,11 @@
     "expected_outcome": "pass",
     "expected_message": "Service Report is created with all required and pre-populated fields for the selected ticket.",
     "actual_outcome": "submitted",
-    "actual_message": "The report has been created successfully",
+    "actual_message": "",
     "passed": true,
     "raw_output": "",
     "artifacts": [],
-    "duration_ms": 51592
+    "duration_ms": 66741
   },
   {
     "case": "case063",
@@ -1394,11 +1394,11 @@
     "expected_outcome": "pass",
     "expected_message": "Service Report is created without an Appointment link and with pre-populated fields.",
     "actual_outcome": "submitted",
-    "actual_message": "The report has been created successfully",
+    "actual_message": "The report has been created successfully | The report has been created successfully",
     "passed": true,
     "raw_output": "",
     "artifacts": [],
-    "duration_ms": 50656
+    "duration_ms": 57040
   },
   {
     "case": "case064",
@@ -1415,11 +1415,11 @@
     "expected_outcome": "pass",
     "expected_message": "The newly created Service Report is listed with status 'To Do', a unique SR number, and the correct visibility chip in the Service Reports tab.",
     "actual_outcome": "submitted",
-    "actual_message": "The report has been created successfully",
+    "actual_message": "No in-progress service reports found for this case | The report has been created successfully",
     "passed": true,
     "raw_output": "",
     "artifacts": [],
-    "duration_ms": 62824
+    "duration_ms": 59127
   },
   {
     "case": "case065",
@@ -1457,7 +1457,7 @@
     "passed": true,
     "raw_output": "",
     "artifacts": [],
-    "duration_ms": 30552
+    "duration_ms": 31632
   },
   {
     "case": "case066",
@@ -1493,7 +1493,7 @@
     "passed": true,
     "raw_output": "",
     "artifacts": [],
-    "duration_ms": 30660
+    "duration_ms": 31671
   },
   {
     "case": "case067",
@@ -1529,12 +1529,12 @@
     "actual_outcome": "timeout",
     "actual_message": "Locator.wait_for: Timeout 5000ms exceeded.\nCall log:\n  - waiting for locator(\"[role='option']\").first to be visible\n",
     "passed": false,
-    "raw_output": "Traceback (most recent call last):\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\execute.py\", line 980, in _run_playwright\n    mod.run_test(page, inputs, expected_outcome, \"\")\n    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\base_tests\\base_test_create_service_report_from_from_the_appointment_creation_form.py\", line 500, in run_test\n    set_field(page, field, value)\n    ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\base_tests\\base_test_create_service_report_from_from_the_appointment_creation_form.py\", line 409, in set_field\n    _select_option(page, page.get_by_role(\"combobox\", name=\"Select Case\"), value)\n    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\base_tests\\base_test_create_service_report_from_from_the_appointment_creation_form.py\", line 356, in _select_option\n    options.first.wait_for(state=\"visible\", timeout=5000)\n    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\venv\\Lib\\site-packages\\playwright\\sync_api\\_generated.py\", line 20298, in wait_for\n    self._sync(\n    ~~~~~~~~~~^\n        self._impl_obj.wait_for(timeout=to_milliseconds(timeout), state=state)\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    )\n    ^\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\venv\\Lib\\site-packages\\playwright\\_impl\\_sync_base.py\", line 115, in _sync\n    return task.result()\n           ~~~~~~~~~~~^^\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\venv\\Lib\\site-packages\\playwright\\_impl\\_locator.py\", line 741, in wait_for\n    await self._frame.wait_for_selector(\n        self._selector, strict=True, timeout=timeout, state=state\n    )\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\venv\\Lib\\site-packages\\playwright\\_impl\\_frame.py\", line 394, in wait_for_selector\n    await self._channel.send(\n        \"waitForSelector\", self._timeout, locals_to_params(locals())\n    )\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\venv\\Lib\\site-packages\\playwright\\_impl\\_connection.py\", line 69, in send\n    return await self._connection.wrap_api_call(\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    ...<3 lines>...\n    )\n    ^\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\venv\\Lib\\site-packages\\playwright\\_impl\\_connection.py\", line 563, in wrap_api_call\n    raise rewrite_error(error, f\"{parsed_st['apiName']}: {error}\") from None\nplaywright._impl._errors.TimeoutError: Locator.wait_for: Timeout 5000ms exceeded.\nCall log:\n  - waiting for locator(\"[role='option']\").first to be visible\n\n",
+    "raw_output": "Traceback (most recent call last):\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\execute.py\", line 1027, in _run_playwright\n    mod.run_test(page, inputs, expected_outcome, \"\")\n    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\base_tests\\base_test_create_service_report_from_from_the_appointment_creation_form.py\", line 500, in run_test\n    set_field(page, field, value)\n    ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\base_tests\\base_test_create_service_report_from_from_the_appointment_creation_form.py\", line 409, in set_field\n    _select_option(page, page.get_by_role(\"combobox\", name=\"Select Case\"), value)\n    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\base_tests\\base_test_create_service_report_from_from_the_appointment_creation_form.py\", line 356, in _select_option\n    options.first.wait_for(state=\"visible\", timeout=5000)\n    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\venv\\Lib\\site-packages\\playwright\\sync_api\\_generated.py\", line 20298, in wait_for\n    self._sync(\n    ~~~~~~~~~~^\n        self._impl_obj.wait_for(timeout=to_milliseconds(timeout), state=state)\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    )\n    ^\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\venv\\Lib\\site-packages\\playwright\\_impl\\_sync_base.py\", line 115, in _sync\n    return task.result()\n           ~~~~~~~~~~~^^\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\venv\\Lib\\site-packages\\playwright\\_impl\\_locator.py\", line 741, in wait_for\n    await self._frame.wait_for_selector(\n        self._selector, strict=True, timeout=timeout, state=state\n    )\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\venv\\Lib\\site-packages\\playwright\\_impl\\_frame.py\", line 394, in wait_for_selector\n    await self._channel.send(\n        \"waitForSelector\", self._timeout, locals_to_params(locals())\n    )\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\venv\\Lib\\site-packages\\playwright\\_impl\\_connection.py\", line 69, in send\n    return await self._connection.wrap_api_call(\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    ...<3 lines>...\n    )\n    ^\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\venv\\Lib\\site-packages\\playwright\\_impl\\_connection.py\", line 563, in wrap_api_call\n    raise rewrite_error(error, f\"{parsed_st['apiName']}: {error}\") from None\nplaywright._impl._errors.TimeoutError: Locator.wait_for: Timeout 5000ms exceeded.\nCall log:\n  - waiting for locator(\"[role='option']\").first to be visible\n\n",
     "artifacts": [
       "C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\results\\artifacts\\case067_fail.png",
       "C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\results\\artifacts\\case067_state.json"
     ],
-    "duration_ms": 83535
+    "duration_ms": 83568
   },
   {
     "case": "case068",
@@ -1570,12 +1570,12 @@
     "actual_outcome": "timeout",
     "actual_message": "Locator.wait_for: Timeout 5000ms exceeded.\nCall log:\n  - waiting for locator(\"[role='option']\").first to be visible\n",
     "passed": false,
-    "raw_output": "Traceback (most recent call last):\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\execute.py\", line 980, in _run_playwright\n    mod.run_test(page, inputs, expected_outcome, \"\")\n    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\base_tests\\base_test_create_service_report_from_from_the_appointment_creation_form.py\", line 500, in run_test\n    set_field(page, field, value)\n    ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\base_tests\\base_test_create_service_report_from_from_the_appointment_creation_form.py\", line 409, in set_field\n    _select_option(page, page.get_by_role(\"combobox\", name=\"Select Case\"), value)\n    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\base_tests\\base_test_create_service_report_from_from_the_appointment_creation_form.py\", line 356, in _select_option\n    options.first.wait_for(state=\"visible\", timeout=5000)\n    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\venv\\Lib\\site-packages\\playwright\\sync_api\\_generated.py\", line 20298, in wait_for\n    self._sync(\n    ~~~~~~~~~~^\n        self._impl_obj.wait_for(timeout=to_milliseconds(timeout), state=state)\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    )\n    ^\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\venv\\Lib\\site-packages\\playwright\\_impl\\_sync_base.py\", line 115, in _sync\n    return task.result()\n           ~~~~~~~~~~~^^\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\venv\\Lib\\site-packages\\playwright\\_impl\\_locator.py\", line 741, in wait_for\n    await self._frame.wait_for_selector(\n        self._selector, strict=True, timeout=timeout, state=state\n    )\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\venv\\Lib\\site-packages\\playwright\\_impl\\_frame.py\", line 394, in wait_for_selector\n    await self._channel.send(\n        \"waitForSelector\", self._timeout, locals_to_params(locals())\n    )\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\venv\\Lib\\site-packages\\playwright\\_impl\\_connection.py\", line 69, in send\n    return await self._connection.wrap_api_call(\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    ...<3 lines>...\n    )\n    ^\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\venv\\Lib\\site-packages\\playwright\\_impl\\_connection.py\", line 563, in wrap_api_call\n    raise rewrite_error(error, f\"{parsed_st['apiName']}: {error}\") from None\nplaywright._impl._errors.TimeoutError: Locator.wait_for: Timeout 5000ms exceeded.\nCall log:\n  - waiting for locator(\"[role='option']\").first to be visible\n\n",
+    "raw_output": "Traceback (most recent call last):\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\execute.py\", line 1027, in _run_playwright\n    mod.run_test(page, inputs, expected_outcome, \"\")\n    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\base_tests\\base_test_create_service_report_from_from_the_appointment_creation_form.py\", line 500, in run_test\n    set_field(page, field, value)\n    ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\base_tests\\base_test_create_service_report_from_from_the_appointment_creation_form.py\", line 409, in set_field\n    _select_option(page, page.get_by_role(\"combobox\", name=\"Select Case\"), value)\n    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\base_tests\\base_test_create_service_report_from_from_the_appointment_creation_form.py\", line 356, in _select_option\n    options.first.wait_for(state=\"visible\", timeout=5000)\n    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\venv\\Lib\\site-packages\\playwright\\sync_api\\_generated.py\", line 20298, in wait_for\n    self._sync(\n    ~~~~~~~~~~^\n        self._impl_obj.wait_for(timeout=to_milliseconds(timeout), state=state)\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    )\n    ^\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\venv\\Lib\\site-packages\\playwright\\_impl\\_sync_base.py\", line 115, in _sync\n    return task.result()\n           ~~~~~~~~~~~^^\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\venv\\Lib\\site-packages\\playwright\\_impl\\_locator.py\", line 741, in wait_for\n    await self._frame.wait_for_selector(\n        self._selector, strict=True, timeout=timeout, state=state\n    )\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\venv\\Lib\\site-packages\\playwright\\_impl\\_frame.py\", line 394, in wait_for_selector\n    await self._channel.send(\n        \"waitForSelector\", self._timeout, locals_to_params(locals())\n    )\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\venv\\Lib\\site-packages\\playwright\\_impl\\_connection.py\", line 69, in send\n    return await self._connection.wrap_api_call(\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    ...<3 lines>...\n    )\n    ^\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\venv\\Lib\\site-packages\\playwright\\_impl\\_connection.py\", line 563, in wrap_api_call\n    raise rewrite_error(error, f\"{parsed_st['apiName']}: {error}\") from None\nplaywright._impl._errors.TimeoutError: Locator.wait_for: Timeout 5000ms exceeded.\nCall log:\n  - waiting for locator(\"[role='option']\").first to be visible\n\n",
     "artifacts": [
       "C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\results\\artifacts\\case068_fail.png",
       "C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\results\\artifacts\\case068_state.json"
     ],
-    "duration_ms": 119223
+    "duration_ms": 84431
   },
   {
     "case": "case069",
@@ -1605,12 +1605,12 @@
     "actual_outcome": "timeout",
     "actual_message": "Locator.wait_for: Timeout 5000ms exceeded.\nCall log:\n  - waiting for locator(\"[role='option']\").first to be visible\n",
     "passed": false,
-    "raw_output": "Traceback (most recent call last):\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\execute.py\", line 980, in _run_playwright\n    mod.run_test(page, inputs, expected_outcome, \"\")\n    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\base_tests\\base_test_create_service_report_from_from_the_appointment_creation_form.py\", line 500, in run_test\n    set_field(page, field, value)\n    ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\base_tests\\base_test_create_service_report_from_from_the_appointment_creation_form.py\", line 409, in set_field\n    _select_option(page, page.get_by_role(\"combobox\", name=\"Select Case\"), value)\n    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\base_tests\\base_test_create_service_report_from_from_the_appointment_creation_form.py\", line 356, in _select_option\n    options.first.wait_for(state=\"visible\", timeout=5000)\n    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\venv\\Lib\\site-packages\\playwright\\sync_api\\_generated.py\", line 20298, in wait_for\n    self._sync(\n    ~~~~~~~~~~^\n        self._impl_obj.wait_for(timeout=to_milliseconds(timeout), state=state)\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    )\n    ^\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\venv\\Lib\\site-packages\\playwright\\_impl\\_sync_base.py\", line 115, in _sync\n    return task.result()\n           ~~~~~~~~~~~^^\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\venv\\Lib\\site-packages\\playwright\\_impl\\_locator.py\", line 741, in wait_for\n    await self._frame.wait_for_selector(\n        self._selector, strict=True, timeout=timeout, state=state\n    )\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\venv\\Lib\\site-packages\\playwright\\_impl\\_frame.py\", line 394, in wait_for_selector\n    await self._channel.send(\n        \"waitForSelector\", self._timeout, locals_to_params(locals())\n    )\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\venv\\Lib\\site-packages\\playwright\\_impl\\_connection.py\", line 69, in send\n    return await self._connection.wrap_api_call(\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    ...<3 lines>...\n    )\n    ^\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\venv\\Lib\\site-packages\\playwright\\_impl\\_connection.py\", line 563, in wrap_api_call\n    raise rewrite_error(error, f\"{parsed_st['apiName']}: {error}\") from None\nplaywright._impl._errors.TimeoutError: Locator.wait_for: Timeout 5000ms exceeded.\nCall log:\n  - waiting for locator(\"[role='option']\").first to be visible\n\n",
+    "raw_output": "Traceback (most recent call last):\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\execute.py\", line 1027, in _run_playwright\n    mod.run_test(page, inputs, expected_outcome, \"\")\n    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\base_tests\\base_test_create_service_report_from_from_the_appointment_creation_form.py\", line 500, in run_test\n    set_field(page, field, value)\n    ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\base_tests\\base_test_create_service_report_from_from_the_appointment_creation_form.py\", line 409, in set_field\n    _select_option(page, page.get_by_role(\"combobox\", name=\"Select Case\"), value)\n    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\base_tests\\base_test_create_service_report_from_from_the_appointment_creation_form.py\", line 356, in _select_option\n    options.first.wait_for(state=\"visible\", timeout=5000)\n    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\venv\\Lib\\site-packages\\playwright\\sync_api\\_generated.py\", line 20298, in wait_for\n    self._sync(\n    ~~~~~~~~~~^\n        self._impl_obj.wait_for(timeout=to_milliseconds(timeout), state=state)\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    )\n    ^\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\venv\\Lib\\site-packages\\playwright\\_impl\\_sync_base.py\", line 115, in _sync\n    return task.result()\n           ~~~~~~~~~~~^^\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\venv\\Lib\\site-packages\\playwright\\_impl\\_locator.py\", line 741, in wait_for\n    await self._frame.wait_for_selector(\n        self._selector, strict=True, timeout=timeout, state=state\n    )\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\venv\\Lib\\site-packages\\playwright\\_impl\\_frame.py\", line 394, in wait_for_selector\n    await self._channel.send(\n        \"waitForSelector\", self._timeout, locals_to_params(locals())\n    )\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\venv\\Lib\\site-packages\\playwright\\_impl\\_connection.py\", line 69, in send\n    return await self._connection.wrap_api_call(\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    ...<3 lines>...\n    )\n    ^\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\venv\\Lib\\site-packages\\playwright\\_impl\\_connection.py\", line 563, in wrap_api_call\n    raise rewrite_error(error, f\"{parsed_st['apiName']}: {error}\") from None\nplaywright._impl._errors.TimeoutError: Locator.wait_for: Timeout 5000ms exceeded.\nCall log:\n  - waiting for locator(\"[role='option']\").first to be visible\n\n",
     "artifacts": [
       "C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\results\\artifacts\\case069_fail.png",
       "C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\results\\artifacts\\case069_state.json"
     ],
-    "duration_ms": 82825
+    "duration_ms": 108219
   },
   {
     "case": "case070",
@@ -1628,7 +1628,7 @@
     "passed": true,
     "raw_output": "",
     "artifacts": [],
-    "duration_ms": 7070
+    "duration_ms": 10395
   },
   {
     "case": "case071",
@@ -1646,7 +1646,7 @@
     "passed": true,
     "raw_output": "Traceback (most recent call last):\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\execute.py\", line 594, in _run_visibility_check\n    module.open_form(page)\n    ~~~~~~~~~~~~~~~~^^^^^^\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\base_tests\\base_test_create_service_report_from_service_reports.py\", line 389, in open_form\n    _click_through_tour(page, page.get_by_role(\"button\", name=\"Service Report\", exact=True))\n    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\base_tests\\base_test_create_service_report_from_service_reports.py\", line 221, in _click_through_tour\n    raise last_exc\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\base_tests\\base_test_create_service_report_from_service_reports.py\", line 201, in _click_through_tour\n    locator.click(timeout=10000)\n    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\venv\\Lib\\site-packages\\playwright\\sync_api\\_generated.py\", line 17672, in click\n    self._sync(\n    ~~~~~~~~~~^\n        self._impl_obj.click(\n        ^^^^^^^^^^^^^^^^^^^^^\n    ...<10 lines>...\n        )\n        ^\n    )\n    ^\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\venv\\Lib\\site-packages\\playwright\\_impl\\_sync_base.py\", line 115, in _sync\n    return task.result()\n           ~~~~~~~~~~~^^\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\venv\\Lib\\site-packages\\playwright\\_impl\\_locator.py\", line 163, in click\n    return await self._frame._click(self._selector, strict=True, **params)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\venv\\Lib\\site-packages\\playwright\\_impl\\_frame.py\", line 591, in _click\n    await self._channel.send(\"click\", self._timeout, locals_to_params(locals()))\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\venv\\Lib\\site-packages\\playwright\\_impl\\_connection.py\", line 69, in send\n    return await self._connection.wrap_api_call(\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    ...<3 lines>...\n    )\n    ^\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\venv\\Lib\\site-packages\\playwright\\_impl\\_connection.py\", line 563, in wrap_api_call\n    raise rewrite_error(error, f\"{parsed_st['apiName']}: {error}\") from None\nplaywright._impl._errors.TimeoutError: Locator.click: Timeout 10000ms exceeded.\nCall log:\n  - waiting for get_by_role(\"button\", name=\"Service Report\", exact=True)\n\n",
     "artifacts": [],
-    "duration_ms": 102088
+    "duration_ms": 108053
   },
   {
     "case": "case072",
@@ -1664,7 +1664,7 @@
     "passed": true,
     "raw_output": "Traceback (most recent call last):\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\execute.py\", line 594, in _run_visibility_check\n    module.open_form(page)\n    ~~~~~~~~~~~~~~~~^^^^^^\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\base_tests\\base_test_create_service_report_from_service_reports.py\", line 389, in open_form\n    _click_through_tour(page, page.get_by_role(\"button\", name=\"Service Report\", exact=True))\n    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\base_tests\\base_test_create_service_report_from_service_reports.py\", line 221, in _click_through_tour\n    raise last_exc\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\base_tests\\base_test_create_service_report_from_service_reports.py\", line 201, in _click_through_tour\n    locator.click(timeout=10000)\n    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\venv\\Lib\\site-packages\\playwright\\sync_api\\_generated.py\", line 17672, in click\n    self._sync(\n    ~~~~~~~~~~^\n        self._impl_obj.click(\n        ^^^^^^^^^^^^^^^^^^^^^\n    ...<10 lines>...\n        )\n        ^\n    )\n    ^\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\venv\\Lib\\site-packages\\playwright\\_impl\\_sync_base.py\", line 115, in _sync\n    return task.result()\n           ~~~~~~~~~~~^^\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\venv\\Lib\\site-packages\\playwright\\_impl\\_locator.py\", line 163, in click\n    return await self._frame._click(self._selector, strict=True, **params)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\venv\\Lib\\site-packages\\playwright\\_impl\\_frame.py\", line 591, in _click\n    await self._channel.send(\"click\", self._timeout, locals_to_params(locals()))\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\venv\\Lib\\site-packages\\playwright\\_impl\\_connection.py\", line 69, in send\n    return await self._connection.wrap_api_call(\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    ...<3 lines>...\n    )\n    ^\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\venv\\Lib\\site-packages\\playwright\\_impl\\_connection.py\", line 563, in wrap_api_call\n    raise rewrite_error(error, f\"{parsed_st['apiName']}: {error}\") from None\nplaywright._impl._errors.TimeoutError: Locator.click: Timeout 10000ms exceeded.\nCall log:\n  - waiting for get_by_role(\"button\", name=\"Service Report\", exact=True)\n\n",
     "artifacts": [],
-    "duration_ms": 101344
+    "duration_ms": 102030
   },
   {
     "case": "case073",
@@ -1682,7 +1682,7 @@
     "passed": true,
     "raw_output": "",
     "artifacts": [],
-    "duration_ms": 6538
+    "duration_ms": 8829
   },
   {
     "case": "case074",
@@ -1702,7 +1702,7 @@
     "passed": true,
     "raw_output": "",
     "artifacts": [],
-    "duration_ms": 63906
+    "duration_ms": 63283
   },
   {
     "case": "case075",
@@ -1722,7 +1722,7 @@
     "passed": true,
     "raw_output": "",
     "artifacts": [],
-    "duration_ms": 82685
+    "duration_ms": 76958
   },
   {
     "case": "case076",
@@ -1742,7 +1742,7 @@
     "passed": true,
     "raw_output": "",
     "artifacts": [],
-    "duration_ms": 66164
+    "duration_ms": 62067
   },
   {
     "case": "case077",
@@ -1760,11 +1760,11 @@
     "actual_outcome": "timeout",
     "actual_message": "Locator.wait_for: Timeout 5000ms exceeded.\nCall log:\n  - waiting for locator(\"[role='option']\").first to be visible\n",
     "passed": false,
-    "raw_output": "Traceback (most recent call last):\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\execute.py\", line 980, in _run_playwright\n    mod.run_test(page, inputs, expected_outcome, \"\")\n    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\base_tests\\base_test_create_service_report_from_service_reports.py\", line 490, in run_test\n    set_field(page, field, value)\n    ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\base_tests\\base_test_create_service_report_from_service_reports.py\", line 412, in set_field\n    _select_option(page, page.get_by_role(\"combobox\", name=\"Select Case\"), value)\n    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\base_tests\\base_test_create_service_report_from_service_reports.py\", line 355, in _select_option\n    options.first.wait_for(state=\"visible\", timeout=5000)\n    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\venv\\Lib\\site-packages\\playwright\\sync_api\\_generated.py\", line 20298, in wait_for\n    self._sync(\n    ~~~~~~~~~~^\n        self._impl_obj.wait_for(timeout=to_milliseconds(timeout), state=state)\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    )\n    ^\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\venv\\Lib\\site-packages\\playwright\\_impl\\_sync_base.py\", line 115, in _sync\n    return task.result()\n           ~~~~~~~~~~~^^\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\venv\\Lib\\site-packages\\playwright\\_impl\\_locator.py\", line 741, in wait_for\n    await self._frame.wait_for_selector(\n        self._selector, strict=True, timeout=timeout, state=state\n    )\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\venv\\Lib\\site-packages\\playwright\\_impl\\_frame.py\", line 394, in wait_for_selector\n    await self._channel.send(\n        \"waitForSelector\", self._timeout, locals_to_params(locals())\n    )\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\venv\\Lib\\site-packages\\playwright\\_impl\\_connection.py\", line 69, in send\n    return await self._connection.wrap_api_call(\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    ...<3 lines>...\n    )\n    ^\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\venv\\Lib\\site-packages\\playwright\\_impl\\_connection.py\", line 563, in wrap_api_call\n    raise rewrite_error(error, f\"{parsed_st['apiName']}: {error}\") from None\nplaywright._impl._errors.TimeoutError: Locator.wait_for: Timeout 5000ms exceeded.\nCall log:\n  - waiting for locator(\"[role='option']\").first to be visible\n\n",
+    "raw_output": "Traceback (most recent call last):\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\execute.py\", line 1027, in _run_playwright\n    mod.run_test(page, inputs, expected_outcome, \"\")\n    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\base_tests\\base_test_create_service_report_from_service_reports.py\", line 490, in run_test\n    set_field(page, field, value)\n    ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\base_tests\\base_test_create_service_report_from_service_reports.py\", line 412, in set_field\n    _select_option(page, page.get_by_role(\"combobox\", name=\"Select Case\"), value)\n    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\base_tests\\base_test_create_service_report_from_service_reports.py\", line 355, in _select_option\n    options.first.wait_for(state=\"visible\", timeout=5000)\n    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\venv\\Lib\\site-packages\\playwright\\sync_api\\_generated.py\", line 20298, in wait_for\n    self._sync(\n    ~~~~~~~~~~^\n        self._impl_obj.wait_for(timeout=to_milliseconds(timeout), state=state)\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    )\n    ^\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\venv\\Lib\\site-packages\\playwright\\_impl\\_sync_base.py\", line 115, in _sync\n    return task.result()\n           ~~~~~~~~~~~^^\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\venv\\Lib\\site-packages\\playwright\\_impl\\_locator.py\", line 741, in wait_for\n    await self._frame.wait_for_selector(\n        self._selector, strict=True, timeout=timeout, state=state\n    )\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\venv\\Lib\\site-packages\\playwright\\_impl\\_frame.py\", line 394, in wait_for_selector\n    await self._channel.send(\n        \"waitForSelector\", self._timeout, locals_to_params(locals())\n    )\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\venv\\Lib\\site-packages\\playwright\\_impl\\_connection.py\", line 69, in send\n    return await self._connection.wrap_api_call(\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    ...<3 lines>...\n    )\n    ^\n  File \"C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\venv\\Lib\\site-packages\\playwright\\_impl\\_connection.py\", line 563, in wrap_api_call\n    raise rewrite_error(error, f\"{parsed_st['apiName']}: {error}\") from None\nplaywright._impl._errors.TimeoutError: Locator.wait_for: Timeout 5000ms exceeded.\nCall log:\n  - waiting for locator(\"[role='option']\").first to be visible\n\n",
     "artifacts": [
       "C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\results\\artifacts\\case077_fail.png",
       "C:\\Users\\riyag\\OneDrive\\Documents\\ithena\\iSERV New\\iSERV New\\approach3\\results\\artifacts\\case077_state.json"
     ],
-    "duration_ms": 121802
+    "duration_ms": 103751
   }
 ]
