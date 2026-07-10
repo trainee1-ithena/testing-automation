@@ -147,13 +147,21 @@ performs them. These are form-level and browser-level tests, not role-specific f
 
 Generate cases for ALL of the following:
 
-1. field_validation — one case per required field left blank or invalid.
-   Cover every required field described in the PRD.
+1. field_validation — one case per required, user-editable field that has NO default value,
+   left blank or invalid.
+   Cover every such required field described in the PRD.
+   Do NOT generate a field_validation case for a required field that is pre-populated with a
+   default value, or that is auto-populated / read-only: such a field can never actually be
+   blank at submit time, so a "leave it empty" test is impossible to stage and would fail for
+   the wrong reason. Only genuinely user-supplied-from-empty required fields qualify.
 
-2. boundary — for every field with an EXPLICIT length, range, or format constraint stated as a concrete value in the PRD
+2. boundary — ONLY for a field whose length, range, or format limit is stated as a CONCRETE
+   value in the PRD (e.g. "max 256 characters", "between 1 and 100")
    - One case AT the limit (should pass)
    - One case ONE UNIT above the limit (should fail)
-   Cover every constrained field in the PRD.
+   Cover every field that HAS such an explicit concrete limit. If the PRD does not state a
+   concrete numeric/length/format limit for a field, do NOT generate a boundary case for it —
+   never invent or assume a limit.
 
 3. field_interaction — for every field that triggers a downstream effect on another field:
    - Auto-population of another field

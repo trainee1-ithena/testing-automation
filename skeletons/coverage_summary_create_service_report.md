@@ -1,54 +1,92 @@
 # Coverage Summary — create_service_report
 
-**Total cases: 73**
+**Total cases: 54**
 
 
-## Common — role-agnostic (30)
+## Common — role-agnostic (13)
 **Default URL:** `http://localhost:3000/service_reports`
 
-### field_validation (6)
+### field_validation (5)
 - [case001] Validate Service Report Type is required
-- [case002] Validate Internal Only Toggle is required
-- [case003] Validate Service Report Name is required
-- [case004] Validate Service Report Date is required
-- [case005] Validate Ticket is required
-- [case006] Validate Assignee(s) is required
+- [case002] Validate Service Report Name is required
+- [case003] Validate Service Report Date is required
+- [case004] Validate Ticket selection is required
+- [case005] Validate at least one Assignee is required
 
-### boundary (4)
-- [case007] Service Report Name at max length
-- [case008] Service Report Name exceeds max length
-- [case009] SR number format at max length
-- [case010] SR number format exceeds max length
+### boundary (1)
+- [case006] Validate SR number does not exceed 18 characters
 
-### field_interaction (4)
-- [case011] Ticket selection auto-populates Organization
-- [case012] Ticket selection auto-populates Organization User
-- [case013] Ticket selection filters Appointment options
-- [case014] Ticket selection updates Custom Form eligibility
+### field_interaction (2)
+- [case007] Ticket selection auto-populates Organization and User
+- [case008] Changing Ticket resets dependent fields
 
-### ui (8)
-- [case015] Verify Service Report Type dropdown exists
-- [case016] Verify Internal Only toggle exists
-- [case017] Verify Service Report Name input exists
-- [case018] Verify Service Report Date picker exists
-- [case019] Verify Ticket dropdown exists
-- [case020] Verify Assignee(s) multi-select exists
-- [case021] Verify Appointment dropdown exists
-- [case022] Verify Description text area exists
+### ui (2)
+- [case009] Verify Service Report Type dropdown is visible and interactable
+- [case010] Verify Internal Only toggle is visible and interactable
 
-### industry_best_practice (6)
-- [case023] Whitespace-only input in required fields
-- [case024] Special characters and SQL/script injection
-- [case025] Inputs exceeding maximum length
-- [case026] Browser back/forward navigation after submission
-- [case027] Re-submission of the same form without refreshing
-- [case028] Concurrent form submissions by two users
+### industry_best_practice (2)
+- [case011] Validate whitespace-only input in required fields
+- [case012] Test SQL/script injection in text fields
 
-### post_submission_state (2)
-- [case029] Verify SR visibility with Internal Only toggle
-- [case030] Verify SR visibility with Customer Visibility toggle
+### post_submission_state (1)
+- [case013] Verify SR visibility based on Internal Only toggle
 
 ## Service Manager (17)
+
+### From the Service Reports List Page (7) — `http://localhost:3000/service_reports`
+
+#### happy_path (2)
+- [case014] Create External SR from SR List
+- [case015] Create Internal SR from SR List
+
+#### permission (2)
+- [case016] Service Manager accesses Create SR action
+- [case017] Unauthenticated user cannot access Create SR URL
+
+#### business_rule (1)
+- [case018] SR creation against non-terminal ticket
+
+#### edge_case (1)
+- [case019] Attempt to create SR for Closed ticket
+
+#### post_submission_state (1)
+- [case020] Verify post-creation state of External SR
+
+### From Within a Ticket (Service Reports Tab) (5) — `http://localhost:3000/cases`
+
+#### happy_path (1)
+- [case021] Create External SR from Ticket
+
+#### permission (1)
+- [case022] Service Manager accesses Create SR action from Ticket
+
+#### business_rule (1)
+- [case023] SR creation against non-terminal ticket from Ticket
+
+#### edge_case (1)
+- [case024] Attempt to create SR for Closed ticket from Ticket
+
+#### post_submission_state (1)
+- [case025] Verify post-creation state of External SR from Ticket
+
+### From the Appointment Creation Form (5) — `http://localhost:3000/appointments`
+
+#### happy_path (1)
+- [case026] Create SR alongside Appointment
+
+#### permission (1)
+- [case027] Service Manager accesses Create SR action from Appointment
+
+#### business_rule (1)
+- [case028] SR creation against non-terminal ticket from Appointment
+
+#### edge_case (1)
+- [case029] Attempt to create SR for Closed ticket from Appointment
+
+#### post_submission_state (1)
+- [case030] Verify post-creation state of SR from Appointment
+
+## Service Engineer (7)
 
 ### From the Service Reports List Page (7) — `http://localhost:3000/service_reports`
 
@@ -57,136 +95,69 @@
 - [case032] Create Internal SR from SR List
 
 #### permission (2)
-- [case033] Access Create SR with Permission
-- [case034] Direct URL Access Without Authentication
+- [case033] SE creates SR with cross-department access
+- [case034] Unauthenticated access to Create SR URL
 
 #### business_rule (1)
-- [case035] SR Creation Against Non-Terminal Ticket
+- [case035] SE creates SR with required fields
 
 #### edge_case (1)
-- [case036] Attempt SR Creation Against Closed Ticket
+- [case036] SE creates SR with no linked appointment
 
 #### post_submission_state (1)
-- [case037] Verify Post-Creation State of External SR
+- [case037] Verify SR post-creation state
 
-### From Within a Ticket (Service Reports Tab) (5) — `http://localhost:3000/cases`
-
-#### happy_path (1)
-- [case038] Create External SR from Ticket [smoke]
-
-#### permission (1)
-- [case039] Access Create SR from Ticket with Permission
-
-#### business_rule (1)
-- [case040] SR Creation with Pre-Selected Ticket
-
-#### edge_case (1)
-- [case041] Attempt SR Creation with Locked Ticket Fields
-
-#### post_submission_state (1)
-- [case042] Verify Post-Creation State of SR from Ticket
-
-### From the Appointment Creation Form (5) — `http://localhost:3000/appointments`
-
-#### happy_path (1)
-- [case043] Create SR from Appointment Form [smoke]
-
-#### permission (1)
-- [case044] Access Create SR from Appointment with Permission
-
-#### business_rule (1)
-- [case045] SR Creation with Appointment Link
-
-#### edge_case (1)
-- [case046] Attempt SR Creation with Invalid Appointment Link
-
-#### post_submission_state (1)
-- [case047] Verify Post-Creation State of SR from Appointment
-
-## Service Engineer (7)
+## Admin (17)
 
 ### From the Service Reports List Page (7) — `http://localhost:3000/service_reports`
 
 #### happy_path (2)
-- [case048] Create External SR from SR List
-- [case049] Create Internal SR from SR List
+- [case038] Create SR from SR List with T&M Type [smoke]
+- [case039] Create SR from SR List with Fixed Fee Type
 
 #### permission (2)
-- [case050] SE creates SR with cross-department access
-- [case051] Unauthenticated user attempts direct URL access
+- [case040] Admin can access Create SR action
+- [case041] Unauthenticated user cannot access Create SR URL
 
 #### business_rule (1)
-- [case052] SE creates SR with required fields
+- [case042] Admin creates SR against non-terminal ticket
 
 #### edge_case (1)
-- [case053] SE attempts SR creation on closed ticket
+- [case043] Admin attempts to create SR for closed ticket
 
 #### post_submission_state (1)
-- [case054] Verify SR post-creation state
-
-## Admin (16)
-
-### From the Service Reports List Page (5) — `http://localhost:3000/service_reports`
-
-#### happy_path (1)
-- [case055] Create SR from SR List with all fields [smoke]
-
-#### permission (1)
-- [case056] Admin can create SR for any ticket
-
-#### business_rule (1)
-- [case057] Admin creates SR with required fields
-
-#### edge_case (1)
-- [case058] Admin creates SR with no Appointment
-
-#### post_submission_state (1)
-- [case059] Verify SR post-creation state
+- [case044] Verify SR post-creation state for Admin
 
 ### From Within a Ticket (Service Reports Tab) (5) — `http://localhost:3000/cases`
 
 #### happy_path (1)
-- [case060] Create SR from Ticket with pre-populated fields [smoke]
+- [case045] Create SR from Ticket with T&M Type [smoke]
 
 #### permission (1)
-- [case061] Admin creates SR for any accessible ticket
+- [case046] Admin can access Create SR action from Ticket
 
 #### business_rule (1)
-- [case062] Admin creates SR with required fields from Ticket
+- [case047] Admin creates SR with auto-attached custom form
 
 #### edge_case (1)
-- [case063] Admin creates SR with no Appointment from Ticket
+- [case048] Admin attempts to create SR with whitespace SR Name
 
 #### post_submission_state (1)
-- [case064] Verify SR post-creation state from Ticket
+- [case049] Verify SR post-creation state from Ticket
 
 ### From the Appointment Creation Form (5) — `http://localhost:3000/appointments`
 
 #### happy_path (1)
-- [case065] Create SR alongside Appointment [smoke]
+- [case050] Create SR alongside Appointment with T&M Type [smoke]
 
 #### permission (1)
-- [case066] Admin creates SR from Appointment for any ticket
+- [case051] Admin can create SR from Appointment form
 
 #### business_rule (1)
-- [case067] Admin creates SR with required fields from Appointment
+- [case052] Admin creates SR with internal visibility from Appointment
 
 #### edge_case (1)
-- [case068] Admin creates SR with no linked Appointment
+- [case053] Admin creates SR with past date from Appointment
 
 #### post_submission_state (1)
-- [case069] Verify SR post-creation state from Appointment
-
-### permission_check (1) — `http://localhost:3000/service_reports`
-
-#### permission (1)
-- [case070] Direct URL access without authentication
-
-## Customer User (3)
-
-### permission_check (3) — `http://localhost:3000/service_reports`
-
-#### permission (3)
-- [case071] CU cannot see Create SR option
-- [case072] CU cannot access Create SR via direct URL
-- [case073] Unauthenticated user cannot access Create SR URL
+- [case054] Verify SR post-creation state from Appointment

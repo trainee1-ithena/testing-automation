@@ -115,3 +115,7 @@ timestamp,script,flow,model,input_tokens,cached_tokens,output_tokens,total_token
 2026-07-07 21:14:33,generate2.py,create_service_report,gpt-4.1,133994,133120,65,134059,0.001748,0.133120,0.000520,0.135388
 2026-07-07 21:14:52,generate2.py,create_service_report,gpt-4.1,132646,0,1039,133685,0.265292,0.000000,0.008312,0.273604
 2026-07-07 21:14:57,generate2.py,create_service_report,gpt-4.1,134663,133120,321,134984,0.003086,0.133120,0.002568,0.138774
+2026-07-09 22:48:12,generate1.py,create_service_report,gpt-4o,9846,2509,12355,0.024615,0.025090,0.049705
+2026-07-09 22:49:00,generate1.py,create_service_report,gpt-4o,9487,4249,13736,0.023718,0.042490,0.066208
+2026-07-09 22:49:16,generate1.py,create_service_report,gpt-4o,9487,1708,11195,0.023718,0.017080,0.040798
+2026-07-09 22:49:55,generate1.py,create_service_report,gpt-4o,9486,4315,13801,0.023715,0.043150,0.066865

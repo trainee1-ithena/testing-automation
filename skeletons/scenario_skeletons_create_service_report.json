@@ -8,16 +8,17 @@
         "entry_point": "all_entry_points",
         "persona": "any_authorized_role",
         "title": "Validate Service Report Type is required",
-        "description": "Ensure that the Service Report Type field cannot be left blank as it is required for SR creation.",
+        "description": "Ensure the form cannot be submitted without selecting a Service Report Type.",
         "preconditions": [],
         "steps_summary": [
           "Sign in as any authorized role.",
           "Navigate to the Create Service Report form.",
-          "Attempt to submit the form without selecting a Service Report Type."
+          "Leave the Service Report Type field blank.",
+          "Attempt to submit the form."
         ],
         "session_count": 1,
         "locked_fields": [],
-        "expected_result": "The form submission fails with a validation error indicating that the Service Report Type is required.",
+        "expected_result": "The form submission fails with a validation error indicating that Service Report Type is required.",
         "prd_references": [
           "BR-03"
         ],
@@ -30,19 +31,20 @@
         "category": "field_validation",
         "entry_point": "all_entry_points",
         "persona": "any_authorized_role",
-        "title": "Validate Internal Only Toggle is required",
-        "description": "Ensure that the Internal Only Toggle must have a value set, defaulting to off.",
+        "title": "Validate Service Report Name is required",
+        "description": "Ensure the form cannot be submitted without entering a Service Report Name.",
         "preconditions": [],
         "steps_summary": [
           "Sign in as any authorized role.",
           "Navigate to the Create Service Report form.",
-          "Attempt to submit the form without setting the Internal Only Toggle."
+          "Leave the Service Report Name field blank.",
+          "Attempt to submit the form."
         ],
         "session_count": 1,
         "locked_fields": [],
-        "expected_result": "The form submission fails with a validation error indicating that the Internal Only Toggle must be set.",
+        "expected_result": "The form submission fails with a validation error indicating that Service Report Name is required.",
         "prd_references": [
-          "BR-04"
+          "BR-05"
         ],
         "source": "prd",
         "url": "http://localhost:3000/service_reports"
@@ -53,19 +55,20 @@
         "category": "field_validation",
         "entry_point": "all_entry_points",
         "persona": "any_authorized_role",
-        "title": "Validate Service Report Name is required",
-        "description": "Ensure that the Service Report Name field cannot be left blank as it is required for SR creation.",
+        "title": "Validate Service Report Date is required",
+        "description": "Ensure the form cannot be submitted without selecting a Service Report Date.",
         "preconditions": [],
         "steps_summary": [
           "Sign in as any authorized role.",
           "Navigate to the Create Service Report form.",
-          "Attempt to submit the form without entering a Service Report Name."
+          "Clear the Service Report Date field.",
+          "Attempt to submit the form."
         ],
         "session_count": 1,
         "locked_fields": [],
-        "expected_result": "The form submission fails with a validation error indicating that the Service Report Name is required.",
+        "expected_result": "The form submission fails with a validation error indicating that Service Report Date is required.",
         "prd_references": [
-          "BR-05"
+          "BR-06"
         ],
         "source": "prd",
         "url": "http://localhost:3000/service_reports"
@@ -76,19 +79,20 @@
         "category": "field_validation",
         "entry_point": "all_entry_points",
         "persona": "any_authorized_role",
-        "title": "Validate Service Report Date is required",
-        "description": "Ensure that the Service Report Date field cannot be left blank as it is required for SR creation.",
+        "title": "Validate Ticket selection is required",
+        "description": "Ensure the form cannot be submitted without selecting a Ticket.",
         "preconditions": [],
         "steps_summary": [
           "Sign in as any authorized role.",
           "Navigate to the Create Service Report form.",
-          "Attempt to submit the form without selecting a Service Report Date."
+          "Leave the Ticket field blank.",
+          "Attempt to submit the form."
         ],
         "session_count": 1,
         "locked_fields": [],
-        "expected_result": "The form submission fails with a validation error indicating that the Service Report Date is required.",
+        "expected_result": "The form submission fails with a validation error indicating that Ticket selection is required.",
         "prd_references": [
-          "BR-06"
+          "BR-02"
         ],
         "source": "prd",
         "url": "http://localhost:3000/service_reports"
@@ -99,36 +103,14 @@
         "category": "field_validation",
         "entry_point": "all_entry_points",
         "persona": "any_authorized_role",
-        "title": "Validate Ticket is required",
-        "description": "Ensure that the Ticket field cannot be left blank as it is required for SR creation.",
+        "title": "Validate at least one Assignee is required",
+        "description": "Ensure the form cannot be submitted without selecting at least one Assignee.",
         "preconditions": [],
         "steps_summary": [
           "Sign in as any authorized role.",
           "Navigate to the Create Service Report form.",
-          "Attempt to submit the form without selecting a Ticket."
-        ],
-        "session_count": 1,
-        "locked_fields": [],
-        "expected_result": "The form submission fails with a validation error indicating that the Ticket is required.",
-        "prd_references": [
-          "BR-02"
-        ],
-        "source": "prd",
-        "url": "http://localhost:3000/service_reports"
-      },
-      {
-        "case": "case006",
-        "is_smoke": false,
-        "category": "field_validation",
-        "entry_point": "all_entry_points",
-        "persona": "any_authorized_role",
-        "title": "Validate Assignee(s) is required",
-        "description": "Ensure that at least one Assignee must be selected for SR creation.",
-        "preconditions": [],
-        "steps_summary": [
-          "Sign in as any authorized role.",
-          "Navigate to the Create Service Report form.",
-          "Attempt to submit the form without selecting any Assignees."
+          "Leave the Assignee(s) field blank.",
+          "Attempt to submit the form."
         ],
         "session_count": 1,
         "locked_fields": [],
@@ -142,91 +124,26 @@
     ],
     "boundary": [
       {
-        "case": "case007",
+        "case": "case006",
         "is_smoke": false,
         "category": "boundary",
         "entry_point": "all_entry_points",
         "persona": "any_authorized_role",
-        "title": "Service Report Name at max length",
-        "description": "Ensure the Service Report Name can be submitted at its maximum length.",
-        "preconditions": [],
+        "title": "Validate SR number does not exceed 18 characters",
+        "description": "Ensure SR number format does not exceed 18 characters.",
+        "preconditions": [
+          "Admin has configured SR number settings."
+        ],
         "steps_summary": [
-          "Sign in as any authorized role.",
-          "Navigate to the Create Service Report form.",
-          "Enter a Service Report Name at the maximum allowed length.",
-          "Submit the form."
+          "Sign in as Admin.",
+          "Navigate to System Settings \u2192 Service Reports Settings.",
+          "Configure SR number format with maximum components.",
+          "Create a new Service Report.",
+          "Verify the SR number length."
         ],
         "session_count": 1,
         "locked_fields": [],
-        "expected_result": "The form submission succeeds with the Service Report Name at maximum length.",
-        "prd_references": [],
-        "source": "prd",
-        "url": "http://localhost:3000/service_reports"
-      },
-      {
-        "case": "case008",
-        "is_smoke": false,
-        "category": "boundary",
-        "entry_point": "all_entry_points",
-        "persona": "any_authorized_role",
-        "title": "Service Report Name exceeds max length",
-        "description": "Ensure the form does not accept a Service Report Name exceeding the maximum length.",
-        "preconditions": [],
-        "steps_summary": [
-          "Sign in as any authorized role.",
-          "Navigate to the Create Service Report form.",
-          "Enter a Service Report Name exceeding the maximum allowed length.",
-          "Attempt to submit the form."
-        ],
-        "session_count": 1,
-        "locked_fields": [],
-        "expected_result": "The form submission fails with a validation error indicating the Service Report Name exceeds the maximum length.",
-        "prd_references": [],
-        "source": "prd",
-        "url": "http://localhost:3000/service_reports"
-      },
-      {
-        "case": "case009",
-        "is_smoke": false,
-        "category": "boundary",
-        "entry_point": "all_entry_points",
-        "persona": "any_authorized_role",
-        "title": "SR number format at max length",
-        "description": "Ensure the SR number format does not exceed 18 characters.",
-        "preconditions": [],
-        "steps_summary": [
-          "Sign in as any authorized role.",
-          "Navigate to the SR number settings.",
-          "Configure the SR number format to reach exactly 18 characters.",
-          "Create a new Service Report."
-        ],
-        "session_count": 1,
-        "locked_fields": [],
-        "expected_result": "The SR number is generated correctly and does not exceed 18 characters.",
-        "prd_references": [
-          "BR-13"
-        ],
-        "source": "prd",
-        "url": "http://localhost:3000/service_reports"
-      },
-      {
-        "case": "case010",
-        "is_smoke": false,
-        "category": "boundary",
-        "entry_point": "all_entry_points",
-        "persona": "any_authorized_role",
-        "title": "SR number format exceeds max length",
-        "description": "Ensure the system prevents SR number formats that exceed 18 characters.",
-        "preconditions": [],
-        "steps_summary": [
-          "Sign in as any authorized role.",
-          "Navigate to the SR number settings.",
-          "Attempt to configure the SR number format to exceed 18 characters.",
-          "Try to save the settings."
-        ],
-        "session_count": 1,
-        "locked_fields": [],
-        "expected_result": "The system blocks saving the SR number format and displays an error.",
+        "expected_result": "The SR number does not exceed 18 characters.",
         "prd_references": [
           "BR-13"
         ],
@@ -236,23 +153,23 @@
     ],
     "field_interaction": [
       {
-        "case": "case011",
+        "case": "case007",
         "is_smoke": false,
         "category": "field_interaction",
         "entry_point": "all_entry_points",
         "persona": "any_authorized_role",
-        "title": "Ticket selection auto-populates Organization",
-        "description": "Ensure selecting a Ticket auto-populates the Organization field.",
+        "title": "Ticket selection auto-populates Organization and User",
+        "description": "Selecting a Ticket should auto-populate the Organization and Organization User fields.",
         "preconditions": [],
         "steps_summary": [
           "Sign in as any authorized role.",
           "Navigate to the Create Service Report form.",
           "Select a Ticket.",
-          "Observe the Organization field auto-populates."
+          "Verify Organization and Organization User fields are auto-populated."
         ],
         "session_count": 1,
         "locked_fields": [],
-        "expected_result": "The Organization field is auto-populated based on the selected Ticket.",
+        "expected_result": "Organization and Organization User fields are auto-populated based on the selected Ticket.",
         "prd_references": [
           "BR-08"
         ],
@@ -260,73 +177,26 @@
         "url": "http://localhost:3000/service_reports"
       },
       {
-        "case": "case012",
+        "case": "case008",
         "is_smoke": false,
         "category": "field_interaction",
         "entry_point": "all_entry_points",
         "persona": "any_authorized_role",
-        "title": "Ticket selection auto-populates Organization User",
-        "description": "Ensure selecting a Ticket auto-populates the Organization User field.",
+        "title": "Changing Ticket resets dependent fields",
+        "description": "Changing the selected Ticket should reset Organization, Organization User, Appointment, and Custom Form fields.",
         "preconditions": [],
         "steps_summary": [
           "Sign in as any authorized role.",
           "Navigate to the Create Service Report form.",
           "Select a Ticket.",
-          "Observe the Organization User field auto-populates."
+          "Change the selected Ticket.",
+          "Verify Organization, Organization User, Appointment, and Custom Form fields are reset."
         ],
         "session_count": 1,
         "locked_fields": [],
-        "expected_result": "The Organization User field is auto-populated based on the selected Ticket.",
+        "expected_result": "Dependent fields are reset when the Ticket is changed.",
         "prd_references": [
-          "BR-08"
-        ],
-        "source": "prd",
-        "url": "http://localhost:3000/service_reports"
-      },
-      {
-        "case": "case013",
-        "is_smoke": false,
-        "category": "field_interaction",
-        "entry_point": "all_entry_points",
-        "persona": "any_authorized_role",
-        "title": "Ticket selection filters Appointment options",
-        "description": "Ensure selecting a Ticket filters the Appointment options to only those belonging to the selected Ticket.",
-        "preconditions": [],
-        "steps_summary": [
-          "Sign in as any authorized role.",
-          "Navigate to the Create Service Report form.",
-          "Select a Ticket.",
-          "Check the Appointment dropdown for filtered options."
-        ],
-        "session_count": 1,
-        "locked_fields": [],
-        "expected_result": "The Appointment dropdown only shows appointments linked to the selected Ticket.",
-        "prd_references": [
-          "BR-09"
-        ],
-        "source": "prd",
-        "url": "http://localhost:3000/service_reports"
-      },
-      {
-        "case": "case014",
-        "is_smoke": false,
-        "category": "field_interaction",
-        "entry_point": "all_entry_points",
-        "persona": "any_authorized_role",
-        "title": "Ticket selection updates Custom Form eligibility",
-        "description": "Ensure selecting a Ticket updates the eligibility of Custom Forms based on the Ticket's service type and report flow.",
-        "preconditions": [],
-        "steps_summary": [
-          "Sign in as any authorized role.",
-          "Navigate to the Create Service Report form.",
-          "Select a Ticket.",
-          "Observe the Custom Form field updates based on eligibility."
-        ],
-        "session_count": 1,
-        "locked_fields": [],
-        "expected_result": "The Custom Form field updates to show eligible forms based on the selected Ticket's service type and report flow.",
-        "prd_references": [
-          "BR-11"
+          "BR-16"
         ],
         "source": "prd",
         "url": "http://localhost:3000/service_reports"
@@ -334,18 +204,19 @@
     ],
     "ui": [
       {
-        "case": "case015",
+        "case": "case009",
         "is_smoke": false,
         "category": "ui",
         "entry_point": "all_entry_points",
         "persona": "any_authorized_role",
-        "title": "Verify Service Report Type dropdown exists",
-        "description": "Ensure the Service Report Type dropdown is present and interactable.",
+        "title": "Verify Service Report Type dropdown is visible and interactable",
+        "description": "Ensure the Service Report Type dropdown is visible and can be interacted with.",
         "preconditions": [],
         "steps_summary": [
           "Sign in as any authorized role.",
           "Navigate to the Create Service Report form.",
-          "Verify the presence and interactability of the Service Report Type dropdown."
+          "Verify the Service Report Type dropdown is visible.",
+          "Interact with the dropdown to select an option."
         ],
         "session_count": 1,
         "locked_fields": [],
@@ -355,18 +226,19 @@
         "url": "http://localhost:3000/service_reports"
       },
       {
-        "case": "case016",
+        "case": "case010",
         "is_smoke": false,
         "category": "ui",
         "entry_point": "all_entry_points",
         "persona": "any_authorized_role",
-        "title": "Verify Internal Only toggle exists",
-        "description": "Ensure the Internal Only toggle is present and interactable.",
+        "title": "Verify Internal Only toggle is visible and interactable",
+        "description": "Ensure the Internal Only toggle is visible and can be toggled.",
         "preconditions": [],
         "steps_summary": [
           "Sign in as any authorized role.",
           "Navigate to the Create Service Report form.",
-          "Verify the presence and interactability of the Internal Only toggle."
+          "Verify the Internal Only toggle is visible.",
+          "Toggle the Internal Only option."
         ],
         "session_count": 1,
         "locked_fields": [],
@@ -374,153 +246,27 @@
         "prd_references": [],
         "source": "prd",
         "url": "http://localhost:3000/service_reports"
-      },
-      {
-        "case": "case017",
-        "is_smoke": false,
-        "category": "ui",
-        "entry_point": "all_entry_points",
-        "persona": "any_authorized_role",
-        "title": "Verify Service Report Name input exists",
-        "description": "Ensure the Service Report Name input field is present and interactable.",
-        "preconditions": [],
-        "steps_summary": [
-          "Sign in as any authorized role.",
-          "Navigate to the Create Service Report form.",
-          "Verify the presence and interactability of the Service Report Name input field."
-        ],
-        "session_count": 1,
-        "locked_fields": [],
-        "expected_result": "The Service Report Name input field is visible and interactable.",
-        "prd_references": [],
-        "source": "prd",
-        "url": "http://localhost:3000/service_reports"
-      },
-      {
-        "case": "case018",
-        "is_smoke": false,
-        "category": "ui",
-        "entry_point": "all_entry_points",
-        "persona": "any_authorized_role",
-        "title": "Verify Service Report Date picker exists",
-        "description": "Ensure the Service Report Date picker is present and interactable.",
-        "preconditions": [],
-        "steps_summary": [
-          "Sign in as any authorized role.",
-          "Navigate to the Create Service Report form.",
-          "Verify the presence and interactability of the Service Report Date picker."
-        ],
-        "session_count": 1,
-        "locked_fields": [],
-        "expected_result": "The Service Report Date picker is visible and interactable.",
-        "prd_references": [],
-        "source": "prd",
-        "url": "http://localhost:3000/service_reports"
-      },
-      {
-        "case": "case019",
-        "is_smoke": false,
-        "category": "ui",
-        "entry_point": "all_entry_points",
-        "persona": "any_authorized_role",
-        "title": "Verify Ticket dropdown exists",
-        "description": "Ensure the Ticket dropdown is present and interactable.",
-        "preconditions": [],
-        "steps_summary": [
-          "Sign in as any authorized role.",
-          "Navigate to the Create Service Report form.",
-          "Verify the presence and interactability of the Ticket dropdown."
-        ],
-        "session_count": 1,
-        "locked_fields": [],
-        "expected_result": "The Ticket dropdown is visible and interactable.",
-        "prd_references": [],
-        "source": "prd",
-        "url": "http://localhost:3000/service_reports"
-      },
-      {
-        "case": "case020",
-        "is_smoke": false,
-        "category": "ui",
-        "entry_point": "all_entry_points",
-        "persona": "any_authorized_role",
-        "title": "Verify Assignee(s) multi-select exists",
-        "description": "Ensure the Assignee(s) multi-select field is present and interactable.",
-        "preconditions": [],
-        "steps_summary": [
-          "Sign in as any authorized role.",
-          "Navigate to the Create Service Report form.",
-          "Verify the presence and interactability of the Assignee(s) multi-select field."
-        ],
-        "session_count": 1,
-        "locked_fields": [],
-        "expected_result": "The Assignee(s) multi-select field is visible and interactable.",
-        "prd_references": [],
-        "source": "prd",
-        "url": "http://localhost:3000/service_reports"
-      },
-      {
-        "case": "case021",
-        "is_smoke": false,
-        "category": "ui",
-        "entry_point": "all_entry_points",
-        "persona": "any_authorized_role",
-        "title": "Verify Appointment dropdown exists",
-        "description": "Ensure the Appointment dropdown is present and interactable.",
-        "preconditions": [],
-        "steps_summary": [
-          "Sign in as any authorized role.",
-          "Navigate to the Create Service Report form.",
-          "Verify the presence and interactability of the Appointment dropdown."
-        ],
-        "session_count": 1,
-        "locked_fields": [],
-        "expected_result": "The Appointment dropdown is visible and interactable.",
-        "prd_references": [],
-        "source": "prd",
-        "url": "http://localhost:3000/service_reports"
-      },
-      {
-        "case": "case022",
-        "is_smoke": false,
-        "category": "ui",
-        "entry_point": "all_entry_points",
-        "persona": "any_authorized_role",
-        "title": "Verify Description text area exists",
-        "description": "Ensure the Description text area is present and interactable.",
-        "preconditions": [],
-        "steps_summary": [
-          "Sign in as any authorized role.",
-          "Navigate to the Create Service Report form.",
-          "Verify the presence and interactability of the Description text area."
-        ],
-        "session_count": 1,
-        "locked_fields": [],
-        "expected_result": "The Description text area is visible and interactable.",
-        "prd_references": [],
-        "source": "prd",
-        "url": "http://localhost:3000/service_reports"
       }
     ],
     "industry_best_practice": [
       {
-        "case": "case023",
+        "case": "case011",
         "is_smoke": false,
         "category": "industry_best_practice",
         "entry_point": "all_entry_points",
         "persona": "any_authorized_role",
-        "title": "Whitespace-only input in required fields",
-        "description": "Ensure that whitespace-only inputs in required fields are treated as invalid.",
+        "title": "Validate whitespace-only input in required fields",
+        "description": "Ensure that whitespace-only input is treated as invalid in required fields.",
         "preconditions": [],
         "steps_summary": [
           "Sign in as any authorized role.",
           "Navigate to the Create Service Report form.",
-          "Enter whitespace-only in required fields.",
+          "Enter whitespace-only input in required fields.",
           "Attempt to submit the form."
         ],
         "session_count": 1,
         "locked_fields": [],
-        "expected_result": "The form submission fails with a validation error indicating that whitespace-only inputs are invalid.",
+        "expected_result": "The form submission fails with a validation error for whitespace-only input.",
         "prd_references": [
           "EC-02"
         ],
@@ -528,167 +274,51 @@
         "url": "http://localhost:3000/service_reports"
       },
       {
-        "case": "case024",
+        "case": "case012",
         "is_smoke": false,
         "category": "industry_best_practice",
         "entry_point": "all_entry_points",
         "persona": "any_authorized_role",
-        "title": "Special characters and SQL/script injection",
-        "description": "Ensure that special characters and SQL/script injections are sanitized in text fields.",
+        "title": "Test SQL/script injection in text fields",
+        "description": "Ensure text fields are protected against SQL/script injection.",
         "preconditions": [],
         "steps_summary": [
           "Sign in as any authorized role.",
           "Navigate to the Create Service Report form.",
-          "Enter special characters and SQL/script injection attempts in text fields.",
+          "Enter SQL/script injection code in text fields.",
           "Attempt to submit the form."
         ],
         "session_count": 1,
         "locked_fields": [],
-        "expected_result": "The form submission fails or sanitizes inputs to prevent SQL/script injection.",
+        "expected_result": "The form submission fails, and the system is protected against SQL/script injection.",
         "prd_references": [],
-        "source": "industry_best_practice",
-        "url": "http://localhost:3000/service_reports"
-      },
-      {
-        "case": "case025",
-        "is_smoke": false,
-        "category": "industry_best_practice",
-        "entry_point": "all_entry_points",
-        "persona": "any_authorized_role",
-        "title": "Inputs exceeding maximum length",
-        "description": "Ensure that inputs exceeding maximum length are not accepted.",
-        "preconditions": [],
-        "steps_summary": [
-          "Sign in as any authorized role.",
-          "Navigate to the Create Service Report form.",
-          "Enter inputs exceeding maximum length in text fields.",
-          "Attempt to submit the form."
-        ],
-        "session_count": 1,
-        "locked_fields": [],
-        "expected_result": "The form submission fails with a validation error indicating inputs exceed maximum length.",
-        "prd_references": [],
-        "source": "industry_best_practice",
-        "url": "http://localhost:3000/service_reports"
-      },
-      {
-        "case": "case026",
-        "is_smoke": false,
-        "category": "industry_best_practice",
-        "entry_point": "all_entry_points",
-        "persona": "any_authorized_role",
-        "title": "Browser back/forward navigation after submission",
-        "description": "Ensure that using browser back/forward navigation after form submission does not resubmit the form.",
-        "preconditions": [],
-        "steps_summary": [
-          "Sign in as any authorized role.",
-          "Navigate to the Create Service Report form.",
-          "Submit the form successfully.",
-          "Use browser back and forward navigation."
-        ],
-        "session_count": 1,
-        "locked_fields": [],
-        "expected_result": "The form is not resubmitted when using browser back/forward navigation.",
-        "prd_references": [],
-        "source": "industry_best_practice",
-        "url": "http://localhost:3000/service_reports"
-      },
-      {
-        "case": "case027",
-        "is_smoke": false,
-        "category": "industry_best_practice",
-        "entry_point": "all_entry_points",
-        "persona": "any_authorized_role",
-        "title": "Re-submission of the same form without refreshing",
-        "description": "Ensure that re-submitting the same form without refreshing does not create duplicate entries.",
-        "preconditions": [],
-        "steps_summary": [
-          "Sign in as any authorized role.",
-          "Navigate to the Create Service Report form.",
-          "Submit the form successfully.",
-          "Attempt to submit the form again without refreshing."
-        ],
-        "session_count": 1,
-        "locked_fields": [],
-        "expected_result": "The form is not re-submitted, preventing duplicate entries.",
-        "prd_references": [],
-        "source": "industry_best_practice",
-        "url": "http://localhost:3000/service_reports"
-      },
-      {
-        "case": "case028",
-        "is_smoke": false,
-        "category": "industry_best_practice",
-        "entry_point": "all_entry_points",
-        "persona": "any_authorized_role",
-        "title": "Concurrent form submissions by two users",
-        "description": "Ensure that concurrent form submissions by two users do not result in duplicate SR numbers.",
-        "preconditions": [],
-        "steps_summary": [
-          "Sign in as two different authorized roles simultaneously.",
-          "Navigate to the Create Service Report form on both sessions.",
-          "Submit the form concurrently from both sessions."
-        ],
-        "session_count": 2,
-        "locked_fields": [],
-        "expected_result": "Each form submission results in a unique SR number, preventing duplicates.",
-        "prd_references": [
-          "EC-05"
-        ],
         "source": "industry_best_practice",
         "url": "http://localhost:3000/service_reports"
       }
     ],
     "post_submission_state": [
       {
-        "case": "case029",
+        "case": "case013",
         "is_smoke": false,
         "category": "post_submission_state",
         "entry_point": "all_entry_points",
         "persona": "any_authorized_role",
-        "title": "Verify SR visibility with Internal Only toggle",
-        "description": "Ensure that an SR created with the Internal Only toggle is not visible to Customer Users.",
+        "title": "Verify SR visibility based on Internal Only toggle",
+        "description": "Ensure SR visibility is correctly set based on the Internal Only toggle.",
         "preconditions": [],
         "steps_summary": [
           "Sign in as any authorized role.",
           "Navigate to the Create Service Report form.",
-          "Set the Internal Only toggle to On.",
+          "Select SR Type and toggle Internal Only as desired.",
           "Submit the form.",
           "Sign out and sign in as a Customer User.",
           "Attempt to view the created SR."
         ],
         "session_count": 2,
         "locked_fields": [],
-        "expected_result": "The SR is not visible to the Customer User.",
+        "expected_result": "The SR is visible to the Customer User only if the Internal Only toggle was off.",
         "prd_references": [
           "BR-14"
-        ],
-        "source": "prd",
-        "url": "http://localhost:3000/service_reports"
-      },
-      {
-        "case": "case030",
-        "is_smoke": false,
-        "category": "post_submission_state",
-        "entry_point": "all_entry_points",
-        "persona": "any_authorized_role",
-        "title": "Verify SR visibility with Customer Visibility toggle",
-        "description": "Ensure that an SR created with the Customer Visibility toggle is visible to Customer Users once it reaches the Submitted status.",
-        "preconditions": [],
-        "steps_summary": [
-          "Sign in as any authorized role.",
-          "Navigate to the Create Service Report form.",
-          "Ensure the Internal Only toggle is Off.",
-          "Submit the form.",
-          "Change the SR status to Submitted.",
-          "Sign out and sign in as a Customer User.",
-          "Attempt to view the created SR."
-        ],
-        "session_count": 2,
-        "locked_fields": [],
-        "expected_result": "The SR is visible to the Customer User once it reaches the Submitted status.",
-        "prd_references": [
-          "BR-10"
         ],
         "source": "prd",
         "url": "http://localhost:3000/service_reports"
@@ -707,41 +337,30 @@
               "scenario": "happy_path",
               "cases": [
                 {
-                  "case": "case031",
-                  "is_smoke": true,
+                  "case": "case014",
+                  "is_smoke": false,
                   "category": "happy_path",
                   "entry_point": "From the Service Reports List Page",
                   "persona": "Service Manager",
                   "title": "Create External SR from SR List",
-                  "description": "Service Manager creates a customer-visible SR from the Service Reports List.",
+                  "description": "Service Manager creates an external SR from the Service Reports List page.",
                   "preconditions": [
                     "Service Manager has SR create permission for the ticket's department."
                   ],
                   "steps_summary": [
                     "Sign in as Service Manager.",
                     "Navigate to the Service Reports module.",
-                    "Click Create.",
+                    "Click the Create button.",
                     "Select SR Type: Time & Material.",
                     "Leave Internal Only toggle off.",
-                    "Enter SR Name and Date.",
+                    "Enter SR Name and confirm today's date.",
                     "Search for and select a Ticket.",
                     "Select one or more Assignees.",
                     "Optionally select a linked Appointment.",
-                    "Click Save.",
-                    "Verify SR is created in To Do status with (External) chip."
+                    "Click Save."
                   ],
-                  "expected_result": "SR is created successfully with customer visibility.",
-                  "prd_references": [
-                    "BR-01",
-                    "BR-03",
-                    "BR-04",
-                    "BR-05",
-                    "BR-06",
-                    "BR-07",
-                    "BR-09",
-                    "BR-10",
-                    "BR-15"
-                  ],
+                  "expected_result": "SR is created in To Do status with (External) chip visible.",
+                  "prd_references": [],
                   "session_count": 1,
                   "locked_fields": [
                     "org_id",
@@ -751,40 +370,29 @@
                   "url": "http://localhost:3000/service_reports"
                 },
                 {
-                  "case": "case032",
+                  "case": "case015",
                   "is_smoke": false,
                   "category": "happy_path",
                   "entry_point": "From the Service Reports List Page",
                   "persona": "Service Manager",
                   "title": "Create Internal SR from SR List",
-                  "description": "Service Manager creates an internal SR from the Service Reports List.",
+                  "description": "Service Manager creates an internal SR from the Service Reports List page.",
                   "preconditions": [
                     "Service Manager has SR create permission for the ticket's department."
                   ],
                   "steps_summary": [
                     "Sign in as Service Manager.",
                     "Navigate to the Service Reports module.",
-                    "Click Create.",
+                    "Click the Create button.",
                     "Select SR Type: Fixed Fee.",
                     "Toggle Internal Only ON.",
                     "Enter SR Name and Date.",
                     "Search for and select a Ticket.",
                     "Select one or more Assignees.",
-                    "Click Save.",
-                    "Verify SR is created in To Do status with (Internal) chip."
+                    "Click Save."
                   ],
-                  "expected_result": "SR is created successfully with internal visibility.",
-                  "prd_references": [
-                    "BR-01",
-                    "BR-03",
-                    "BR-04",
-                    "BR-05",
-                    "BR-06",
-                    "BR-07",
-                    "BR-10",
-                    "BR-14",
-                    "BR-15"
-                  ],
+                  "expected_result": "SR is created in To Do status with (Internal) chip. CU cannot see this SR.",
+                  "prd_references": [],
                   "session_count": 1,
                   "locked_fields": [
                     "org_id",
@@ -799,27 +407,23 @@
               "scenario": "permission",
               "cases": [
                 {
-                  "case": "case033",
+                  "case": "case016",
                   "is_smoke": false,
                   "category": "permission",
                   "entry_point": "From the Service Reports List Page",
                   "persona": "Service Manager",
-                  "title": "Access Create SR with Permission",
-                  "description": "Service Manager with create permission accesses the Create SR form.",
+                  "title": "Service Manager accesses Create SR action",
+                  "description": "Service Manager with appropriate permissions can access and initiate the Create SR action from the SR List.",
                   "preconditions": [
-                    "Service Manager has SR create permission for the ticket's department."
+                    "Service Manager has SR create permission for at least one department."
                   ],
                   "steps_summary": [
                     "Sign in as Service Manager.",
                     "Navigate to the Service Reports module.",
-                    "Verify the Create button is visible and enabled.",
-                    "Click Create.",
-                    "Verify the Create SR form opens."
+                    "Verify the Create button is visible and enabled."
                   ],
-                  "expected_result": "Create SR form is accessible and functional.",
-                  "prd_references": [
-                    "BR-01"
-                  ],
+                  "expected_result": "Create button is visible and enabled for the Service Manager.",
+                  "prd_references": [],
                   "session_count": 1,
                   "locked_fields": [
                     "org_id",
@@ -829,19 +433,18 @@
                   "url": "http://localhost:3000/service_reports"
                 },
                 {
-                  "case": "case034",
+                  "case": "case017",
                   "is_smoke": false,
                   "category": "permission",
                   "entry_point": "all_entry_points",
                   "persona": "unauthenticated",
-                  "title": "Direct URL Access Without Authentication",
-                  "description": "Unauthenticated user attempts to access the Create SR URL directly.",
+                  "title": "Unauthenticated user cannot access Create SR URL",
+                  "description": "An unauthenticated user attempts to access the Create SR URL directly and is blocked.",
                   "preconditions": [],
                   "steps_summary": [
-                    "Navigate to the Create SR URL without logging in.",
-                    "Verify access is denied or redirected to login page."
+                    "Navigate to the Create SR URL without logging in."
                   ],
-                  "expected_result": "Access is denied or redirected to login.",
+                  "expected_result": "User receives a 'Not Authorized' error or is redirected to the login page.",
                   "prd_references": [],
                   "session_count": 0,
                   "locked_fields": [],
@@ -854,29 +457,27 @@
               "scenario": "business_rule",
               "cases": [
                 {
-                  "case": "case035",
+                  "case": "case018",
                   "is_smoke": false,
                   "category": "business_rule",
                   "entry_point": "From the Service Reports List Page",
                   "persona": "Service Manager",
-                  "title": "SR Creation Against Non-Terminal Ticket",
-                  "description": "Ensure SR can only be created against non-terminal tickets.",
+                  "title": "SR creation against non-terminal ticket",
+                  "description": "Service Manager creates an SR against a non-terminal ticket, adhering to business rule BR-02.",
                   "preconditions": [
-                    "Service Manager has SR create permission for the ticket's department."
+                    "Service Manager has SR create permission.",
+                    "Non-terminal ticket is available."
                   ],
                   "steps_summary": [
                     "Sign in as Service Manager.",
                     "Navigate to the Service Reports module.",
-                    "Click Create.",
-                    "Search for a non-terminal Ticket.",
-                    "Select the Ticket.",
-                    "Verify Organization and Organization User auto-populate.",
-                    "Complete the form and click Save."
+                    "Click the Create button.",
+                    "Search for and select a non-terminal Ticket.",
+                    "Complete the SR form and click Save."
                   ],
-                  "expected_result": "SR is created successfully against a non-terminal ticket.",
+                  "expected_result": "SR is successfully created against the non-terminal ticket.",
                   "prd_references": [
-                    "BR-02",
-                    "BR-08"
+                    "BR-02"
                   ],
                   "session_count": 1,
                   "locked_fields": [
@@ -892,24 +493,23 @@
               "scenario": "edge_case",
               "cases": [
                 {
-                  "case": "case036",
+                  "case": "case019",
                   "is_smoke": false,
                   "category": "edge_case",
                   "entry_point": "From the Service Reports List Page",
                   "persona": "Service Manager",
-                  "title": "Attempt SR Creation Against Closed Ticket",
-                  "description": "Verify closed tickets do not appear in the Ticket dropdown.",
+                  "title": "Attempt to create SR for Closed ticket",
+                  "description": "Service Manager attempts to create an SR for a Closed ticket, which should not be possible.",
                   "preconditions": [
-                    "Service Manager has SR create permission for the ticket's department."
+                    "Service Manager has SR create permission."
                   ],
                   "steps_summary": [
                     "Sign in as Service Manager.",
                     "Navigate to the Service Reports module.",
-                    "Click Create.",
-                    "Attempt to search for a Closed Ticket.",
-                    "Verify the Closed Ticket does not appear in the dropdown."
+                    "Click the Create button.",
+                    "Attempt to search for and select a Closed Ticket."
                   ],
-                  "expected_result": "Closed tickets are not selectable for SR creation.",
+                  "expected_result": "Closed tickets do not appear in the Ticket dropdown; SR creation is blocked.",
                   "prd_references": [
                     "EC-01"
                   ],
@@ -927,30 +527,25 @@
               "scenario": "post_submission_state",
               "cases": [
                 {
-                  "case": "case037",
+                  "case": "case020",
                   "is_smoke": false,
                   "category": "post_submission_state",
                   "entry_point": "From the Service Reports List Page",
                   "persona": "Service Manager",
-                  "title": "Verify Post-Creation State of External SR",
-                  "description": "Check the state of an SR after successful creation with customer visibility.",
+                  "title": "Verify post-creation state of External SR",
+                  "description": "Verify the state and visibility of an SR after successful creation as External.",
                   "preconditions": [
-                    "Service Manager has SR create permission for the ticket's department."
+                    "Service Manager has created an External SR."
                   ],
                   "steps_summary": [
                     "Sign in as Service Manager.",
-                    "Navigate to the Service Reports module.",
-                    "Click Create.",
-                    "Complete the form for an External SR and click Save.",
-                    "Verify SR is in To Do status.",
-                    "Verify SR is listed in the SR list with (External) chip.",
-                    "Verify SR is not visible to Customer User."
+                    "Navigate to the SR detail view.",
+                    "Verify SR status is To Do.",
+                    "Verify (External) chip is visible.",
+                    "Verify SR is listed in the SR list."
                   ],
-                  "expected_result": "SR is in To Do status, visible to SM, not visible to CU.",
-                  "prd_references": [
-                    "BR-10",
-                    "BR-15"
-                  ],
+                  "expected_result": "SR is in To Do status with (External) chip visible and listed in the SR list.",
+                  "prd_references": [],
                   "session_count": 1,
                   "locked_fields": [
                     "org_id",
@@ -971,41 +566,29 @@
               "scenario": "happy_path",
               "cases": [
                 {
-                  "case": "case038",
-                  "is_smoke": true,
+                  "case": "case021",
+                  "is_smoke": false,
                   "category": "happy_path",
                   "entry_point": "From Within a Ticket (Service Reports Tab)",
                   "persona": "Service Manager",
                   "title": "Create External SR from Ticket",
-                  "description": "Service Manager creates a customer-visible SR from within a ticket.",
+                  "description": "Service Manager creates an external SR from within a Ticket.",
                   "preconditions": [
                     "Service Manager has SR create permission for the ticket's department."
                   ],
                   "steps_summary": [
                     "Sign in as Service Manager.",
-                    "Open a non-terminal Ticket.",
-                    "Navigate to the Service Reports tab.",
-                    "Click Create New Service Report.",
+                    "Open a Ticket and navigate to the Service Reports tab.",
+                    "Click the Create button.",
                     "Select SR Type: Time & Material.",
                     "Leave Internal Only toggle off.",
                     "Enter SR Name and confirm today's date.",
                     "Select one or more Assignees.",
                     "Optionally select a linked Appointment.",
-                    "Click Save.",
-                    "Verify SR is created in To Do status with (External) chip."
+                    "Click Save."
                   ],
-                  "expected_result": "SR is created successfully with customer visibility.",
-                  "prd_references": [
-                    "BR-01",
-                    "BR-03",
-                    "BR-04",
-                    "BR-05",
-                    "BR-06",
-                    "BR-07",
-                    "BR-09",
-                    "BR-10",
-                    "BR-15"
-                  ],
+                  "expected_result": "SR is created in To Do status with (External) chip visible.",
+                  "prd_references": [],
                   "session_count": 1,
                   "locked_fields": [
                     "ticket_id",
@@ -1021,28 +604,23 @@
               "scenario": "permission",
               "cases": [
                 {
-                  "case": "case039",
+                  "case": "case022",
                   "is_smoke": false,
                   "category": "permission",
                   "entry_point": "From Within a Ticket (Service Reports Tab)",
                   "persona": "Service Manager",
-                  "title": "Access Create SR from Ticket with Permission",
-                  "description": "Service Manager with create permission accesses the Create SR form from within a ticket.",
+                  "title": "Service Manager accesses Create SR action from Ticket",
+                  "description": "Service Manager with appropriate permissions can access and initiate the Create SR action from within a Ticket.",
                   "preconditions": [
                     "Service Manager has SR create permission for the ticket's department."
                   ],
                   "steps_summary": [
                     "Sign in as Service Manager.",
-                    "Open a non-terminal Ticket.",
-                    "Navigate to the Service Reports tab.",
-                    "Verify the Create button is visible and enabled.",
-                    "Click Create New Service Report.",
-                    "Verify the Create SR form opens."
+                    "Open a Ticket and navigate to the Service Reports tab.",
+                    "Verify the Create button is visible and enabled."
                   ],
-                  "expected_result": "Create SR form is accessible and functional from within a ticket.",
-                  "prd_references": [
-                    "BR-01"
-                  ],
+                  "expected_result": "Create button is visible and enabled for the Service Manager.",
+                  "prd_references": [],
                   "session_count": 1,
                   "locked_fields": [
                     "ticket_id",
@@ -1058,27 +636,26 @@
               "scenario": "business_rule",
               "cases": [
                 {
-                  "case": "case040",
+                  "case": "case023",
                   "is_smoke": false,
                   "category": "business_rule",
                   "entry_point": "From Within a Ticket (Service Reports Tab)",
                   "persona": "Service Manager",
-                  "title": "SR Creation with Pre-Selected Ticket",
-                  "description": "Ensure SR creation respects pre-selected and locked ticket fields.",
+                  "title": "SR creation against non-terminal ticket from Ticket",
+                  "description": "Service Manager creates an SR against a non-terminal ticket from within a Ticket, adhering to business rule BR-02.",
                   "preconditions": [
-                    "Service Manager has SR create permission for the ticket's department."
+                    "Service Manager has SR create permission.",
+                    "Non-terminal ticket is available."
                   ],
                   "steps_summary": [
                     "Sign in as Service Manager.",
-                    "Open a non-terminal Ticket.",
-                    "Navigate to the Service Reports tab.",
-                    "Click Create New Service Report.",
-                    "Verify Ticket, Organization, and Organization User fields are pre-selected and locked.",
-                    "Complete the form and click Save."
+                    "Open a non-terminal Ticket and navigate to the Service Reports tab.",
+                    "Click the Create button.",
+                    "Complete the SR form and click Save."
                   ],
-                  "expected_result": "SR is created successfully with pre-selected ticket details.",
+                  "expected_result": "SR is successfully created against the non-terminal ticket.",
                   "prd_references": [
-                    "BR-08"
+                    "BR-02"
                   ],
                   "session_count": 1,
                   "locked_fields": [
@@ -1095,27 +672,24 @@
               "scenario": "edge_case",
               "cases": [
                 {
-                  "case": "case041",
+                  "case": "case024",
                   "is_smoke": false,
                   "category": "edge_case",
                   "entry_point": "From Within a Ticket (Service Reports Tab)",
                   "persona": "Service Manager",
-                  "title": "Attempt SR Creation with Locked Ticket Fields",
-                  "description": "Verify locked fields remain unchanged during SR creation from a ticket.",
+                  "title": "Attempt to create SR for Closed ticket from Ticket",
+                  "description": "Service Manager attempts to create an SR for a Closed ticket from within a Ticket, which should not be possible.",
                   "preconditions": [
-                    "Service Manager has SR create permission for the ticket's department."
+                    "Service Manager has SR create permission."
                   ],
                   "steps_summary": [
                     "Sign in as Service Manager.",
-                    "Open a non-terminal Ticket.",
-                    "Navigate to the Service Reports tab.",
-                    "Click Create New Service Report.",
-                    "Attempt to change the pre-selected Ticket, Organization, or Organization User.",
-                    "Verify fields remain locked and unchanged."
+                    "Open a Closed Ticket and navigate to the Service Reports tab.",
+                    "Attempt to click the Create button."
                   ],
-                  "expected_result": "Locked fields cannot be altered during SR creation.",
+                  "expected_result": "Create button is not visible or disabled for Closed tickets.",
                   "prd_references": [
-                    "EC-08"
+                    "EC-01"
                   ],
                   "session_count": 1,
                   "locked_fields": [
@@ -1132,31 +706,25 @@
               "scenario": "post_submission_state",
               "cases": [
                 {
-                  "case": "case042",
+                  "case": "case025",
                   "is_smoke": false,
                   "category": "post_submission_state",
                   "entry_point": "From Within a Ticket (Service Reports Tab)",
                   "persona": "Service Manager",
-                  "title": "Verify Post-Creation State of SR from Ticket",
-                  "description": "Check the state of an SR after successful creation from within a ticket.",
+                  "title": "Verify post-creation state of External SR from Ticket",
+                  "description": "Verify the state and visibility of an SR after successful creation as External from within a Ticket.",
                   "preconditions": [
-                    "Service Manager has SR create permission for the ticket's department."
+                    "Service Manager has created an External SR from within a Ticket."
                   ],
                   "steps_summary": [
                     "Sign in as Service Manager.",
-                    "Open a non-terminal Ticket.",
-                    "Navigate to the Service Reports tab.",
-                    "Click Create New Service Report.",
-                    "Complete the form for an External SR and click Save.",
-                    "Verify SR is in To Do status.",
-                    "Verify SR is listed in the SR list with (External) chip.",
-                    "Verify SR is not visible to Customer User."
+                    "Navigate to the SR detail view.",
+                    "Verify SR status is To Do.",
+                    "Verify (External) chip is visible.",
+                    "Verify SR is listed in the SR list."
                   ],
-                  "expected_result": "SR is in To Do status, visible to SM, not visible to CU.",
-                  "prd_references": [
-                    "BR-10",
-                    "BR-15"
-                  ],
+                  "expected_result": "SR is in To Do status with (External) chip visible and listed in the SR list.",
+                  "prd_references": [],
                   "session_count": 1,
                   "locked_fields": [
                     "ticket_id",
@@ -1178,41 +746,27 @@
               "scenario": "happy_path",
               "cases": [
                 {
-                  "case": "case043",
-                  "is_smoke": true,
+                  "case": "case026",
+                  "is_smoke": false,
                   "category": "happy_path",
                   "entry_point": "From the Appointment Creation Form",
                   "persona": "Service Manager",
-                  "title": "Create SR from Appointment Form",
-                  "description": "Service Manager creates an SR alongside an appointment from the appointment form.",
+                  "title": "Create SR alongside Appointment",
+                  "description": "Service Manager creates an SR alongside an appointment from the Appointment Creation Form.",
                   "preconditions": [
                     "Service Manager has SR create permission for the ticket's department."
                   ],
                   "steps_summary": [
                     "Sign in as Service Manager.",
-                    "Open the Appointments module.",
-                    "Click New Appointment.",
+                    "Open the Appointments module and click New Appointment.",
                     "Select an existing non-terminal Ticket.",
                     "Fill in appointment details.",
                     "Check Create New Service Report.",
                     "Select SR Type: Time & Material and Visibility: External.",
-                    "Click Submit.",
-                    "Verify both the appointment and SR are created.",
-                    "Verify SR is linked to the appointment in To Do status."
+                    "Click Submit."
                   ],
-                  "expected_result": "SR is created and linked to the appointment successfully.",
-                  "prd_references": [
-                    "BR-01",
-                    "BR-03",
-                    "BR-04",
-                    "BR-05",
-                    "BR-06",
-                    "BR-07",
-                    "BR-09",
-                    "BR-10",
-                    "BR-15",
-                    "BR-19"
-                  ],
+                  "expected_result": "Both the appointment and the SR are created. The SR is linked to the appointment in To Do status.",
+                  "prd_references": [],
                   "session_count": 1,
                   "locked_fields": [
                     "org_id",
@@ -1228,29 +782,24 @@
               "scenario": "permission",
               "cases": [
                 {
-                  "case": "case044",
+                  "case": "case027",
                   "is_smoke": false,
                   "category": "permission",
                   "entry_point": "From the Appointment Creation Form",
                   "persona": "Service Manager",
-                  "title": "Access Create SR from Appointment with Permission",
-                  "description": "Service Manager with create permission accesses the Create SR option from the appointment form.",
+                  "title": "Service Manager accesses Create SR action from Appointment",
+                  "description": "Service Manager with appropriate permissions can access and initiate the Create SR action from the Appointment Creation Form.",
                   "preconditions": [
                     "Service Manager has SR create permission for the ticket's department."
                   ],
                   "steps_summary": [
                     "Sign in as Service Manager.",
-                    "Open the Appointments module.",
-                    "Click New Appointment.",
+                    "Open the Appointments module and click New Appointment.",
                     "Select an existing non-terminal Ticket.",
-                    "Verify Create New Service Report option is available.",
-                    "Check Create New Service Report.",
-                    "Verify SR Type and Visibility fields are accessible."
+                    "Verify the option to Create New Service Report is available."
                   ],
-                  "expected_result": "Create SR option is accessible and functional from the appointment form.",
-                  "prd_references": [
-                    "BR-01"
-                  ],
+                  "expected_result": "Option to Create New Service Report is available for the Service Manager.",
+                  "prd_references": [],
                   "session_count": 1,
                   "locked_fields": [
                     "org_id",
@@ -1266,29 +815,27 @@
               "scenario": "business_rule",
               "cases": [
                 {
-                  "case": "case045",
+                  "case": "case028",
                   "is_smoke": false,
                   "category": "business_rule",
                   "entry_point": "From the Appointment Creation Form",
                   "persona": "Service Manager",
-                  "title": "SR Creation with Appointment Link",
-                  "description": "Ensure SR is automatically linked to the appointment when created from the appointment form.",
+                  "title": "SR creation against non-terminal ticket from Appointment",
+                  "description": "Service Manager creates an SR against a non-terminal ticket from the Appointment Creation Form, adhering to business rule BR-02.",
                   "preconditions": [
-                    "Service Manager has SR create permission for the ticket's department."
+                    "Service Manager has SR create permission.",
+                    "Non-terminal ticket is available."
                   ],
                   "steps_summary": [
                     "Sign in as Service Manager.",
-                    "Open the Appointments module.",
-                    "Click New Appointment.",
-                    "Select an existing non-terminal Ticket.",
-                    "Fill in appointment details.",
+                    "Open the Appointments module and click New Appointment.",
+                    "Select a non-terminal Ticket.",
                     "Check Create New Service Report.",
-                    "Complete SR fields and click Submit.",
-                    "Verify SR is linked to the appointment."
+                    "Complete the SR form and click Submit."
                   ],
-                  "expected_result": "SR is automatically linked to the appointment.",
+                  "expected_result": "SR is successfully created against the non-terminal ticket.",
                   "prd_references": [
-                    "BR-19"
+                    "BR-02"
                   ],
                   "session_count": 1,
                   "locked_fields": [
@@ -1305,27 +852,24 @@
               "scenario": "edge_case",
               "cases": [
                 {
-                  "case": "case046",
+                  "case": "case029",
                   "is_smoke": false,
                   "category": "edge_case",
                   "entry_point": "From the Appointment Creation Form",
                   "persona": "Service Manager",
-                  "title": "Attempt SR Creation with Invalid Appointment Link",
-                  "description": "Verify SR cannot be linked to an appointment already linked to another SR.",
+                  "title": "Attempt to create SR for Closed ticket from Appointment",
+                  "description": "Service Manager attempts to create an SR for a Closed ticket from the Appointment Creation Form, which should not be possible.",
                   "preconditions": [
-                    "Service Manager has SR create permission for the ticket's department."
+                    "Service Manager has SR create permission."
                   ],
                   "steps_summary": [
                     "Sign in as Service Manager.",
-                    "Open the Appointments module.",
-                    "Click New Appointment.",
-                    "Select an existing non-terminal Ticket.",
-                    "Attempt to link an appointment already linked to another SR.",
-                    "Verify the appointment does not appear in the dropdown."
+                    "Open the Appointments module and click New Appointment.",
+                    "Attempt to select a Closed Ticket."
                   ],
-                  "expected_result": "Appointments already linked to another SR are not selectable.",
+                  "expected_result": "Closed tickets do not appear in the Ticket dropdown; SR creation is blocked.",
                   "prd_references": [
-                    "EC-03"
+                    "EC-01"
                   ],
                   "session_count": 1,
                   "locked_fields": [
@@ -1342,34 +886,25 @@
               "scenario": "post_submission_state",
               "cases": [
                 {
-                  "case": "case047",
+                  "case": "case030",
                   "is_smoke": false,
                   "category": "post_submission_state",
                   "entry_point": "From the Appointment Creation Form",
                   "persona": "Service Manager",
-                  "title": "Verify Post-Creation State of SR from Appointment",
-                  "description": "Check the state of an SR after successful creation from the appointment form.",
+                  "title": "Verify post-creation state of SR from Appointment",
+                  "description": "Verify the state and visibility of an SR after successful creation from the Appointment Creation Form.",
                   "preconditions": [
-                    "Service Manager has SR create permission for the ticket's department."
+                    "Service Manager has created an SR from the Appointment Creation Form."
                   ],
                   "steps_summary": [
                     "Sign in as Service Manager.",
-                    "Open the Appointments module.",
-                    "Click New Appointment.",
-                    "Select an existing non-terminal Ticket.",
-                    "Fill in appointment details and check Create New Service Report.",
-                    "Complete SR fields and click Submit.",
-                    "Verify SR is in To Do status.",
-                    "Verify SR is linked to the appointment.",
-                    "Verify SR is listed in the SR list with (External) chip.",
-                    "Verify SR is not visible to Customer User."
+                    "Navigate to the SR detail view.",
+                    "Verify SR status is To Do.",
+                    "Verify (External) chip is visible.",
+                    "Verify SR is linked to the appointment."
                   ],
-                  "expected_result": "SR is in To Do status, linked to appointment, visible to SM, not visible to CU.",
-                  "prd_references": [
-                    "BR-10",
-                    "BR-15",
-                    "BR-19"
-                  ],
+                  "expected_result": "SR is in To Do status with (External) chip visible and linked to the appointment.",
+                  "prd_references": [],
                   "session_count": 1,
                   "locked_fields": [
                     "org_id",
@@ -1396,13 +931,13 @@
               "scenario": "happy_path",
               "cases": [
                 {
-                  "case": "case048",
-                  "is_smoke": false,
+                  "case": "case031",
+                  "is_smoke": true,
                   "category": "happy_path",
                   "entry_point": "From the Service Reports List Page",
                   "persona": "Service Engineer",
                   "title": "Create External SR from SR List",
-                  "description": "Service Engineer creates an external SR from the Service Reports List page.",
+                  "description": "Service Engineer creates an external Service Report from the Service Reports List.",
                   "preconditions": [
                     "Service Engineer has SR create permission for at least one department."
                   ],
@@ -1414,37 +949,27 @@
                     "Leave Internal Only toggle off.",
                     "Enter SR Name and Date.",
                     "Search for and select a Ticket.",
-                    "Select themselves as Assignee.",
+                    "Select one or more Assignees.",
                     "Click Save."
                   ],
                   "expected_result": "SR is created in To Do status with (External) chip visible.",
-                  "prd_references": [
-                    "BR-01",
-                    "BR-03",
-                    "BR-04",
-                    "BR-05",
-                    "BR-06",
-                    "BR-07",
-                    "BR-08",
-                    "BR-10",
-                    "BR-15"
-                  ],
-                  "source": "prd",
                   "session_count": 1,
                   "locked_fields": [
                     "org_id",
                     "customer_id"
                   ],
+                  "prd_references": [],
+                  "source": "prd",
                   "url": "http://localhost:3000/service_reports"
                 },
                 {
-                  "case": "case049",
+                  "case": "case032",
                   "is_smoke": false,
                   "category": "happy_path",
                   "entry_point": "From the Service Reports List Page",
                   "persona": "Service Engineer",
                   "title": "Create Internal SR from SR List",
-                  "description": "Service Engineer creates an internal SR from the Service Reports List page.",
+                  "description": "Service Engineer creates an internal Service Report from the Service Reports List.",
                   "preconditions": [
                     "Service Engineer has SR create permission for at least one department."
                   ],
@@ -1460,24 +985,13 @@
                     "Click Save."
                   ],
                   "expected_result": "SR is created in To Do status with (Internal) chip. CU cannot see this SR.",
-                  "prd_references": [
-                    "BR-01",
-                    "BR-03",
-                    "BR-04",
-                    "BR-05",
-                    "BR-06",
-                    "BR-07",
-                    "BR-08",
-                    "BR-10",
-                    "BR-14",
-                    "BR-15"
-                  ],
-                  "source": "prd",
                   "session_count": 1,
                   "locked_fields": [
                     "org_id",
                     "customer_id"
                   ],
+                  "prd_references": [],
+                  "source": "prd",
                   "url": "http://localhost:3000/service_reports"
                 }
               ]
@@ -1486,13 +1000,13 @@
               "scenario": "permission",
               "cases": [
                 {
-                  "case": "case050",
+                  "case": "case033",
                   "is_smoke": false,
                   "category": "permission",
                   "entry_point": "From the Service Reports List Page",
                   "persona": "Service Engineer",
                   "title": "SE creates SR with cross-department access",
-                  "description": "Service Engineer creates an SR on a ticket outside their primary department using cross-department access.",
+                  "description": "Service Engineer creates an SR on a ticket outside their primary department using cross-department collaboration.",
                   "preconditions": [
                     "Service Engineer is a participant on a ticket outside their primary department.",
                     "Service Engineer has SR create permission for at least one department."
@@ -1501,53 +1015,36 @@
                     "Sign in as Service Engineer.",
                     "Navigate to the Service Reports module.",
                     "Click Create.",
-                    "Select SR Type: Time & Material.",
-                    "Leave Internal Only toggle off.",
-                    "Enter SR Name and Date.",
                     "Search for and select a Ticket from a different department.",
-                    "Select themselves as Assignee.",
-                    "Click Save."
+                    "Complete the SR form and click Save."
                   ],
-                  "expected_result": "SR is created successfully, demonstrating cross-department access.",
-                  "prd_references": [
-                    "BR-01",
-                    "BR-02",
-                    "BR-03",
-                    "BR-04",
-                    "BR-05",
-                    "BR-06",
-                    "BR-07",
-                    "BR-08",
-                    "BR-10",
-                    "BR-15"
-                  ],
-                  "source": "prd",
+                  "expected_result": "SR is successfully created for the ticket outside the primary department.",
                   "session_count": 1,
                   "locked_fields": [
                     "org_id",
                     "customer_id"
                   ],
+                  "prd_references": [],
+                  "source": "prd",
                   "url": "http://localhost:3000/service_reports"
                 },
                 {
-                  "case": "case051",
+                  "case": "case034",
                   "is_smoke": false,
                   "category": "permission",
                   "entry_point": "all_entry_points",
                   "persona": "unauthenticated",
-                  "title": "Unauthenticated user attempts direct URL access",
-                  "description": "Unauthenticated user attempts to access the Create SR page directly via URL.",
+                  "title": "Unauthenticated access to Create SR URL",
+                  "description": "Unauthenticated user attempts to access the Create SR URL directly.",
                   "preconditions": [],
                   "steps_summary": [
-                    "Navigate to the Create SR URL without logging in."
+                    "Navigate to the Create SR URL without signing in."
                   ],
-                  "expected_result": "User receives a 'Not Authorized' error or is redirected.",
-                  "prd_references": [
-                    "BR-01"
-                  ],
-                  "source": "prd",
+                  "expected_result": "User receives a 'Not Authorized' error or is redirected; no SR is created.",
                   "session_count": 0,
                   "locked_fields": [],
+                  "prd_references": [],
+                  "source": "prd",
                   "url": "http://localhost:3000/service_reports"
                 }
               ]
@@ -1556,7 +1053,7 @@
               "scenario": "business_rule",
               "cases": [
                 {
-                  "case": "case052",
+                  "case": "case035",
                   "is_smoke": false,
                   "category": "business_rule",
                   "entry_point": "From the Service Reports List Page",
@@ -1564,36 +1061,28 @@
                   "title": "SE creates SR with required fields",
                   "description": "Service Engineer creates an SR ensuring all required fields are filled.",
                   "preconditions": [
-                    "Service Engineer has SR create permission for at least one department."
+                    "Service Engineer has SR create permission."
                   ],
                   "steps_summary": [
                     "Sign in as Service Engineer.",
                     "Navigate to the Service Reports module.",
                     "Click Create.",
-                    "Select SR Type: Time & Material.",
-                    "Leave Internal Only toggle off.",
-                    "Enter SR Name and Date.",
-                    "Search for and select a Ticket.",
-                    "Select themselves as Assignee.",
+                    "Fill in all required fields including SR Type, Name, Date, Ticket, and Assignees.",
                     "Click Save."
                   ],
-                  "expected_result": "SR is created successfully with all required fields filled.",
-                  "prd_references": [
-                    "BR-03",
-                    "BR-04",
-                    "BR-05",
-                    "BR-06",
-                    "BR-07",
-                    "BR-08",
-                    "BR-10",
-                    "BR-15"
-                  ],
-                  "source": "prd",
+                  "expected_result": "SR is created successfully with all required fields validated.",
                   "session_count": 1,
                   "locked_fields": [
                     "org_id",
                     "customer_id"
                   ],
+                  "prd_references": [
+                    "BR-03",
+                    "BR-05",
+                    "BR-06",
+                    "BR-07"
+                  ],
+                  "source": "prd",
                   "url": "http://localhost:3000/service_reports"
                 }
               ]
@@ -1602,32 +1091,33 @@
               "scenario": "edge_case",
               "cases": [
                 {
-                  "case": "case053",
+                  "case": "case036",
                   "is_smoke": false,
                   "category": "edge_case",
                   "entry_point": "From the Service Reports List Page",
                   "persona": "Service Engineer",
-                  "title": "SE attempts SR creation on closed ticket",
-                  "description": "Service Engineer attempts to create an SR on a closed ticket.",
+                  "title": "SE creates SR with no linked appointment",
+                  "description": "Service Engineer creates an SR without linking an appointment.",
                   "preconditions": [
-                    "Service Engineer has SR create permission for at least one department."
+                    "Service Engineer has SR create permission."
                   ],
                   "steps_summary": [
                     "Sign in as Service Engineer.",
                     "Navigate to the Service Reports module.",
                     "Click Create.",
-                    "Attempt to search for and select a Closed ticket."
+                    "Fill in the SR form without selecting an Appointment.",
+                    "Click Save."
                   ],
-                  "expected_result": "Closed tickets do not appear in the Ticket dropdown; creation is blocked.",
-                  "prd_references": [
-                    "EC-01"
-                  ],
-                  "source": "prd",
+                  "expected_result": "SR is created successfully without any appointment link.",
                   "session_count": 1,
                   "locked_fields": [
                     "org_id",
                     "customer_id"
                   ],
+                  "prd_references": [
+                    "EC-09"
+                  ],
+                  "source": "prd",
                   "url": "http://localhost:3000/service_reports"
                 }
               ]
@@ -1636,7 +1126,7 @@
               "scenario": "post_submission_state",
               "cases": [
                 {
-                  "case": "case054",
+                  "case": "case037",
                   "is_smoke": false,
                   "category": "post_submission_state",
                   "entry_point": "From the Service Reports List Page",
@@ -1650,22 +1140,22 @@
                     "Sign in as Service Engineer.",
                     "Navigate to the Service Reports module.",
                     "Locate the newly created SR.",
-                    "Verify SR is in To Do status.",
-                    "Verify SR number is assigned and visible.",
-                    "Verify visibility chip is correct based on Internal Only toggle."
+                    "Verify the SR is in To Do status.",
+                    "Verify the SR number is assigned and visible.",
+                    "Check that the visibility chip matches the selected report flow."
                   ],
-                  "expected_result": "SR is in To Do status with correct visibility chip and assigned SR number.",
-                  "prd_references": [
-                    "BR-10",
-                    "BR-12",
-                    "BR-15"
-                  ],
-                  "source": "prd",
+                  "expected_result": "SR is in To Do status with correct SR number and visibility chip.",
                   "session_count": 1,
                   "locked_fields": [
                     "org_id",
                     "customer_id"
                   ],
+                  "prd_references": [
+                    "BR-10",
+                    "BR-12",
+                    "BR-14"
+                  ],
+                  "source": "prd",
                   "url": "http://localhost:3000/service_reports"
                 }
               ]
@@ -1685,13 +1175,13 @@
               "scenario": "happy_path",
               "cases": [
                 {
-                  "case": "case055",
+                  "case": "case038",
                   "is_smoke": true,
                   "category": "happy_path",
                   "entry_point": "From the Service Reports List Page",
                   "persona": "Admin",
-                  "title": "Create SR from SR List with all fields",
-                  "description": "Admin creates a Service Report from the SR List with all required fields filled.",
+                  "title": "Create SR from SR List with T&M Type",
+                  "description": "Admin creates a Service Report with Time & Material type from the Service Reports List.",
                   "preconditions": [
                     "Admin has access to the Service Reports module."
                   ],
@@ -1703,10 +1193,40 @@
                     "Enter SR Name and Date.",
                     "Search for and select a Ticket.",
                     "Select one or more Assignees.",
-                    "Optionally select a linked Appointment.",
                     "Click Save."
                   ],
-                  "expected_result": "SR is created in To Do status with a unique SR number.",
+                  "expected_result": "SR is created in To Do status with the selected type and assignees.",
+                  "prd_references": [],
+                  "session_count": 1,
+                  "locked_fields": [
+                    "org_id",
+                    "customer_id"
+                  ],
+                  "source": "prd",
+                  "url": "http://localhost:3000/service_reports"
+                },
+                {
+                  "case": "case039",
+                  "is_smoke": false,
+                  "category": "happy_path",
+                  "entry_point": "From the Service Reports List Page",
+                  "persona": "Admin",
+                  "title": "Create SR from SR List with Fixed Fee Type",
+                  "description": "Admin creates a Service Report with Fixed Fee type from the Service Reports List.",
+                  "preconditions": [
+                    "Admin has access to the Service Reports module."
+                  ],
+                  "steps_summary": [
+                    "Sign in as Admin.",
+                    "Navigate to the Service Reports module.",
+                    "Click the Create button.",
+                    "Select SR Type: Fixed Fee.",
+                    "Enter SR Name and Date.",
+                    "Search for and select a Ticket.",
+                    "Select one or more Assignees.",
+                    "Click Save."
+                  ],
+                  "expected_result": "SR is created in To Do status with the selected type and assignees.",
                   "prd_references": [],
                   "session_count": 1,
                   "locked_fields": [
@@ -1722,33 +1242,48 @@
               "scenario": "permission",
               "cases": [
                 {
-                  "case": "case056",
+                  "case": "case040",
                   "is_smoke": false,
                   "category": "permission",
                   "entry_point": "From the Service Reports List Page",
                   "persona": "Admin",
-                  "title": "Admin can create SR for any ticket",
-                  "description": "Admin verifies they can create a Service Report for any ticket they have access to.",
+                  "title": "Admin can access Create SR action",
+                  "description": "Admin should be able to access and use the Create SR action from the Service Reports List.",
                   "preconditions": [
-                    "Admin has access to multiple departments."
+                    "Admin has access to the Service Reports module."
                   ],
                   "steps_summary": [
                     "Sign in as Admin.",
                     "Navigate to the Service Reports module.",
-                    "Click the Create button.",
-                    "Select SR Type: Fixed Fee.",
-                    "Enter SR Name and Date.",
-                    "Search for and select a Ticket from any department.",
-                    "Select one or more Assignees.",
-                    "Click Save."
+                    "Verify the Create button is visible and enabled.",
+                    "Click the Create button."
                   ],
-                  "expected_result": "SR is created successfully for the selected ticket.",
+                  "expected_result": "Admin can access the Create SR form.",
                   "prd_references": [],
                   "session_count": 1,
                   "locked_fields": [
                     "org_id",
                     "customer_id"
                   ],
+                  "source": "prd",
+                  "url": "http://localhost:3000/service_reports"
+                },
+                {
+                  "case": "case041",
+                  "is_smoke": false,
+                  "category": "permission",
+                  "entry_point": "all_entry_points",
+                  "persona": "unauthenticated",
+                  "title": "Unauthenticated user cannot access Create SR URL",
+                  "description": "Ensure that an unauthenticated user cannot access the Create SR page directly via URL.",
+                  "preconditions": [],
+                  "steps_summary": [
+                    "Navigate to the Create SR URL without logging in."
+                  ],
+                  "expected_result": "User receives a 'Not Authorized' error or is redirected to the login page.",
+                  "prd_references": [],
+                  "session_count": 0,
+                  "locked_fields": [],
                   "source": "prd",
                   "url": "http://localhost:3000/service_reports"
                 }
@@ -1758,32 +1293,27 @@
               "scenario": "business_rule",
               "cases": [
                 {
-                  "case": "case057",
+                  "case": "case042",
                   "is_smoke": false,
                   "category": "business_rule",
                   "entry_point": "From the Service Reports List Page",
                   "persona": "Admin",
-                  "title": "Admin creates SR with required fields",
-                  "description": "Admin ensures all required fields are filled to create a Service Report.",
+                  "title": "Admin creates SR against non-terminal ticket",
+                  "description": "Admin creates a Service Report against a non-terminal ticket, ensuring compliance with business rules.",
                   "preconditions": [
-                    "Admin has access to the Service Reports module."
+                    "Admin has access to the Service Reports module.",
+                    "Non-terminal ticket is available."
                   ],
                   "steps_summary": [
                     "Sign in as Admin.",
                     "Navigate to the Service Reports module.",
                     "Click the Create button.",
-                    "Select SR Type: Time & Material.",
-                    "Enter SR Name and Date.",
-                    "Search for and select a Ticket.",
-                    "Select one or more Assignees.",
-                    "Click Save."
+                    "Select a non-terminal Ticket.",
+                    "Complete the SR form and click Save."
                   ],
-                  "expected_result": "SR is created with all required fields filled.",
+                  "expected_result": "SR is created successfully against the non-terminal ticket.",
                   "prd_references": [
-                    "BR-03",
-                    "BR-05",
-                    "BR-06",
-                    "BR-07"
+                    "BR-02"
                   ],
                   "session_count": 1,
                   "locked_fields": [
@@ -1799,30 +1329,26 @@
               "scenario": "edge_case",
               "cases": [
                 {
-                  "case": "case058",
+                  "case": "case043",
                   "is_smoke": false,
                   "category": "edge_case",
                   "entry_point": "From the Service Reports List Page",
                   "persona": "Admin",
-                  "title": "Admin creates SR with no Appointment",
-                  "description": "Admin creates a Service Report without linking an Appointment.",
+                  "title": "Admin attempts to create SR for closed ticket",
+                  "description": "Ensure that closed tickets do not appear in the Ticket dropdown when Admin tries to create an SR.",
                   "preconditions": [
-                    "Admin has access to the Service Reports module."
+                    "Admin has access to the Service Reports module.",
+                    "Closed ticket exists in the system."
                   ],
                   "steps_summary": [
                     "Sign in as Admin.",
                     "Navigate to the Service Reports module.",
                     "Click the Create button.",
-                    "Select SR Type: Fixed Fee.",
-                    "Enter SR Name and Date.",
-                    "Search for and select a Ticket.",
-                    "Select one or more Assignees.",
-                    "Leave Appointment field empty.",
-                    "Click Save."
+                    "Attempt to select a closed ticket from the Ticket dropdown."
                   ],
-                  "expected_result": "SR is created without an Appointment link.",
+                  "expected_result": "Closed tickets do not appear in the Ticket dropdown.",
                   "prd_references": [
-                    "EC-09"
+                    "EC-01"
                   ],
                   "session_count": 1,
                   "locked_fields": [
@@ -1838,29 +1364,27 @@
               "scenario": "post_submission_state",
               "cases": [
                 {
-                  "case": "case059",
+                  "case": "case044",
                   "is_smoke": false,
                   "category": "post_submission_state",
                   "entry_point": "From the Service Reports List Page",
                   "persona": "Admin",
-                  "title": "Verify SR post-creation state",
-                  "description": "Admin verifies the state of the Service Report after successful creation.",
+                  "title": "Verify SR post-creation state for Admin",
+                  "description": "Check the state of a newly created SR by Admin to ensure it reflects the correct initial settings.",
                   "preconditions": [
-                    "Admin has created a Service Report."
+                    "Admin has successfully created an SR."
                   ],
                   "steps_summary": [
                     "Sign in as Admin.",
-                    "Navigate to the Service Reports module.",
-                    "Locate the newly created SR in the list.",
-                    "Verify SR status is To Do.",
-                    "Verify SR number is unique and assigned.",
-                    "Verify visibility chip is displayed correctly."
+                    "Navigate to the newly created SR detail view.",
+                    "Verify the SR status is To Do.",
+                    "Verify the SR number is assigned.",
+                    "Check that the visibility chip reflects the correct flow."
                   ],
-                  "expected_result": "SR is in To Do status with correct visibility chip and unique SR number.",
+                  "expected_result": "SR is in To Do status with correct SR number and visibility chip.",
                   "prd_references": [
                     "BR-10",
-                    "BR-12",
-                    "BR-15"
+                    "BR-12"
                   ],
                   "session_count": 1,
                   "locked_fields": [
@@ -1882,15 +1406,15 @@
               "scenario": "happy_path",
               "cases": [
                 {
-                  "case": "case060",
+                  "case": "case045",
                   "is_smoke": true,
                   "category": "happy_path",
                   "entry_point": "From Within a Ticket (Service Reports Tab)",
                   "persona": "Admin",
-                  "title": "Create SR from Ticket with pre-populated fields",
-                  "description": "Admin creates a Service Report from within a Ticket with pre-populated fields.",
+                  "title": "Create SR from Ticket with T&M Type",
+                  "description": "Admin creates a Service Report with Time & Material type from within a Ticket.",
                   "preconditions": [
-                    "Admin has access to a Ticket in the system."
+                    "Admin has access to the Ticket with Service Reports tab."
                   ],
                   "steps_summary": [
                     "Sign in as Admin.",
@@ -1899,10 +1423,9 @@
                     "Select SR Type: Time & Material.",
                     "Enter SR Name and confirm today's date.",
                     "Select one or more Assignees.",
-                    "Optionally select a linked Appointment.",
                     "Click Save."
                   ],
-                  "expected_result": "SR is created with pre-populated Ticket, Organization, and Organization User fields.",
+                  "expected_result": "SR is created in To Do status with the selected type and assignees.",
                   "prd_references": [],
                   "session_count": 1,
                   "locked_fields": [
@@ -1919,27 +1442,23 @@
               "scenario": "permission",
               "cases": [
                 {
-                  "case": "case061",
+                  "case": "case046",
                   "is_smoke": false,
                   "category": "permission",
                   "entry_point": "From Within a Ticket (Service Reports Tab)",
                   "persona": "Admin",
-                  "title": "Admin creates SR for any accessible ticket",
-                  "description": "Admin verifies they can create a Service Report for any accessible ticket from within the ticket.",
+                  "title": "Admin can access Create SR action from Ticket",
+                  "description": "Admin should be able to access and use the Create SR action from within a Ticket's Service Reports tab.",
                   "preconditions": [
-                    "Admin has access to multiple tickets across departments."
+                    "Admin has access to the Ticket with Service Reports tab."
                   ],
                   "steps_summary": [
                     "Sign in as Admin.",
-                    "Open any accessible Ticket.",
-                    "Navigate to the Service Reports tab.",
-                    "Click the Create button.",
-                    "Select SR Type: Fixed Fee.",
-                    "Enter SR Name and Date.",
-                    "Select one or more Assignees.",
-                    "Click Save."
+                    "Open a Ticket and navigate to the Service Reports tab.",
+                    "Verify the Create button is visible and enabled.",
+                    "Click the Create button."
                   ],
-                  "expected_result": "SR is created successfully for the selected ticket with pre-populated fields.",
+                  "expected_result": "Admin can access the Create SR form.",
                   "prd_references": [],
                   "session_count": 1,
                   "locked_fields": [
@@ -1956,31 +1475,28 @@
               "scenario": "business_rule",
               "cases": [
                 {
-                  "case": "case062",
+                  "case": "case047",
                   "is_smoke": false,
                   "category": "business_rule",
                   "entry_point": "From Within a Ticket (Service Reports Tab)",
                   "persona": "Admin",
-                  "title": "Admin creates SR with required fields from Ticket",
-                  "description": "Admin ensures all required fields are filled to create a Service Report from within a Ticket.",
+                  "title": "Admin creates SR with auto-attached custom form",
+                  "description": "Admin creates a Service Report with a custom form auto-attached based on the ticket's service type.",
                   "preconditions": [
-                    "Admin has access to a Ticket in the system."
+                    "Admin has access to a Ticket with a configured custom form for its service type."
                   ],
                   "steps_summary": [
                     "Sign in as Admin.",
                     "Open a Ticket and navigate to the Service Reports tab.",
                     "Click the Create button.",
-                    "Select SR Type: Time & Material.",
+                    "Select SR Type and confirm the custom form auto-attaches.",
                     "Enter SR Name and Date.",
                     "Select one or more Assignees.",
                     "Click Save."
                   ],
-                  "expected_result": "SR is created with all required fields filled and pre-populated fields.",
+                  "expected_result": "SR is created with the custom form auto-attached.",
                   "prd_references": [
-                    "BR-03",
-                    "BR-05",
-                    "BR-06",
-                    "BR-07"
+                    "BR-11"
                   ],
                   "session_count": 1,
                   "locked_fields": [
@@ -1997,29 +1513,26 @@
               "scenario": "edge_case",
               "cases": [
                 {
-                  "case": "case063",
+                  "case": "case048",
                   "is_smoke": false,
                   "category": "edge_case",
                   "entry_point": "From Within a Ticket (Service Reports Tab)",
                   "persona": "Admin",
-                  "title": "Admin creates SR with no Appointment from Ticket",
-                  "description": "Admin creates a Service Report from within a Ticket without linking an Appointment.",
+                  "title": "Admin attempts to create SR with whitespace SR Name",
+                  "description": "Ensure that the system treats a whitespace-only SR Name as invalid when Admin creates an SR.",
                   "preconditions": [
-                    "Admin has access to a Ticket in the system."
+                    "Admin has access to the Ticket with Service Reports tab."
                   ],
                   "steps_summary": [
                     "Sign in as Admin.",
                     "Open a Ticket and navigate to the Service Reports tab.",
                     "Click the Create button.",
-                    "Select SR Type: Fixed Fee.",
-                    "Enter SR Name and Date.",
-                    "Select one or more Assignees.",
-                    "Leave Appointment field empty.",
-                    "Click Save."
+                    "Enter whitespace only in the SR Name field.",
+                    "Attempt to save the SR."
                   ],
-                  "expected_result": "SR is created without an Appointment link with pre-populated fields.",
+                  "expected_result": "System shows an error indicating SR Name cannot be blank.",
                   "prd_references": [
-                    "EC-09"
+                    "EC-02"
                   ],
                   "session_count": 1,
                   "locked_fields": [
@@ -2036,30 +1549,27 @@
               "scenario": "post_submission_state",
               "cases": [
                 {
-                  "case": "case064",
+                  "case": "case049",
                   "is_smoke": false,
                   "category": "post_submission_state",
                   "entry_point": "From Within a Ticket (Service Reports Tab)",
                   "persona": "Admin",
                   "title": "Verify SR post-creation state from Ticket",
-                  "description": "Admin verifies the state of the Service Report after successful creation from within a Ticket.",
+                  "description": "Check the state of a newly created SR from within a Ticket to ensure it reflects the correct initial settings.",
                   "preconditions": [
-                    "Admin has created a Service Report from within a Ticket."
+                    "Admin has successfully created an SR from within a Ticket."
                   ],
                   "steps_summary": [
                     "Sign in as Admin.",
-                    "Open the Ticket where the SR was created.",
-                    "Navigate to the Service Reports tab.",
-                    "Locate the newly created SR.",
-                    "Verify SR status is To Do.",
-                    "Verify SR number is unique and assigned.",
-                    "Verify visibility chip is displayed correctly."
+                    "Navigate to the newly created SR detail view.",
+                    "Verify the SR status is To Do.",
+                    "Verify the SR number is assigned.",
+                    "Check that the visibility chip reflects the correct flow."
                   ],
-                  "expected_result": "SR is in To Do status with correct visibility chip and unique SR number.",
+                  "expected_result": "SR is in To Do status with correct SR number and visibility chip.",
                   "prd_references": [
                     "BR-10",
-                    "BR-12",
-                    "BR-15"
+                    "BR-12"
                   ],
                   "session_count": 1,
                   "locked_fields": [
@@ -2082,27 +1592,26 @@
               "scenario": "happy_path",
               "cases": [
                 {
-                  "case": "case065",
+                  "case": "case050",
                   "is_smoke": true,
                   "category": "happy_path",
                   "entry_point": "From the Appointment Creation Form",
                   "persona": "Admin",
-                  "title": "Create SR alongside Appointment",
-                  "description": "Admin creates a Service Report alongside an Appointment from the Appointment Creation Form.",
+                  "title": "Create SR alongside Appointment with T&M Type",
+                  "description": "Admin creates a Service Report with Time & Material type alongside an Appointment.",
                   "preconditions": [
                     "Admin has access to the Appointments module."
                   ],
                   "steps_summary": [
                     "Sign in as Admin.",
-                    "Navigate to the Appointments module.",
-                    "Click New Appointment.",
+                    "Open the Appointment creation form.",
                     "Select an existing non-terminal Ticket.",
                     "Fill in appointment details.",
-                    "Check Create New Service Report.",
+                    "Select Create New Service Report.",
                     "Select SR Type: Time & Material and Visibility: External.",
-                    "Click Submit."
+                    "Submit the form."
                   ],
-                  "expected_result": "Both the appointment and the SR are created and linked.",
+                  "expected_result": "Both the appointment and the SR are created, with the SR linked to the appointment.",
                   "prd_references": [],
                   "session_count": 1,
                   "locked_fields": [
@@ -2119,27 +1628,24 @@
               "scenario": "permission",
               "cases": [
                 {
-                  "case": "case066",
+                  "case": "case051",
                   "is_smoke": false,
                   "category": "permission",
                   "entry_point": "From the Appointment Creation Form",
                   "persona": "Admin",
-                  "title": "Admin creates SR from Appointment for any ticket",
-                  "description": "Admin verifies they can create a Service Report from the Appointment Creation Form for any accessible ticket.",
+                  "title": "Admin can create SR from Appointment form",
+                  "description": "Admin should be able to create a Service Report from the Appointment creation form.",
                   "preconditions": [
-                    "Admin has access to multiple tickets across departments."
+                    "Admin has access to the Appointments module."
                   ],
                   "steps_summary": [
                     "Sign in as Admin.",
-                    "Navigate to the Appointments module.",
-                    "Click New Appointment.",
-                    "Select any accessible non-terminal Ticket.",
-                    "Fill in appointment details.",
-                    "Check Create New Service Report.",
-                    "Select SR Type: Fixed Fee and Visibility: Internal.",
-                    "Click Submit."
+                    "Open the Appointment creation form.",
+                    "Select an existing non-terminal Ticket.",
+                    "Verify the option to Create New Service Report is available.",
+                    "Select Create New Service Report."
                   ],
-                  "expected_result": "Both the appointment and the SR are created and linked for the selected ticket.",
+                  "expected_result": "Admin can proceed to create an SR from the Appointment form.",
                   "prd_references": [],
                   "session_count": 1,
                   "locked_fields": [
@@ -2156,33 +1662,28 @@
               "scenario": "business_rule",
               "cases": [
                 {
-                  "case": "case067",
+                  "case": "case052",
                   "is_smoke": false,
                   "category": "business_rule",
                   "entry_point": "From the Appointment Creation Form",
                   "persona": "Admin",
-                  "title": "Admin creates SR with required fields from Appointment",
-                  "description": "Admin ensures all required fields are filled to create a Service Report from the Appointment Creation Form.",
+                  "title": "Admin creates SR with internal visibility from Appointment",
+                  "description": "Admin creates a Service Report with internal visibility from the Appointment creation form.",
                   "preconditions": [
                     "Admin has access to the Appointments module."
                   ],
                   "steps_summary": [
                     "Sign in as Admin.",
-                    "Navigate to the Appointments module.",
-                    "Click New Appointment.",
+                    "Open the Appointment creation form.",
                     "Select an existing non-terminal Ticket.",
                     "Fill in appointment details.",
-                    "Check Create New Service Report.",
-                    "Select SR Type: Time & Material and Visibility: External.",
-                    "Click Submit."
+                    "Select Create New Service Report.",
+                    "Select SR Type: Fixed Fee and toggle Visibility to Internal.",
+                    "Submit the form."
                   ],
-                  "expected_result": "Both the appointment and the SR are created with all required fields filled.",
+                  "expected_result": "Both the appointment and the SR are created, with the SR linked to the appointment and set to internal visibility.",
                   "prd_references": [
-                    "BR-03",
-                    "BR-04",
-                    "BR-05",
-                    "BR-06",
-                    "BR-07"
+                    "BR-14"
                   ],
                   "session_count": 1,
                   "locked_fields": [
@@ -2199,29 +1700,28 @@
               "scenario": "edge_case",
               "cases": [
                 {
-                  "case": "case068",
+                  "case": "case053",
                   "is_smoke": false,
                   "category": "edge_case",
                   "entry_point": "From the Appointment Creation Form",
                   "persona": "Admin",
-                  "title": "Admin creates SR with no linked Appointment",
-                  "description": "Admin creates a Service Report from the Appointment Creation Form without linking an Appointment.",
+                  "title": "Admin creates SR with past date from Appointment",
+                  "description": "Ensure that Admin can set a past date for the SR when creating it from the Appointment form.",
                   "preconditions": [
                     "Admin has access to the Appointments module."
                   ],
                   "steps_summary": [
                     "Sign in as Admin.",
-                    "Navigate to the Appointments module.",
-                    "Click New Appointment.",
+                    "Open the Appointment creation form.",
                     "Select an existing non-terminal Ticket.",
                     "Fill in appointment details.",
-                    "Check Create New Service Report.",
-                    "Select SR Type: Fixed Fee and Visibility: Internal.",
-                    "Click Submit."
+                    "Select Create New Service Report.",
+                    "Select SR Type and set SR Date to a past date.",
+                    "Submit the form."
                   ],
-                  "expected_result": "SR is created and linked to the appointment, but no additional appointment is linked.",
+                  "expected_result": "Both the appointment and the SR are created, with the SR date set to the past date.",
                   "prd_references": [
-                    "EC-09"
+                    "EC-12"
                   ],
                   "session_count": 1,
                   "locked_fields": [
@@ -2238,29 +1738,27 @@
               "scenario": "post_submission_state",
               "cases": [
                 {
-                  "case": "case069",
+                  "case": "case054",
                   "is_smoke": false,
                   "category": "post_submission_state",
                   "entry_point": "From the Appointment Creation Form",
                   "persona": "Admin",
                   "title": "Verify SR post-creation state from Appointment",
-                  "description": "Admin verifies the state of the Service Report after successful creation from the Appointment Creation Form.",
+                  "description": "Check the state of a newly created SR from the Appointment form to ensure it reflects the correct initial settings.",
                   "preconditions": [
-                    "Admin has created a Service Report from the Appointment Creation Form."
+                    "Admin has successfully created an SR from the Appointment form."
                   ],
                   "steps_summary": [
                     "Sign in as Admin.",
-                    "Navigate to the Appointments module.",
-                    "Locate the appointment linked to the newly created SR.",
-                    "Verify SR status is To Do.",
-                    "Verify SR number is unique and assigned.",
-                    "Verify visibility chip is displayed correctly."
+                    "Navigate to the newly created SR detail view.",
+                    "Verify the SR status is To Do.",
+                    "Verify the SR number is assigned.",
+                    "Check that the visibility chip reflects the correct flow."
                   ],
-                  "expected_result": "SR is in To Do status with correct visibility chip and unique SR number.",
+                  "expected_result": "SR is in To Do status with correct SR number and visibility chip.",
                   "prd_references": [
                     "BR-10",
-                    "BR-12",
-                    "BR-15"
+                    "BR-12"
                   ],
                   "session_count": 1,
                   "locked_fields": [
@@ -2270,114 +1768,6 @@
                   ],
                   "source": "prd",
                   "url": "http://localhost:3000/appointments"
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "journey": "permission_check",
-          "url": "http://localhost:3000/service_reports",
-          "scenarios": [
-            {
-              "scenario": "permission",
-              "cases": [
-                {
-                  "case": "case070",
-                  "is_smoke": false,
-                  "category": "permission",
-                  "entry_point": "permission_check",
-                  "persona": "unauthenticated",
-                  "title": "Direct URL access without authentication",
-                  "description": "Unauthenticated user attempts to access the Create SR page directly via URL.",
-                  "preconditions": [],
-                  "steps_summary": [
-                    "Navigate to the Create SR URL without logging in."
-                  ],
-                  "expected_result": "User receives a 'Not Authorized' error or is redirected to the login page.",
-                  "prd_references": [
-                    "EC-10"
-                  ],
-                  "session_count": 0,
-                  "locked_fields": [],
-                  "source": "prd",
-                  "url": "http://localhost:3000/service_reports"
-                }
-              ]
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "role": "Customer User",
-      "journeys": [
-        {
-          "journey": "permission_check",
-          "url": "http://localhost:3000/service_reports",
-          "scenarios": [
-            {
-              "scenario": "permission",
-              "cases": [
-                {
-                  "case": "case071",
-                  "is_smoke": false,
-                  "category": "permission",
-                  "entry_point": "all_entry_points",
-                  "persona": "Customer User",
-                  "title": "CU cannot see Create SR option",
-                  "description": "Verify that the Customer User does not have access to the Create Service Report option anywhere in the application.",
-                  "preconditions": [],
-                  "steps_summary": [
-                    "Sign in as Customer User",
-                    "Navigate to the Service Reports module",
-                    "Check for the presence of any Create or New Service Report button"
-                  ],
-                  "expected_result": "The Create or New Service Report button is not visible to the Customer User.",
-                  "prd_references": [
-                    "BR-01",
-                    "12.1"
-                  ],
-                  "source": "prd",
-                  "url": "http://localhost:3000/service_reports"
-                },
-                {
-                  "case": "case072",
-                  "is_smoke": false,
-                  "category": "permission",
-                  "entry_point": "all_entry_points",
-                  "persona": "Customer User",
-                  "title": "CU cannot access Create SR via direct URL",
-                  "description": "Ensure that a Customer User cannot access the Create Service Report form by navigating directly to its URL.",
-                  "preconditions": [],
-                  "steps_summary": [
-                    "Sign in as Customer User",
-                    "Directly navigate to the Create Service Report URL"
-                  ],
-                  "expected_result": "The Customer User receives a 'Not Authorized' error or is redirected; no SR creation form is displayed.",
-                  "prd_references": [
-                    "EC-10",
-                    "12.1"
-                  ],
-                  "source": "prd",
-                  "url": "http://localhost:3000/service_reports"
-                },
-                {
-                  "case": "case073",
-                  "is_smoke": false,
-                  "category": "permission",
-                  "entry_point": "all_entry_points",
-                  "persona": "unauthenticated",
-                  "title": "Unauthenticated user cannot access Create SR URL",
-                  "description": "Verify that an unauthenticated user cannot access the Create Service Report form by navigating directly to its URL.",
-                  "preconditions": [],
-                  "steps_summary": [
-                    "Navigate directly to the Create Service Report URL without being logged in"
-                  ],
-                  "expected_result": "The user is redirected to the login page or receives an error message indicating they are not authorized.",
-                  "prd_references": [],
-                  "source": "prd",
-                  "url": "http://localhost:3000/service_reports"
                 }
               ]
             }
